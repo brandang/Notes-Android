@@ -1,0 +1,20 @@
+<resources>
+    <string-array name="textSizeOptions">
+        <item>@string/text_size_tiny</item>
+        <item>@string/text_size_small</item>
+        <item>@string/text_size_medium</item>
+        <item>@string/text_size_large</item>
+    </string-array>
+
+    <string-array name="textSizeValues">
+        <item>@string/text_size_tiny</item>
+        <item>@string/text_size_small</item>
+        <item>@string/text_size_medium</item>
+        <item>@string/text_size_large</item>
+    </string-array>
+    
+    <integer name="Tiny">10</integer>
+    <integer name="Small">12</integer>
+    <integer name="Medium">14</integer>
+    <integer name="Large">16</integer>
+</resources>
