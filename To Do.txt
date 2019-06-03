@@ -1,5 +1,5 @@
-adb connect 192.168.0.101:5555
-adb disconnect 192.168.0.101:5555
+adb connect 192.168.0.102:5555
+adb disconnect 192.168.0.102:5555
 
 ping 192.168.0.100
 adb kill-server

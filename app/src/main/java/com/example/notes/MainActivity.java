@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.text.InputType;
+import android.util.Log;
 import android.view.View;
 import android.support.v4.view.GravityCompat;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -161,10 +162,15 @@ public class MainActivity extends AppCompatActivity
                                     final Intent data) {
 
         super.onActivityResult(requestCode, resultCode, data);
+        Log.d(MAIN_ACTIVITY_TAG, "Request Code: " + requestCode + " Result Code: " + resultCode
+                + " Data: " + data);
         switch (requestCode) {
             case REQUEST_CODE_SIGN_IN:
                 if (resultCode == Activity.RESULT_OK && data != null) {
+                    Log.d(MAIN_ACTIVITY_TAG, "Successfully signed in.");
                     this.onSignInSuccess(data);
+                } else {
+                    this.onSignInFailed();
                 }
                 break;
 
@@ -213,6 +219,16 @@ public class MainActivity extends AppCompatActivity
                     message.show();
                 }
             });
+    }
+
+    /**
+     * Handles case where Sign in to Google failed.
+     */
+    private void onSignInFailed() {
+        this.stopLoadScreen();
+        Snackbar message = Snackbar.make(this.background, getString(R.string.sign_in_fail_msg),
+                this.SNACKBAR_DURATION);
+        message.show();
     }
 
     /**
@@ -338,6 +354,12 @@ public class MainActivity extends AppCompatActivity
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
+
+        // If user did not sign in yet, don't do anything.
+        if (this.service == null) {
+            this.signIn();
+            return super.onOptionsItemSelected(item);
+        }
 
         if (id == R.id.action_sync) {
             if (!this.service.isBusy())

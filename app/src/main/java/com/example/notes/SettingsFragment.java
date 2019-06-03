@@ -21,6 +21,12 @@ public class SettingsFragment extends PreferenceFragment {
         this.setupPreferences();
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        this.setSettings(this.settings);
+    }
+
     /**
      * Handles whatever the user changed in preferences.
      */
@@ -42,12 +48,17 @@ public class SettingsFragment extends PreferenceFragment {
     }
 
     /**
-     * Sets the initial Settings.
+     * Sets the initial Settings if the Fragment has been attached. If it has not been attached, do
+     * nothing.
      * @param settings The Settings.
      */
     public void setSettings(Settings settings) {
         if (settings == null) {
             this.textSizePreference.setValueIndex(0);
+            return;
+        }
+        if (!isAdded()) {
+            this.settings = settings;
             return;
         }
         this.settings = settings;

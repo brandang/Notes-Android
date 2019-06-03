@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">Notes</string>
+    <string name="server_client_id">106704107629-8p4uh431bgqlpge32e0b0ilaoas7k77t.apps.googleusercontent.com</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="nav_header_title">Android Studio</string>
