@@ -9,9 +9,6 @@ import android.util.TypedValue;
  */
 public class TextArea extends android.support.v7.widget.AppCompatEditText {
 
-    // How much to add to the text size.
-    final private static int TEXT_SIZE_OFFSET = 4;
-
     /**
      * A new TextArea.
      * @param context The Context.
@@ -55,7 +52,6 @@ public class TextArea extends android.support.v7.widget.AppCompatEditText {
         // Calculate text size in scaled pixels.
         float px = super.getTextSize();
         float sp = px / getResources().getDisplayMetrics().scaledDensity;
-        sp -= TextArea.TEXT_SIZE_OFFSET;
         return sp;
     }
 }

@@ -17,7 +17,6 @@ public class SettingsFragment extends PreferenceFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.settings);
-        this.settings = new Settings(getString(R.string.text_size_small));
         this.setupPreferences();
     }
 
@@ -57,6 +56,8 @@ public class SettingsFragment extends PreferenceFragment {
             this.textSizePreference.setValueIndex(0);
             return;
         }
+        // If fragment has not been attached yet, just store as variable and set it when fragment
+        // finally gets attached.
         if (!isAdded()) {
             this.settings = settings;
             return;

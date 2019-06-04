@@ -73,9 +73,6 @@ public class MainActivity extends AppCompatActivity
     // The editable text area.
     private TextArea textArea;
 
-    // How much to add to the text size.
-    final private static int TEXT_SIZE_OFFSET = 4;
-
     // Helper to manage files.
     private DriveService service;
 
@@ -268,8 +265,9 @@ public class MainActivity extends AppCompatActivity
         // Output content to text area with the required font size.
         String content = saveData.getText();
         int textSize = saveData.getFontSize();
+        Log.d(MAIN_ACTIVITY_TAG, "Downloaded data with " + (textSize));
         this.textArea.setText(content);
-        this.textArea.setTextSize(textSize + this.TEXT_SIZE_OFFSET);
+        this.textArea.setTextSize(textSize);
         Snackbar message = Snackbar.make(this.background, getString(R.string.download_success_msg),
                 this.SNACKBAR_DURATION);
         message.show();
@@ -320,14 +318,13 @@ public class MainActivity extends AppCompatActivity
      */
     private void setTextSize(String textSize) {
         if (textSize.equals(getString(R.string.text_size_tiny))) {
-            this.textArea.setTextSize(getResources().getInteger(R.integer.Tiny) +
-                    TEXT_SIZE_OFFSET);
+            this.textArea.setTextSize(getResources().getInteger(R.integer.Tiny));
         } else if (textSize.equals(getString(R.string.text_size_small))) {
-            this.textArea.setTextSize(getResources().getInteger(R.integer.Small) + TEXT_SIZE_OFFSET);
+            this.textArea.setTextSize(getResources().getInteger(R.integer.Small));
         } else if (textSize.equals(getString(R.string.text_size_medium))) {
-            this.textArea.setTextSize(getResources().getInteger(R.integer.Medium) + TEXT_SIZE_OFFSET);
+            this.textArea.setTextSize(getResources().getInteger(R.integer.Medium));
         } else if (textSize.equals(getString(R.string.text_size_large))) {
-            this.textArea.setTextSize(getResources().getInteger(R.integer.Large) + TEXT_SIZE_OFFSET);
+            this.textArea.setTextSize(getResources().getInteger(R.integer.Large));
         }
     }
 
@@ -381,13 +378,13 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.nav_tools) {
             Intent i = new Intent(this, SettingsActivity.class);
             String textSize = "";
-            if (this.textArea.getTextSize() - TEXT_SIZE_OFFSET == getResources().getInteger(R.integer.Tiny)) {
+            if ((int) this.textArea.getTextSize() == getResources().getInteger(R.integer.Tiny)) {
                 textSize = getString(R.string.text_size_tiny);
-            } else if (this.textArea.getTextSize() - TEXT_SIZE_OFFSET == getResources().getInteger(R.integer.Small)) {
+            } else if ((int) this.textArea.getTextSize() == getResources().getInteger(R.integer.Small)) {
                 textSize = getString(R.string.text_size_small);
-            } else if (this.textArea.getTextSize() - TEXT_SIZE_OFFSET == getResources().getInteger(R.integer.Medium)) {
+            } else if ((int) this.textArea.getTextSize() == getResources().getInteger(R.integer.Medium)) {
                 textSize = getString(R.string.text_size_medium);
-            } else if (this.textArea.getTextSize() - TEXT_SIZE_OFFSET == getResources().getInteger(R.integer.Large)) {
+            } else if ((int) this.textArea.getTextSize() == getResources().getInteger(R.integer.Large)) {
                 textSize = getString(R.string.text_size_large);
             }
             Settings currentSettings = new Settings(textSize);
