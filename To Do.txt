@@ -21,4 +21,3 @@ start adbd
 To Do
 - optimize DriveService so that tasks such as searching for file id are not repeated
 - create and upload: if failed to create file, send message
-- make it so that rotating and reentering activity do not make it rebuild
