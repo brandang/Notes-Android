@@ -30,8 +30,8 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.Scope;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
+import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.drive.Drive;
@@ -196,8 +196,7 @@ public class MainActivity extends AppCompatActivity
                                     Collections.singleton(DriveScopes.DRIVE_APPDATA));
                     credential.setSelectedAccount(googleSignInAccount.getAccount());
                     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-                    Drive googleDriveService = new Drive.Builder(
-                                    AndroidHttp.newCompatibleTransport(),
+                    Drive googleDriveService = new Drive.Builder(new NetHttpTransport(),
                             jsonFactory, credential)
                                     .setApplicationName(getString(R.string.app_name))
                                     .build();
@@ -355,6 +354,9 @@ public class MainActivity extends AppCompatActivity
         // If user did not sign in yet, don't do anything.
         if (this.service == null) {
             this.signIn();
+            return super.onOptionsItemSelected(item);
+        }
+        if (this.service.isBusy()) {
             return super.onOptionsItemSelected(item);
         }
 
