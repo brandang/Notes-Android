@@ -186,7 +186,7 @@ public class MainActivity extends AppCompatActivity
      */
     private void onSignInSuccess(Intent result) {
         GoogleSignIn.getSignedInAccountFromIntent(result)
-            // cant use lamda because Android
+            // Can't use lamda because Android does not compile with latest Java version.
             .addOnSuccessListener(new OnSuccessListener<GoogleSignInAccount>() {
                 @Override
                 public void onSuccess(GoogleSignInAccount googleSignInAccount) {
