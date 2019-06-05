@@ -15,6 +15,10 @@
     <string name="menu_share">Share</string>
     <string name="menu_send">Send</string>
 
+    <string name="toolbar_save">Save</string>
+    <string name="toolbar_sync">Sync</string>
+    <string name="toolbar_photo">Take Photo</string>
+
     <string name="loading_message">Syncing Data...</string>
     <string name="sign_in_message">Signing In...</string>
     <string name="sign_in_fail_msg">Unable to Connect, Check Internet Connection.</string>
