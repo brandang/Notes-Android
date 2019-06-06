@@ -19,10 +19,10 @@
     <string name="toolbar_sync">Sync</string>
     <string name="toolbar_photo">Take Photo</string>
 
-    <string name="loading_message">Syncing Data...</string>
-    <string name="sign_in_message">Signing In...</string>
+    <string name="loading_message">Syncing Data…</string>
+    <string name="sign_in_message">Signing In…</string>
     <string name="sign_in_fail_msg">Unable to Connect, Check Internet Connection.</string>
-    <string name="saving_message">Saving Data...</string>
+    <string name="saving_message">Saving Data…</string>
     <string name="upload_success_msg">Upload Successful.</string>
     <string name="upload_failed_msg">Upload Unsuccessful; Check Internet Connection.</string>
     <string name="download_success_msg">Sync Successful.</string>
@@ -38,5 +38,7 @@
     <string name="text_size_medium">Medium</string>
     <string name="text_size_large">Large</string>
 
+    <string name="choose_photo_title">Add Photo</string>
+    <string name="choose_photo_prompt">Take a new photo, or choose one from your device.</string>
 
 </resources>
