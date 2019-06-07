@@ -7,8 +7,9 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -70,13 +71,25 @@ public class PhotoActivity extends AppCompatActivity {
      * Binds the floating action buttons and sets their behaviours.
      */
     private void bindButtons() {
+
         this.capture = findViewById(R.id.left_action_button);
+        this.search = findViewById(R.id.right_action_button);
+
+        final Animation captureAnim = PhotoActivity.this.getFabClickAnim(this.capture);
+        final Animation searchAnim = PhotoActivity.this.getFabClickAnim(this.search);
+
         this.capture.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                PhotoActivity.this.capture.startAnimation(captureAnim);
             }
         });
-        this.search = findViewById(R.id.right_action_button);
+        this.search.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                PhotoActivity.this.search.startAnimation(searchAnim);
+            }
+        });
     }
 
     @Override
@@ -113,5 +126,33 @@ public class PhotoActivity extends AppCompatActivity {
                 finish();
             }
         }
+    }
+
+    /**
+     * Returns an animation to use for whenever a FAB is clicked.
+     * @param button The button to apply the animation to.
+     * @return The Animation.
+     */
+    private Animation getFabClickAnim(final FloatingActionButton button) {
+        Animation jumpUp = AnimationUtils.loadAnimation(PhotoActivity.this,
+                R.anim.jump_up_anim);
+        final Animation jumpDown = AnimationUtils.loadAnimation(PhotoActivity.this,
+                R.anim.jump_down_anim);
+        jumpUp.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                button.startAnimation(jumpDown);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+        return jumpUp;
     }
 }
