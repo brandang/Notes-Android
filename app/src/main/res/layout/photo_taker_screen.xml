@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/photos_screen"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorPrimaryLight">
 
-    <android.support.design.widget.AppBarLayout
+    <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:theme="@style/AppTheme.AppBarOverlay">
 
-        <android.support.v7.widget.Toolbar
+        <androidx.appcompat.widget.Toolbar
             android:id="@+id/photos_toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -19,7 +19,7 @@
             android:minHeight="?attr/actionBarSize"
             android:theme="@style/AppTheme.Photos.Toolbar" />
 
-    </android.support.design.widget.AppBarLayout>
+    </com.google.android.material.appbar.AppBarLayout>
 
     <!-- The scrolling view behaviour ensures that the toolbar is above this layout. /-->
     <include
@@ -36,7 +36,7 @@
         android:paddingBottom="20dp"
         app:layout_anchorGravity="bottom">
 
-        <android.support.design.widget.FloatingActionButton
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/left_action_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -46,7 +46,7 @@
             app:layout_anchorGravity="bottom|center"
             app:srcCompat="@drawable/photo_icon" />
 
-        <android.support.design.widget.FloatingActionButton
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/right_action_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -58,4 +58,4 @@
 
     </LinearLayout>
 
-</android.support.design.widget.CoordinatorLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

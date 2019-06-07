@@ -4,19 +4,19 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.Snackbar;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import com.google.android.material.snackbar.Snackbar;
 import android.text.InputType;
 import android.util.Log;
 import android.view.View;
-import android.support.v4.view.GravityCompat;
-import android.support.v7.app.ActionBarDrawerToggle;
+import androidx.core.view.GravityCompat;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import android.view.MenuItem;
-import android.support.design.widget.NavigationView;
-import android.support.v4.widget.DrawerLayout;
+import com.google.android.material.navigation.NavigationView;
+import androidx.drawerlayout.widget.DrawerLayout;
 
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import android.view.Menu;
 import android.view.inputmethod.EditorInfo;
 import android.widget.LinearLayout;
@@ -46,9 +46,6 @@ public class MainActivity extends AppCompatActivity
     // Tag used for debugging.
     final private static String MAIN_ACTIVITY_TAG = "Main Activity:";
 
-    // How long to display Snackbar.
-    final private static int SNACKBAR_DURATION = Snackbar.LENGTH_LONG;
-
     // Request code to identify signing in to Google.
     final private static int REQUEST_CODE_SIGN_IN = 0;
 
@@ -57,6 +54,9 @@ public class MainActivity extends AppCompatActivity
 
     // Request code to identify user modifying settings.
     final private static int REQUEST_CODE_SETTINGS = 2;
+
+    // Request code to capture photo.
+    final private static int REQUEST_CODE_PHOTO = 3;
 
     // The layout that contains the loading screen.
     private LinearLayout loadingScreen;
@@ -211,7 +211,7 @@ public class MainActivity extends AppCompatActivity
                 public void onFailure(Exception e) {
                     Snackbar message = Snackbar.make(MainActivity.this.background,
                             getString(R.string.download_failed_msg),
-                            MainActivity.this.SNACKBAR_DURATION);
+                            Snackbar.LENGTH_LONG);
                     message.show();
                 }
             });
@@ -223,7 +223,7 @@ public class MainActivity extends AppCompatActivity
     private void onSignInFailed() {
         this.stopLoadScreen();
         Snackbar message = Snackbar.make(this.background, getString(R.string.sign_in_fail_msg),
-                this.SNACKBAR_DURATION);
+                Snackbar.LENGTH_LONG);
         message.show();
     }
 
@@ -252,7 +252,7 @@ public class MainActivity extends AppCompatActivity
      */
     private void onDownloadFailed() {
         Snackbar message = Snackbar.make(this.background, getString(R.string.download_failed_msg),
-                this.SNACKBAR_DURATION);
+                Snackbar.LENGTH_LONG);
         message.show();
     }
 
@@ -268,7 +268,7 @@ public class MainActivity extends AppCompatActivity
         this.textArea.setText(content);
         this.textArea.setTextSize(textSize);
         Snackbar message = Snackbar.make(this.background, getString(R.string.download_success_msg),
-                this.SNACKBAR_DURATION);
+                Snackbar.LENGTH_LONG);
         message.show();
     }
 
@@ -298,7 +298,7 @@ public class MainActivity extends AppCompatActivity
      */
     private void onUploadSuccess() {
         Snackbar message = Snackbar.make(this.background, getString(R.string.upload_success_msg),
-                this.SNACKBAR_DURATION);
+                Snackbar.LENGTH_LONG);
         message.show();
     }
 
@@ -307,7 +307,7 @@ public class MainActivity extends AppCompatActivity
      */
     private void onUploadFailed() {
         Snackbar message = Snackbar.make(this.background, getString(R.string.upload_failed_msg),
-                this.SNACKBAR_DURATION);
+                Snackbar.LENGTH_LONG);
         message.show();
     }
 
@@ -360,14 +360,22 @@ public class MainActivity extends AppCompatActivity
             return super.onOptionsItemSelected(item);
         }
 
-        if (id == R.id.action_sync) {
-            if (!this.service.isBusy())
-                this.loadData();
-        } else if (id == R.id.action_save) {
-            if (!this.service.isBusy())
-                this.saveData();
-        }
+        switch (id) {
+            case R.id.action_sync:
+                if (!this.service.isBusy())
+                    this.loadData();
+                break;
 
+            case R.id.action_save:
+                if (!this.service.isBusy())
+                    this.saveData();
+                break;
+
+            case R.id.action_photo:
+                Intent intent = new Intent(this, PhotoActivity.class);
+                startActivityForResult(intent, REQUEST_CODE_PHOTO);
+                break;
+        }
         return super.onOptionsItemSelected(item);
     }
 
@@ -378,7 +386,7 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_tools) {
-            Intent i = new Intent(this, SettingsActivity.class);
+            Intent intent = new Intent(this, SettingsActivity.class);
             String textSize = "";
             if ((int) this.textArea.getTextSize() == getResources().getInteger(R.integer.Tiny)) {
                 textSize = getString(R.string.text_size_tiny);
@@ -392,8 +400,8 @@ public class MainActivity extends AppCompatActivity
             Settings currentSettings = new Settings(textSize);
             Bundle bundle = new Bundle();
             bundle.putSerializable("settings", currentSettings);
-            i.putExtras(bundle);
-            startActivityForResult(i, REQUEST_CODE_SETTINGS);
+            intent.putExtras(bundle);
+            startActivityForResult(intent, REQUEST_CODE_SETTINGS);
         }
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);

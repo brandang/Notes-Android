@@ -7,7 +7,7 @@ import android.util.TypedValue;
 /**
  * A custom EditText that Overrides methods related to text size, allowing for easier usage.
  */
-public class TextArea extends android.support.v7.widget.AppCompatEditText {
+public class TextArea extends androidx.appcompat.widget.AppCompatEditText {
 
     /**
      * A new TextArea.
