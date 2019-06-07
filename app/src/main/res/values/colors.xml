@@ -3,7 +3,7 @@
     <color name="colorPrimary">#353535</color>
     <color name="colorPrimaryDark">#353535</color>
     <color name="colorPrimaryLight">#535353</color>
-    <color name="colorAccent">#929292</color>
+    <color name="colorAccent">#8D8D8D</color>
     <color name="textColor">#d6d6d6</color>
     <color name="textHighlightColor">#3486a2</color>
     <color name="nav_view_tint">#d6d6d6</color>

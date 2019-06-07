@@ -31,7 +31,7 @@ public class SettingsActivity extends AppCompatActivity {
         Settings currentSettings = (Settings) getIntent().getSerializableExtra("settings");
         this.fragment.setSettings(currentSettings);
 
-        // Go back to previous screen.
+        // Go back to previous screen: set the back button.
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         this.toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
