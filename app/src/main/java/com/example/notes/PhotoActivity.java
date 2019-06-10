@@ -139,6 +139,7 @@ public class PhotoActivity extends AppCompatActivity {
      * Start capturing an image using the camera.
      */
     private void startImageCapture() {
+        this.uriFilePath = null;
         PackageManager packageManager = getPackageManager();
         if (packageManager.hasSystemFeature(PackageManager.FEATURE_CAMERA)) {
             File mainDirectory = new File(Environment.getExternalStorageDirectory(), "MyFolder/tmp");
@@ -149,7 +150,7 @@ public class PhotoActivity extends AppCompatActivity {
 
             this.uriFilePath = Uri.fromFile(new File(mainDirectory, "IMG_" + calendar.getTimeInMillis()));
             Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-            intent.putExtra(MediaStore.EXTRA_OUTPUT, uriFilePath);
+            intent.putExtra(MediaStore.EXTRA_OUTPUT, this.uriFilePath);
             startActivityForResult(intent, REQUEST_CODE_CAPTURE);
         }
     }
@@ -158,9 +159,9 @@ public class PhotoActivity extends AppCompatActivity {
      * Starts an activity responsible for searching for a photo stored on this device.
      */
     private void startImageSearch() {
+        this.uriFilePath = null;
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
         intent.setType("image/*");
-//        intent.putExtra(MediaStore.EXTRA_OUTPUT, uriFilePath);
         startActivityForResult(intent, REQUEST_CODE_SEARCH);
     }
 

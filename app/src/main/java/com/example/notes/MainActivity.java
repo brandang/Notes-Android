@@ -3,6 +3,7 @@ package com.example.notes;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import com.google.android.material.snackbar.Snackbar;
@@ -176,6 +177,12 @@ public class MainActivity extends AppCompatActivity
                     Settings settings = (Settings) data.getExtras().getSerializable("settings");
                     String fontSize = settings.getTextSize();
                     this.setTextSize(fontSize);
+                }
+
+            case REQUEST_CODE_PHOTO:
+                if (resultCode == RESULT_OK) {
+                    Uri photoUri = (Uri) data.getParcelableExtra("photo");
+                    Log.d(MAIN_ACTIVITY_TAG, photoUri + "");
                 }
         }
     }
