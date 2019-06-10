@@ -89,8 +89,10 @@ public class PhotoActivity extends AppCompatActivity {
         this.accept = findViewById(R.id.accept_button);
         this.decline = findViewById(R.id.decline_button);
 
-        final Animation captureAnim = PhotoActivity.this.getFabClickAnim(this.capture);
-        final Animation searchAnim = PhotoActivity.this.getFabClickAnim(this.search);
+        final Animation captureAnim = this.getFabClickAnim(this.capture);
+        final Animation searchAnim = this.getFabClickAnim(this.search);
+        final Animation acceptAnim = this.getFabClickAnim(this.accept);
+        final Animation declineAnim = this.getFabClickAnim(this.decline);
 
         this.capture.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -103,6 +105,18 @@ public class PhotoActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 PhotoActivity.this.search.startAnimation(searchAnim);
+            }
+        });
+        this.accept.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                PhotoActivity.this.accept.startAnimation(acceptAnim);
+            }
+        });
+        this.decline.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                PhotoActivity.this.decline.startAnimation(declineAnim);
             }
         });
     }
@@ -158,10 +172,15 @@ public class PhotoActivity extends AppCompatActivity {
         this.prompt.setVisibility(View.GONE);
         this.photoButtons.setVisibility(View.VISIBLE);
         this.promptButtons.setVisibility(View.GONE);
+        // Animation for photo coming in.
         Animation popIn = AnimationUtils.loadAnimation(this, R.anim.pop_in_anim);
         this.photoView.startAnimation(popIn);
-        Animation popUp = AnimationUtils.loadAnimation(this, R.anim.pop_up_anim);
-        this.photoButtons.startAnimation(popUp);
+
+        // Animations for buttons.
+        Animation acceptPopUpAnim = this.getFabPopUpAnim(this.accept);
+        this.accept.startAnimation(acceptPopUpAnim);
+        Animation declinePopUpAnim = this.getFabPopUpAnim(this.decline);
+        this.decline.startAnimation(declinePopUpAnim);
     }
 
     /**
@@ -174,6 +193,12 @@ public class PhotoActivity extends AppCompatActivity {
         this.prompt.setVisibility(View.VISIBLE);
         this.photoButtons.setVisibility(View.GONE);
         this.promptButtons.setVisibility(View.VISIBLE);
+
+        // Animations for buttons.
+        Animation capturePopUpAnim = this.getFabPopUpAnim(this.capture);
+        this.capture.startAnimation(capturePopUpAnim);
+        Animation searchPopUpAnim = this.getFabPopUpAnim(this.search);
+        this.search.startAnimation(searchPopUpAnim);
     }
 
     /**
@@ -202,5 +227,28 @@ public class PhotoActivity extends AppCompatActivity {
             }
         });
         return jumpUp;
+    }
+
+    /**
+     * Returns animation for use on a floating action button to pop up.
+     * @param button The button to get attention for.
+     * @return The Animation.
+     */
+    private Animation getFabPopUpAnim(final FloatingActionButton button) {
+        Animation popUp = AnimationUtils.loadAnimation(this, R.anim.pop_up_anim);
+        final Animation attention = AnimationUtils.loadAnimation(this, R.anim.attention_anim);
+        popUp.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+            }
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                button.startAnimation(attention);
+            }
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+            }
+        });
+        return popUp;
     }
 }
