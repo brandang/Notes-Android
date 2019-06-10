@@ -117,6 +117,7 @@ public class PhotoActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 PhotoActivity.this.decline.startAnimation(declineAnim);
+                PhotoActivity.this.onDeclineClick();
             }
         });
     }
@@ -250,5 +251,14 @@ public class PhotoActivity extends AppCompatActivity {
             }
         });
         return popUp;
+    }
+
+    /**
+     * Decline Floating action button was just clicked. Handles it.
+     */
+    private void onDeclineClick() {
+        this.uriFilePath = null;
+        this.photoView.setImageURI(null);
+        this.showPrompt();
     }
 }
