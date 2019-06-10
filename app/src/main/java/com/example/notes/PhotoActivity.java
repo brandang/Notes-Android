@@ -3,10 +3,13 @@ package com.example.notes;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -29,7 +32,10 @@ import java.util.Calendar;
 public class PhotoActivity extends AppCompatActivity {
 
     // Request code used to obtain photo from camera.
-    final private static int REQUEST_CODE_PHOTO = 0;
+    final private static int REQUEST_CODE_CAPTURE = 0;
+
+    // Request code to obtain image from internal storage.
+    final private static int REQUEST_CODE_SEARCH = 1;
 
     // Uri of the photo that the user choose. Null if unspecified.
     private Uri uriFilePath;
@@ -105,6 +111,7 @@ public class PhotoActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 PhotoActivity.this.search.startAnimation(searchAnim);
+                PhotoActivity.this.startImageSearch();
             }
         });
         this.accept.setOnClickListener(new View.OnClickListener() {
@@ -141,24 +148,41 @@ public class PhotoActivity extends AppCompatActivity {
 
             Calendar calendar = Calendar.getInstance();
 
-            uriFilePath = Uri.fromFile(new File(mainDirectory, "IMG_" + calendar.getTimeInMillis()));
+            this.uriFilePath = Uri.fromFile(new File(mainDirectory, "IMG_" + calendar.getTimeInMillis()));
             Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
             intent.putExtra(MediaStore.EXTRA_OUTPUT, uriFilePath);
-            startActivityForResult(intent, REQUEST_CODE_PHOTO);
+            startActivityForResult(intent, REQUEST_CODE_CAPTURE);
         }
+    }
+
+    /**
+     * Starts an activity responsible for searching for a photo stored on this device.
+     */
+    private void startImageSearch() {
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        intent.setType("image/*");
+//        intent.putExtra(MediaStore.EXTRA_OUTPUT, uriFilePath);
+        startActivityForResult(intent, REQUEST_CODE_SEARCH);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.d("Main", "Request Code: " + requestCode + " Result Code: " + resultCode
+                + " Data: " + data);
+
         if (resultCode == RESULT_OK) {
-            if (requestCode == REQUEST_CODE_PHOTO) {
+            if (requestCode == REQUEST_CODE_CAPTURE) {
 //                String filePath = uriFilePath.getPath();
-                this.photoView.setImageURI(uriFilePath);
+                this.photoView.setImageURI(this.uriFilePath);
                 this.showPhoto();
                 /*Intent resultIntent = new Intent();
                 resultIntent.putExtra("photo", filePath);
                 setResult(Activity.RESULT_OK, resultIntent);
                 finish();*/
+            } else if (requestCode == REQUEST_CODE_SEARCH) {
+                this.uriFilePath = data.getData();
+                this.photoView.setImageURI(this.uriFilePath);
+                this.showPhoto();
             }
         }
     }
