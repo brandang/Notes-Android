@@ -10,10 +10,13 @@ import android.provider.MediaStore;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import com.github.chrisbanes.photoview.PhotoView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.io.File;
@@ -33,10 +36,14 @@ public class PhotoActivity extends AppCompatActivity {
 
     private Toolbar toolbar;
 
+    private PhotoView photoView;
+    private TextView prompt;
+
     // Floating action buttons at the bottom.
     private FloatingActionButton capture, search, accept, decline;
 
-
+    // Views that contain the sets of buttons at the bottom.
+    private LinearLayout photoButtons, promptButtons;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +55,12 @@ public class PhotoActivity extends AppCompatActivity {
         this.toolbar = (Toolbar) findViewById(R.id.photos_toolbar);
         this.toolbar.setTitle(getString(R.string.choose_photo_title));
         setSupportActionBar(toolbar);
+
+        this.promptButtons = findViewById(R.id.prompt_buttons);
+        this.photoButtons = findViewById(R.id.photo_buttons);
+
+        this.photoView = findViewById(R.id.photo);
+        this.prompt = findViewById(R.id.choose_photo_prompt);
 
         // Enable the back button.
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -62,18 +75,19 @@ public class PhotoActivity extends AppCompatActivity {
             }
         });
 
-        this.bindButtons();
-
-//        this.startImageCapture();
+        this.setupButtons();
+        this.showPrompt();
     }
 
     /**
      * Binds the floating action buttons and sets their behaviours.
      */
-    private void bindButtons() {
+    private void setupButtons() {
 
-        this.capture = findViewById(R.id.left_action_button);
-        this.search = findViewById(R.id.right_action_button);
+        this.capture = findViewById(R.id.capture_button);
+        this.search = findViewById(R.id.search_button);
+        this.accept = findViewById(R.id.accept_button);
+        this.decline = findViewById(R.id.decline_button);
 
         final Animation captureAnim = PhotoActivity.this.getFabClickAnim(this.capture);
         final Animation searchAnim = PhotoActivity.this.getFabClickAnim(this.search);
@@ -82,6 +96,7 @@ public class PhotoActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 PhotoActivity.this.capture.startAnimation(captureAnim);
+                PhotoActivity.this.startImageCapture();
             }
         });
         this.search.setOnClickListener(new View.OnClickListener() {
@@ -99,6 +114,9 @@ public class PhotoActivity extends AppCompatActivity {
         super.onSaveInstanceState(outState);
     }
 
+    /**
+     * Start capturing an image using the camera.
+     */
     private void startImageCapture() {
         PackageManager packageManager = getPackageManager();
         if (packageManager.hasSystemFeature(PackageManager.FEATURE_CAMERA)) {
@@ -119,13 +137,43 @@ public class PhotoActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
             if (requestCode == REQUEST_CODE_PHOTO) {
-                String filePath = uriFilePath.getPath(); // Here is path of your captured image, so you can create bitmap from it, etc.
-                Intent resultIntent = new Intent();
+//                String filePath = uriFilePath.getPath();
+                this.photoView.setImageURI(uriFilePath);
+                this.showPhoto();
+                /*Intent resultIntent = new Intent();
                 resultIntent.putExtra("photo", filePath);
                 setResult(Activity.RESULT_OK, resultIntent);
-                finish();
+                finish();*/
             }
         }
+    }
+
+    /**
+     * Shows the photo and hides the prompt. Does the same for the buttons.
+     */
+    private void showPhoto() {
+        if (this.photoView == null || this.prompt == null)
+            return;
+        this.photoView.setVisibility(View.VISIBLE);
+        this.prompt.setVisibility(View.GONE);
+        this.photoButtons.setVisibility(View.VISIBLE);
+        this.promptButtons.setVisibility(View.GONE);
+        Animation popIn = AnimationUtils.loadAnimation(this, R.anim.pop_in_anim);
+        this.photoView.startAnimation(popIn);
+        Animation popUp = AnimationUtils.loadAnimation(this, R.anim.pop_up_anim);
+        this.photoButtons.startAnimation(popUp);
+    }
+
+    /**
+     * Shows the prompt and hides the photo. Does the same for the buttons.
+     */
+    private void showPrompt() {
+        if (this.photoView == null || this.prompt == null)
+            return;
+        this.photoView.setVisibility(View.GONE);
+        this.prompt.setVisibility(View.VISIBLE);
+        this.photoButtons.setVisibility(View.GONE);
+        this.promptButtons.setVisibility(View.VISIBLE);
     }
 
     /**

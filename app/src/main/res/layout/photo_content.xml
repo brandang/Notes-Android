@@ -16,12 +16,13 @@
         android:paddingBottom="60dp"
         android:text="@string/choose_photo_prompt"
         android:textColor="@color/textColor"
-        android:visibility="gone"/>
+        android:visibility="visible"/>
 
     <com.github.chrisbanes.photoview.PhotoView
-        android:id="@+id/image"
+        android:id="@+id/photo"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:srcCompat="@drawable/ic_launcher_background" />
+        app:srcCompat="@drawable/ic_launcher_background"
+        android:visibility="gone"/>
 
 </RelativeLayout>

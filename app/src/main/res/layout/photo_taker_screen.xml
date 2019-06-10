@@ -29,15 +29,17 @@
         app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
 
     <LinearLayout
+        android:id="@+id/prompt_buttons"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|center"
         android:orientation="horizontal"
         android:paddingBottom="20dp"
-        app:layout_anchorGravity="bottom">
+        app:layout_anchorGravity="bottom"
+        android:visibility="visible">
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/left_action_button"
+            android:id="@+id/capture_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -49,7 +51,43 @@
             app:srcCompat="@drawable/photo_icon" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/right_action_button"
+            android:id="@+id/search_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="@dimen/fab_margin"
+            android:clickable="true"
+            app:elevation="0dp"
+            app:backgroundTint="@color/colorAccent"
+            app:layout_anchorGravity="bottom|center"
+            app:srcCompat="@drawable/photo_icon" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/photo_buttons"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|center"
+        android:orientation="horizontal"
+        android:paddingBottom="20dp"
+        app:layout_anchorGravity="bottom"
+        android:visibility="visible">
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/accept_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="@dimen/fab_margin"
+            android:clickable="true"
+            app:elevation="0dp"
+            app:backgroundTint="@color/colorAccent"
+            app:layout_anchorGravity="bottom|center"
+            app:srcCompat="@drawable/photo_icon" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/decline_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
