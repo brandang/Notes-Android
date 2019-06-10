@@ -3,8 +3,6 @@ package com.example.notes;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -118,6 +116,7 @@ public class PhotoActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 PhotoActivity.this.accept.startAnimation(acceptAnim);
+                PhotoActivity.this.onAcceptClick();
             }
         });
         this.decline.setOnClickListener(new View.OnClickListener() {
@@ -172,13 +171,8 @@ public class PhotoActivity extends AppCompatActivity {
 
         if (resultCode == RESULT_OK) {
             if (requestCode == REQUEST_CODE_CAPTURE) {
-//                String filePath = uriFilePath.getPath();
                 this.photoView.setImageURI(this.uriFilePath);
                 this.showPhoto();
-                /*Intent resultIntent = new Intent();
-                resultIntent.putExtra("photo", filePath);
-                setResult(Activity.RESULT_OK, resultIntent);
-                finish();*/
             } else if (requestCode == REQUEST_CODE_SEARCH) {
                 this.uriFilePath = data.getData();
                 this.photoView.setImageURI(this.uriFilePath);
@@ -284,5 +278,22 @@ public class PhotoActivity extends AppCompatActivity {
         this.uriFilePath = null;
         this.photoView.setImageURI(null);
         this.showPrompt();
+    }
+
+    /**
+     * Accept floating action button was just clicked. Handles it.
+     */
+    private void onAcceptClick() {
+        this.returnResults();
+    }
+
+    /**
+     * Return the image URI to the activity that called this one. Ends this activity.
+     */
+    private void returnResults() {
+        Intent results = new Intent();
+        results.putExtra("photo", this.uriFilePath);
+        setResult(Activity.RESULT_OK, results);
+        finish();
     }
 }
