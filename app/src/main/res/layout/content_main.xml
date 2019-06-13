@@ -31,6 +31,21 @@
 
     </LinearLayout>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimaryLight">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
+
+    </LinearLayout>
+
+
     <ScrollView
         android:visibility="gone"
         android:id="@+id/text_screen"
@@ -38,14 +53,14 @@
         android:layout_height="match_parent"
         android:fillViewport="true"
         android:scrollbarSize="3dip"
-        android:scrollbarThumbVertical="@color/colorAccent"
-        >
+        android:scrollbarThumbVertical="@color/colorAccent">
+
         <com.example.notes.TextArea
             android:id="@+id/text_area"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:text=""
-            android:background="@drawable/text_area_background"
+            android:background="@drawable/text_area_unselected"
             android:gravity="top|left"
             android:inputType="textMultiLine"
             android:singleLine="false"
@@ -54,7 +69,8 @@
             android:paddingRight="8dp"
             android:textColor="@color/textColor"
             android:textColorHighlight="@color/textHighlightColor"
-            />
+            android:visibility="gone" />
+
     </ScrollView>
 
 </RelativeLayout>

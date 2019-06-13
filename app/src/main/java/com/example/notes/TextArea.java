@@ -2,6 +2,7 @@ package com.example.notes;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.AttributeSet;
 import android.util.TypedValue;
@@ -13,6 +14,13 @@ public class TextArea extends androidx.appcompat.widget.AppCompatEditText {
 
     final private static float LINE_WIDTH = 2.0f;
 
+    final private static int MIN_LINES = 1;
+
+    // Default color to use when drawing lines.
+    final private static int DEFAULT_LINE_COLOR = Color.rgb(141, 141, 141);
+
+    private int lineColor = DEFAULT_LINE_COLOR;
+
     // Paint object used to draw lines.
     private Paint paint;
 
@@ -23,6 +31,7 @@ public class TextArea extends androidx.appcompat.widget.AppCompatEditText {
     public TextArea(Context context) {
         super(context);
         this.setupPaint();
+        this.setMinLines(MIN_LINES);
     }
 
     /**
@@ -33,6 +42,7 @@ public class TextArea extends androidx.appcompat.widget.AppCompatEditText {
     public TextArea(Context context, AttributeSet attrs) {
         super(context, attrs);
         this.setupPaint();
+        this.setMinLines(MIN_LINES);
     }
 
     /**
@@ -44,6 +54,7 @@ public class TextArea extends androidx.appcompat.widget.AppCompatEditText {
     public TextArea(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         this.setupPaint();
+        this.setMinLines(MIN_LINES);
     }
 
     /**
@@ -52,7 +63,7 @@ public class TextArea extends androidx.appcompat.widget.AppCompatEditText {
     private void setupPaint() {
         this.paint = new Paint();
         this.paint.setStyle(Paint.Style.STROKE);
-        this.paint.setColor(this.getResources().getColor(R.color.colorAccent));
+        this.paint.setColor(lineColor);
         this.paint.setStrokeWidth(TextArea.LINE_WIDTH);
     }
 
@@ -90,5 +101,15 @@ public class TextArea extends androidx.appcompat.widget.AppCompatEditText {
         }
 
         super.onDraw(canvas);
+    }
+
+    /**
+     * Sets the color to use to draw lines.
+     * @param lineColor The color.
+     */
+    public void setLineColor(int lineColor) {
+        this.lineColor = lineColor;
+        this.setupPaint();
+        this.invalidate();
     }
 }

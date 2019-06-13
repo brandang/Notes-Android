@@ -5,24 +5,24 @@ import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import androidx.coordinatorlayout.widget.CoordinatorLayout;
-import com.google.android.material.snackbar.Snackbar;
 import android.text.InputType;
 import android.util.Log;
-import android.view.View;
-import androidx.core.view.GravityCompat;
-import androidx.appcompat.app.ActionBarDrawerToggle;
-import android.view.MenuItem;
-import com.google.android.material.navigation.NavigationView;
-import androidx.drawerlayout.widget.DrawerLayout;
-
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
+
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.recyclerview.widget.ItemTouchHelper;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -31,6 +31,8 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.Scope;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.navigation.NavigationView;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
@@ -38,6 +40,7 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.drive.Drive;
 import com.google.api.services.drive.DriveScopes;
 
+import java.util.ArrayList;
 import java.util.Collections;
 
 public class MainActivity extends AppCompatActivity
@@ -67,6 +70,10 @@ public class MainActivity extends AppCompatActivity
 
     // View that contains the text area.
     private ScrollView textScreen;
+
+    private RecyclerView recyclerView;
+
+    private RecyclerViewAdapter adapter;
 
     // Layout containing app bar and everything else.
     private CoordinatorLayout background;
@@ -105,6 +112,20 @@ public class MainActivity extends AppCompatActivity
         drawer.addDrawerListener(toggle);
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
+
+        // test
+        ArrayList<ItemViewData> list = new ArrayList<>();
+
+        for (int i = 0; i < 20; i ++) {
+            list.add(new ItemViewData("list " + i, ItemViewData.TYPE_TEXT));
+        }
+
+        this.adapter = new RecyclerViewAdapter(this, list);
+        recyclerView = findViewById(R.id.recycler);
+        ItemTouchHelper.Callback callback = new ItemMoveCallback(this.adapter);
+        ItemTouchHelper helper = new ItemTouchHelper(callback);
+        helper.attachToRecyclerView(recyclerView);
+        recyclerView.setAdapter(this.adapter);
     }
 
     /**
@@ -134,10 +155,12 @@ public class MainActivity extends AppCompatActivity
      */
     private void stopLoadScreen() {
         this.loadingScreen.setVisibility(View.GONE);
-        this.textScreen.setVisibility(View.VISIBLE);
-        this.textArea.requestFocus();
+        // test
+//        this.textScreen.setVisibility(View.VISIBLE);
+
+//        this.textArea.requestFocus();
         // Move cursor to beginning.
-        this.textArea.setSelection(0);
+//        this.textArea.setSelection(0);
         // For some reason, if we set the text programmatically, we also have to set these
         // programmatically.
         this.textArea.setSingleLine(false);
@@ -181,8 +204,9 @@ public class MainActivity extends AppCompatActivity
 
             case REQUEST_CODE_PHOTO:
                 if (resultCode == RESULT_OK) {
-                    Uri photoUri = (Uri) data.getParcelableExtra("photo");
+                    Uri photoUri = data.getParcelableExtra("photo");
                     Log.d(MAIN_ACTIVITY_TAG, photoUri + "");
+                    this.adapter.addData(new ItemViewData(photoUri.toString(),ItemViewData.TYPE_PHOTO));
                 }
         }
     }
@@ -277,6 +301,7 @@ public class MainActivity extends AppCompatActivity
         Snackbar message = Snackbar.make(this.background, getString(R.string.download_success_msg),
                 Snackbar.LENGTH_LONG);
         message.show();
+
     }
 
     /**
