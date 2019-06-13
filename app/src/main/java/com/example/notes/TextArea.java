@@ -95,8 +95,8 @@ public class TextArea extends androidx.appcompat.widget.AppCompatEditText {
         int paddingBottom = this.getPaddingBottom();
         int numLines = (this.getHeight() - paddingTop - paddingBottom) / this.getLineHeight();
 
-        for (int i = 0; i < numLines; i ++) {
-            int y = this.getLineHeight() * (i + 1) + paddingTop;
+        for (int i = 0; i <= numLines; i ++) {
+            int y = this.getLineHeight() * (i) + paddingTop;
             canvas.drawLine(startX, y, endX, y, this.paint);
         }
 

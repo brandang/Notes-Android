@@ -1,6 +1,8 @@
 package com.example.notes;
 
 import android.net.Uri;
+import android.view.View;
+import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -11,14 +13,16 @@ import androidx.recyclerview.widget.RecyclerView;
 public class RecyclerImageViewHolder extends RecyclerView.ViewHolder {
 
     private RecyclerImageView imageView;
+    private LinearLayout background;
 
     /**
-     * Creates a new RecyclerImageViewHolder containing just the specified textarea.
-     * @param imageView The View.
+     * Creates a new RecyclerImageViewHolder containing a RecyclerImageView and a LinearLayout.
+     * @param view The View.
      */
-    public RecyclerImageViewHolder(@NonNull RecyclerImageView imageView) {
-        super(imageView);
-        this.imageView = imageView;
+    public RecyclerImageViewHolder(@NonNull View view) {
+        super(view);
+        this.imageView = view.findViewById(R.id.item_imageview);
+        this.background = view.findViewById(R.id.item_background);
     }
 
     /**
@@ -29,4 +33,11 @@ public class RecyclerImageViewHolder extends RecyclerView.ViewHolder {
         this.imageView.setImageURI(Uri.parse(uri));
     }
 
+    /**
+     * Sets the color of the background.
+     * @param color The color of the background.
+     */
+    public void setBackgroundColor(int color) {
+        this.background.setBackgroundColor(color);
+    }
 }

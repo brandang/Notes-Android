@@ -1,9 +1,10 @@
 package com.example.notes;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -53,8 +54,9 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             return new TextAreaHolder(textArea);
 
         } else {
-            RecyclerImageView view = (RecyclerImageView) LayoutInflater.from(
+            View view = LayoutInflater.from(
                     parent.getContext()).inflate(R.layout.recycler_imageview, parent, false);
+
             return new RecyclerImageViewHolder(view);
         }
     }
@@ -79,7 +81,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
     @Override
     public void onRowMoved(int fromPosition, int toPosition) {
-        Log.d("Main", "Moved");
         if (fromPosition < toPosition) {
             for (int i = fromPosition; i < toPosition; i++) {
                 Collections.swap(data, i, i + 1);
@@ -93,24 +94,23 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     }
 
     @Override
-    public void onRowSelected(TextAreaHolder myViewHolder) {
-        myViewHolder.setBackground(this.context.getResources().getDrawable(R.drawable.text_area_selected, null));
+    public void onRowSelected(TextAreaHolder viewHolder) {
+        viewHolder.setBackground(this.context.getResources().getDrawable(R.drawable.text_area_selected, null));
     }
 
     @Override
-    public void onRowClear(TextAreaHolder myViewHolder) {
-        myViewHolder.setBackground(this.context.getResources().getDrawable(R.drawable.text_area_unselected, null));
-
+    public void onRowClear(TextAreaHolder viewHolder) {
+        viewHolder.setBackground(this.context.getResources().getDrawable(R.drawable.text_area_unselected, null));
     }
 
     @Override
-    public void onRowSelected(RecyclerImageViewHolder myViewHolder) {
-        Log.d("Main", "Selected");
+    public void onRowSelected(RecyclerImageViewHolder viewHolder) {
+        viewHolder.setBackgroundColor(this.context.getResources().getColor(R.color.colorAccent));
     }
 
     @Override
-    public void onRowClear(RecyclerImageViewHolder myViewHolder) {
-        Log.d("Main", "Cleared");
+    public void onRowClear(RecyclerImageViewHolder viewHolder) {
+        viewHolder.setBackgroundColor(this.context.getResources().getColor(R.color.colorPrimaryLight));
     }
 
 }
