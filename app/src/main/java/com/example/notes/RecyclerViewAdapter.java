@@ -45,7 +45,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if (viewType == ItemViewData.TYPE_TEXT) {
             TextArea textArea = (TextArea) LayoutInflater.from(parent.getContext()).inflate(
-                    R.layout.TextArea, parent, false);
+                    R.layout.textarea, parent, false);
             textArea.setLines(1);
             textArea.setClickable(false);
             textArea.setBackground(parent.getResources().getDrawable(
@@ -54,7 +54,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
         } else {
             RecyclerImageView view = (RecyclerImageView) LayoutInflater.from(
-                    parent.getContext()).inflate(R.layout.RecyclerImageView, parent, false);
+                    parent.getContext()).inflate(R.layout.recycler_imageview, parent, false);
             return new RecyclerImageViewHolder(view);
         }
     }

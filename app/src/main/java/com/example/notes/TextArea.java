@@ -25,7 +25,7 @@ public class TextArea extends androidx.appcompat.widget.AppCompatEditText {
     private Paint paint;
 
     /**
-     * A new TextArea.
+     * A new textarea.
      * @param context The Context.
      */
     public TextArea(Context context) {
@@ -35,7 +35,7 @@ public class TextArea extends androidx.appcompat.widget.AppCompatEditText {
     }
 
     /**
-     * A new TextArea.
+     * A new textarea.
      * @param context The Context.
      * @param attrs The AttributeSet.
      */
@@ -46,7 +46,7 @@ public class TextArea extends androidx.appcompat.widget.AppCompatEditText {
     }
 
     /**
-     * A new TextArea.
+     * A new textarea.
      * @param context The Context.
      * @param attrs The AttributeSet.
      * @param defStyleAttr The style attribute.

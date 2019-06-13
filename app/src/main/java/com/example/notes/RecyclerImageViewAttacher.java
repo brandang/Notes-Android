@@ -96,13 +96,14 @@ public class RecyclerImageViewAttacher implements View.OnTouchListener, View.OnL
 
         @Override
         public void onDrag(float dx, float dy) {
-            // Removed code related to dragging the View so that it can only zoom and but not
-            // move around.
-
-            // When user is dragging, that means the user is dragging and dropping. Make sure
-            // that we don't block the event, otherwise parent RecyclerView would not work.
-            ViewParent parent = mImageView.getParent();
-            parent.requestDisallowInterceptTouchEvent(false);
+            /*
+             Removed code related to dragging the View so that it can only zoom and but not
+             move around.
+             Removed code, so that it now allows the parent to intercept whatever event it desires.
+             Double tapping does not interfere with the parent so we can do this. We only need
+             the parent to not intercept when we are pinching or dragging and that will not occur
+             here, so telling parent to not intercept is unnecessary.
+             */
             return;
         }
 
@@ -155,14 +156,6 @@ public class RecyclerImageViewAttacher implements View.OnTouchListener, View.OnL
             @Override
             public boolean onSingleTapConfirmed(MotionEvent e) {
 
-                // Make sure we are not blocking the parent since if we do that, the parent would
-                // only receive some events, and as a result, every gesture would have to be done
-                // twice to work.
-                ViewParent parent = imageView.getParent();
-                if (parent != null) {
-                    parent.requestDisallowInterceptTouchEvent(false);
-                }
-
                 if (mOnClickListener != null) {
                     mOnClickListener.onClick(mImageView);
                 }
@@ -194,14 +187,6 @@ public class RecyclerImageViewAttacher implements View.OnTouchListener, View.OnL
             @Override
             public boolean onDoubleTap(MotionEvent ev) {
 
-                // Make sure we are not blocking the parent since if we do that, the parent would
-                // only receive some events, and as a result, every gesture would have to be done
-                // twice to work.
-                ViewParent parent = imageView.getParent();
-                if (parent != null) {
-                    parent.requestDisallowInterceptTouchEvent(false);
-                }
-
                 try {
                     float scale = getScale();
                     float x = ev.getX();
@@ -221,14 +206,6 @@ public class RecyclerImageViewAttacher implements View.OnTouchListener, View.OnL
 
             @Override
             public boolean onDoubleTapEvent(MotionEvent e) {
-
-                // Make sure we are not blocking the parent since if we do that, the parent would
-                // only receive some events, and as a result, every gesture would have to be done
-                // twice to work.
-                ViewParent parent = imageView.getParent();
-                if (parent != null) {
-                    parent.requestDisallowInterceptTouchEvent(false);
-                }
 
                 // Wait for the confirmed onDoubleTap() instead
                 return false;
@@ -323,12 +300,6 @@ public class RecyclerImageViewAttacher implements View.OnTouchListener, View.OnL
         if (mZoomEnabled && Util.hasDrawable((ImageView) v)) {
             switch (ev.getAction()) {
                 case MotionEvent.ACTION_DOWN:
-                    ViewParent parent = v.getParent();
-                    // First, disable the Parent from intercepting the touch
-                    // event
-                    if (parent != null) {
-                        parent.requestDisallowInterceptTouchEvent(true);
-                    }
                     // If we're flinging, and the user presses down, cancel
                     // fling
                     cancelFling();

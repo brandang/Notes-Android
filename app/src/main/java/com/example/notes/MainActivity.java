@@ -113,7 +113,7 @@ public class MainActivity extends AppCompatActivity
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
 
-        // TextArea
+        // textarea
         ArrayList<ItemViewData> list = new ArrayList<>();
 
         for (int i = 0; i < 20; i ++) {
@@ -155,12 +155,12 @@ public class MainActivity extends AppCompatActivity
      */
     private void stopLoadScreen() {
         this.loadingScreen.setVisibility(View.GONE);
-        // TextArea
+        // textarea
 //        this.textScreen.setVisibility(View.VISIBLE);
 
-//        this.textArea.requestFocus();
+//        this.textarea.requestFocus();
         // Move cursor to beginning.
-//        this.textArea.setSelection(0);
+//        this.textarea.setSelection(0);
         // For some reason, if we set the text programmatically, we also have to set these
         // programmatically.
         this.textArea.setSingleLine(false);
@@ -442,7 +442,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     /**
-     * Method used to TextArea that download and upload to Drive are working.
+     * Method used to textarea that download and upload to Drive are working.
      */
     private void testDrive() {
 

@@ -6,14 +6,14 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 /**
- * View holder that contains a single TextArea.
+ * View holder that contains a single textarea.
  */
 public class TextAreaHolder extends RecyclerView.ViewHolder {
 
     private TextArea textArea;
 
     /**
-     * Creates a new TextAreaHolder containing just the specified TextArea.
+     * Creates a new TextAreaHolder containing just the specified textarea.
      * @param textArea The View.
      */
     public TextAreaHolder(@NonNull TextArea textArea) {
