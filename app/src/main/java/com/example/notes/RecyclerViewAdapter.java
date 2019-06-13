@@ -7,8 +7,6 @@ import android.view.ViewGroup;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.github.chrisbanes.photoview.PhotoView;
-
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -46,27 +44,30 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if (viewType == ItemViewData.TYPE_TEXT) {
-            TextArea area = (TextArea) LayoutInflater.from(parent.getContext()).inflate(R.layout.test, parent, false);
-            area.setLines(1);
-            area.setClickable(false);
-            area.setBackground(parent.getResources().getDrawable(R.drawable.text_area_unselected, null));
-            return new TextAreaViewHolder(area);
+            TextArea textArea = (TextArea) LayoutInflater.from(parent.getContext()).inflate(
+                    R.layout.TextArea, parent, false);
+            textArea.setLines(1);
+            textArea.setClickable(false);
+            textArea.setBackground(parent.getResources().getDrawable(
+                    R.drawable.text_area_unselected, null));
+            return new TextAreaHolder(textArea);
+
         } else {
-            CustomPhotoView area = (CustomPhotoView) LayoutInflater.from(parent.getContext()).inflate(R.layout.test2, parent, false);
-            return new PhotoViewHolder(area);
+            RecyclerImageView view = (RecyclerImageView) LayoutInflater.from(
+                    parent.getContext()).inflate(R.layout.RecyclerImageView, parent, false);
+            return new RecyclerImageViewHolder(view);
         }
     }
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         if (this.getItemViewType(position) == ItemViewData.TYPE_TEXT) {
-            TextAreaViewHolder holder1 = (TextAreaViewHolder) holder;
+            TextAreaHolder holder1 = (TextAreaHolder) holder;
             holder1.setData(this.data.get(position).getData(), 16);
         } else {
-            PhotoViewHolder holder2 = (PhotoViewHolder) holder;
+            RecyclerImageViewHolder holder2 = (RecyclerImageViewHolder) holder;
             holder2.setImage(data.get(position).getData());
         }
-
     }
 
 
@@ -92,23 +93,23 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     }
 
     @Override
-    public void onRowSelected(TextAreaViewHolder myViewHolder) {
+    public void onRowSelected(TextAreaHolder myViewHolder) {
         myViewHolder.setBackground(this.context.getResources().getDrawable(R.drawable.text_area_selected, null));
     }
 
     @Override
-    public void onRowClear(TextAreaViewHolder myViewHolder) {
+    public void onRowClear(TextAreaHolder myViewHolder) {
         myViewHolder.setBackground(this.context.getResources().getDrawable(R.drawable.text_area_unselected, null));
 
     }
 
     @Override
-    public void onRowSelected(PhotoViewHolder myViewHolder) {
+    public void onRowSelected(RecyclerImageViewHolder myViewHolder) {
         Log.d("Main", "Selected");
     }
 
     @Override
-    public void onRowClear(PhotoViewHolder myViewHolder) {
+    public void onRowClear(RecyclerImageViewHolder myViewHolder) {
         Log.d("Main", "Cleared");
     }
 

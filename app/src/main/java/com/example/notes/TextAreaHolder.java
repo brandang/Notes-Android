@@ -8,15 +8,15 @@ import androidx.recyclerview.widget.RecyclerView;
 /**
  * View holder that contains a single TextArea.
  */
-public class TextAreaViewHolder extends RecyclerView.ViewHolder {
+public class TextAreaHolder extends RecyclerView.ViewHolder {
 
     private TextArea textArea;
 
     /**
-     * Creates a new TextAreaViewHolder containing just the specified TextArea.
+     * Creates a new TextAreaHolder containing just the specified TextArea.
      * @param textArea The View.
      */
-    public TextAreaViewHolder(@NonNull TextArea textArea) {
+    public TextAreaHolder(@NonNull TextArea textArea) {
         super(textArea);
         this.textArea = textArea;
     }

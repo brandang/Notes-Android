@@ -113,7 +113,7 @@ public class MainActivity extends AppCompatActivity
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
 
-        // test
+        // TextArea
         ArrayList<ItemViewData> list = new ArrayList<>();
 
         for (int i = 0; i < 20; i ++) {
@@ -155,7 +155,7 @@ public class MainActivity extends AppCompatActivity
      */
     private void stopLoadScreen() {
         this.loadingScreen.setVisibility(View.GONE);
-        // test
+        // TextArea
 //        this.textScreen.setVisibility(View.VISIBLE);
 
 //        this.textArea.requestFocus();
@@ -442,7 +442,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     /**
-     * Method used to test that download and upload to Drive are working.
+     * Method used to TextArea that download and upload to Drive are working.
      */
     private void testDrive() {
 

@@ -26,12 +26,12 @@ import com.github.chrisbanes.photoview.OnViewDragListener;
 import com.github.chrisbanes.photoview.OnViewTapListener;
 
 /**
- * Class that is based on com.github.chrisbanes.photoview.CustomViewAttacher.
- * Listens to double tapping gestures.
+ * Class that is based on {@link com.github.chrisbanes.photoview.PhotoViewAttacher}.
+ * Same in mosts respects. Listens to double tapping gestures.
  * Modified to disable dragging and pinching to zoom in. This means that user can only zoom in and
  * out via double tapping.
  */
-public class CustomViewAttacher implements View.OnTouchListener, View.OnLayoutChangeListener {
+public class RecyclerImageViewAttacher implements View.OnTouchListener, View.OnLayoutChangeListener {
 
     private static float DEFAULT_MAX_SCALE = 3.0f;
     private static float DEFAULT_MID_SCALE = 1.75f;
@@ -96,8 +96,11 @@ public class CustomViewAttacher implements View.OnTouchListener, View.OnLayoutCh
 
         @Override
         public void onDrag(float dx, float dy) {
-            // When user is dragging, make sure that we don't block the parent from receiving
-            // the event.
+            // Removed code related to dragging the View so that it can only zoom and but not
+            // move around.
+
+            // When user is dragging, that means the user is dragging and dropping. Make sure
+            // that we don't block the event, otherwise parent RecyclerView would not work.
             ViewParent parent = mImageView.getParent();
             parent.requestDisallowInterceptTouchEvent(false);
             return;
@@ -105,6 +108,8 @@ public class CustomViewAttacher implements View.OnTouchListener, View.OnLayoutCh
 
         @Override
         public void onFling(float startX, float startY, float velocityX, float velocityY) {
+            // Removed code related to dragging the View so that it can only zoom and but not
+            // move around.
             return;
         }
 
@@ -120,7 +125,7 @@ public class CustomViewAttacher implements View.OnTouchListener, View.OnLayoutCh
         }
     };
 
-    public CustomViewAttacher(final ImageView imageView) {
+    public RecyclerImageViewAttacher(final ImageView imageView) {
         mImageView = imageView;
         imageView.setOnTouchListener(this);
         imageView.addOnLayoutChangeListener(this);
@@ -149,10 +154,11 @@ public class CustomViewAttacher implements View.OnTouchListener, View.OnLayoutCh
         mGestureDetector.setOnDoubleTapListener(new GestureDetector.OnDoubleTapListener() {
             @Override
             public boolean onSingleTapConfirmed(MotionEvent e) {
-                Log.d("Main", "Single tap");
+
+                // Make sure we are not blocking the parent since if we do that, the parent would
+                // only receive some events, and as a result, every gesture would have to be done
+                // twice to work.
                 ViewParent parent = imageView.getParent();
-                // First, disable the Parent from intercepting the touch
-                // event
                 if (parent != null) {
                     parent.requestDisallowInterceptTouchEvent(false);
                 }
@@ -187,10 +193,11 @@ public class CustomViewAttacher implements View.OnTouchListener, View.OnLayoutCh
 
             @Override
             public boolean onDoubleTap(MotionEvent ev) {
-                Log.d("Main", "Double tap");
+
+                // Make sure we are not blocking the parent since if we do that, the parent would
+                // only receive some events, and as a result, every gesture would have to be done
+                // twice to work.
                 ViewParent parent = imageView.getParent();
-                // First, disable the Parent from intercepting the touch
-                // event
                 if (parent != null) {
                     parent.requestDisallowInterceptTouchEvent(false);
                 }
@@ -214,13 +221,15 @@ public class CustomViewAttacher implements View.OnTouchListener, View.OnLayoutCh
 
             @Override
             public boolean onDoubleTapEvent(MotionEvent e) {
-                Log.d("Main", "Double tap event");
+
+                // Make sure we are not blocking the parent since if we do that, the parent would
+                // only receive some events, and as a result, every gesture would have to be done
+                // twice to work.
                 ViewParent parent = imageView.getParent();
-                // First, disable the Parent from intercepting the touch
-                // event
                 if (parent != null) {
                     parent.requestDisallowInterceptTouchEvent(false);
                 }
+
                 // Wait for the confirmed onDoubleTap() instead
                 return false;
             }

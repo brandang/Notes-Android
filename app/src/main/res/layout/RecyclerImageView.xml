@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.example.notes.CustomPhotoView
+<com.example.notes.RecyclerImageView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-</com.example.notes.CustomPhotoView>
+</com.example.notes.RecyclerImageView>

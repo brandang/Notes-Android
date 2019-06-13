@@ -21,33 +21,35 @@ import com.github.chrisbanes.photoview.OnViewTapListener;
 import com.github.chrisbanes.photoview.PhotoView;
 
 /**
- * A zoomable ImageView. See {@link CustomViewAttacher} for most of the details on how the zooming
+ * A zoomable ImageView. See {@link RecyclerImageViewAttacher} for most of the details on how the zooming
  * is accomplished. This class is based on {@link PhotoView}. Modified to use
- * {@link CustomViewAttacher} instead of {@link com.github.chrisbanes.photoview.PhotoViewAttacher}
+ * {@link RecyclerImageViewAttacher} instead of {@link com.github.chrisbanes.photoview.PhotoViewAttacher}
  * so that user will not be able to drag or pinch. This means that the only supported gesture
  * is double tapping to zoom in and out.
+ * This View is meant to be displayed on a RecyclerView.
  */
 @SuppressWarnings("unused")
-public class CustomPhotoView extends AppCompatImageView {
+public class RecyclerImageView extends AppCompatImageView {
 
-    private CustomViewAttacher attacher;
+    private RecyclerImageViewAttacher attacher;
     private ScaleType pendingScaleType;
 
-    public CustomPhotoView(Context context) {
+    public RecyclerImageView(Context context) {
         this(context, null);
     }
 
-    public CustomPhotoView(Context context, AttributeSet attr) {
+    public RecyclerImageView(Context context, AttributeSet attr) {
         this(context, attr, 0);
     }
 
-    public CustomPhotoView(Context context, AttributeSet attr, int defStyle) {
+    public RecyclerImageView(Context context, AttributeSet attr, int defStyle) {
         super(context, attr, defStyle);
         init();
     }
 
     private void init() {
-        attacher = new CustomViewAttacher(this);
+        // The only change between this class and PhotoView.
+        attacher = new RecyclerImageViewAttacher(this);
         //We always pose as a Matrix scale type, though we can change to another scale type
         //via the attacher
         super.setScaleType(ScaleType.MATRIX);
@@ -59,13 +61,13 @@ public class CustomPhotoView extends AppCompatImageView {
     }
 
     /**
-     * Get the current {@link CustomViewAttacher} for this view. Be wary of holding on to references
+     * Get the current {@link RecyclerImageViewAttacher} for this view. Be wary of holding on to references
      * to this attacher, as it has a reference to this view, which, if a reference is held in the
      * wrong place, can cause memory leaks.
      *
      * @return the attacher.
      */
-    public CustomViewAttacher getAttacher() {
+    public RecyclerImageViewAttacher getAttacher() {
         return attacher;
     }
 

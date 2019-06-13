@@ -45,13 +45,13 @@ public class ItemMoveCallback extends ItemTouchHelper.Callback {
                                   int actionState) {
 
         if (actionState != ItemTouchHelper.ACTION_STATE_IDLE) {
-            if (viewHolder instanceof TextAreaViewHolder) {
-                TextAreaViewHolder myViewHolder =
-                        (TextAreaViewHolder) viewHolder;
+            if (viewHolder instanceof TextAreaHolder) {
+                TextAreaHolder myViewHolder =
+                        (TextAreaHolder) viewHolder;
                 adapter.onRowSelected(myViewHolder);
-            } else if (viewHolder instanceof PhotoViewHolder) {
-                PhotoViewHolder myViewHolder =
-                        (PhotoViewHolder) viewHolder;
+            } else if (viewHolder instanceof RecyclerImageViewHolder) {
+                RecyclerImageViewHolder myViewHolder =
+                        (RecyclerImageViewHolder) viewHolder;
                 adapter.onRowSelected(myViewHolder);
             }
 
@@ -64,13 +64,13 @@ public class ItemMoveCallback extends ItemTouchHelper.Callback {
                           RecyclerView.ViewHolder viewHolder) {
         super.clearView(recyclerView, viewHolder);
 
-        if (viewHolder instanceof TextAreaViewHolder) {
-            TextAreaViewHolder myViewHolder=
-                    (TextAreaViewHolder) viewHolder;
+        if (viewHolder instanceof TextAreaHolder) {
+            TextAreaHolder myViewHolder=
+                    (TextAreaHolder) viewHolder;
             adapter.onRowClear(myViewHolder);
-        } else if (viewHolder instanceof PhotoViewHolder) {
-            PhotoViewHolder myViewHolder=
-                    (PhotoViewHolder) viewHolder;
+        } else if (viewHolder instanceof RecyclerImageViewHolder) {
+            RecyclerImageViewHolder myViewHolder=
+                    (RecyclerImageViewHolder) viewHolder;
             adapter.onRowClear(myViewHolder);
         }
     }
@@ -78,10 +78,10 @@ public class ItemMoveCallback extends ItemTouchHelper.Callback {
     public interface ItemTouchHelperContract {
 
         void onRowMoved(int fromPosition, int toPosition);
-        void onRowSelected(TextAreaViewHolder myViewHolder);
-        void onRowClear(TextAreaViewHolder myViewHolder);
-        void onRowSelected(PhotoViewHolder myViewHolder);
-        void onRowClear(PhotoViewHolder myViewHolder);
+        void onRowSelected(TextAreaHolder myViewHolder);
+        void onRowClear(TextAreaHolder myViewHolder);
+        void onRowSelected(RecyclerImageViewHolder myViewHolder);
+        void onRowClear(RecyclerImageViewHolder myViewHolder);
     }
 
 }

@@ -22,8 +22,8 @@ import android.view.VelocityTracker;
 import android.view.ViewConfiguration;
 
 /**
- * Does a whole lot of gesture detecting. Uses code from com.github.chrisbanes.photoview, modified
- * to ignore pinching to zoom in.
+ * Does a whole lot of gesture detecting. Uses code from {@link com.github.chrisbanes.photoview},
+ * modified to ignore pinching to zoom in.
  */
 class CustomGestureDetector {
 
