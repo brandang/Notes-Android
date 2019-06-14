@@ -15,6 +15,7 @@
         android:layout_height="match_parent"
         android:gravity="center"
         android:orientation="vertical"
+
         android:background="@color/colorPrimaryLight">
 
         <ProgressBar
@@ -32,6 +33,7 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/text_screen"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/colorPrimaryLight">
@@ -41,36 +43,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            android:background="@color/colorPrimaryLight" />
 
     </LinearLayout>
-
-
-    <ScrollView
-        android:visibility="gone"
-        android:id="@+id/text_screen"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fillViewport="true"
-        android:scrollbarSize="3dip"
-        android:scrollbarThumbVertical="@color/colorAccent">
-
-        <com.example.notes.TextArea
-            android:id="@+id/text_area"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text=""
-            android:background="@drawable/text_area_unselected"
-            android:gravity="top|left"
-            android:inputType="textMultiLine"
-            android:singleLine="false"
-            android:paddingTop="8dp"
-            android:paddingLeft="8dp"
-            android:paddingRight="8dp"
-            android:textColor="@color/textColor"
-            android:textColorHighlight="@color/textHighlightColor"
-            android:visibility="gone" />
-
-    </ScrollView>
 
 </RelativeLayout>

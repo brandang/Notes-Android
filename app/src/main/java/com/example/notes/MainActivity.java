@@ -5,14 +5,11 @@ import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.text.InputType;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.inputmethod.EditorInfo;
 import android.widget.LinearLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -68,18 +65,17 @@ public class MainActivity extends AppCompatActivity
     // TextView that displays message for loading screen.
     private TextView loadingMessage;
 
-    // View that contains the text area.
-    private ScrollView textScreen;
+    // View that contains the text area and photos.
+    private LinearLayout textScreen;
 
+    // View that displays similar to ListView but allows drag and drop.
     private RecyclerView recyclerView;
 
+    // Adapter for the above.
     private RecyclerViewAdapter adapter;
 
     // Layout containing app bar and everything else.
     private CoordinatorLayout background;
-
-    // The editable text area.
-    private TextArea textArea;
 
     // Helper to manage files.
     private DriveService service;
@@ -101,7 +97,7 @@ public class MainActivity extends AppCompatActivity
         this.loadingScreen = findViewById(R.id.loading_screen);
         this.loadingMessage = findViewById(R.id.loading_message);
         this.textScreen = findViewById(R.id.text_screen);
-        this.textArea = findViewById(R.id.text_area);
+        this.recyclerView = findViewById(R.id.recycler);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
@@ -113,18 +109,13 @@ public class MainActivity extends AppCompatActivity
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
 
-        // textarea
-        ArrayList<ItemViewData> list = new ArrayList<>();
-
-        for (int i = 0; i < 20; i ++) {
-            list.add(new ItemViewData("list " + i, ItemViewData.TYPE_TEXT));
-        }
-
-        this.adapter = new RecyclerViewAdapter(this, list);
-        recyclerView = findViewById(R.id.recycler);
+        // Setup adapter and RecyclerView.
+        this.adapter = new RecyclerViewAdapter(this, new ArrayList<ItemViewData>(0));
+        // Attach Callback so that this helper will notify the callback, which will in turn notify
+        // adapter.
         ItemTouchHelper.Callback callback = new ItemMoveCallback(this.adapter);
         ItemTouchHelper helper = new ItemTouchHelper(callback);
-        helper.attachToRecyclerView(recyclerView);
+        helper.attachToRecyclerView(this.recyclerView);
         recyclerView.setAdapter(this.adapter);
     }
 
@@ -155,17 +146,19 @@ public class MainActivity extends AppCompatActivity
      */
     private void stopLoadScreen() {
         this.loadingScreen.setVisibility(View.GONE);
-        // textarea
-//        this.textScreen.setVisibility(View.VISIBLE);
+        this.textScreen.setVisibility(View.VISIBLE);
 
-//        this.textarea.requestFocus();
+        /*
+        this.textarea.requestFocus();
         // Move cursor to beginning.
-//        this.textarea.setSelection(0);
+        this.textarea.setSelection(0);
+
         // For some reason, if we set the text programmatically, we also have to set these
         // programmatically.
         this.textArea.setSingleLine(false);
         this.textArea.setImeOptions(EditorInfo.IME_FLAG_NO_ENTER_ACTION);
         this.textArea.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_MULTI_LINE);
+        */
     }
 
     /**
@@ -217,35 +210,35 @@ public class MainActivity extends AppCompatActivity
      */
     private void onSignInSuccess(Intent result) {
         GoogleSignIn.getSignedInAccountFromIntent(result)
-            // Can't use lamda because Android does not compile with latest Java version.
-            .addOnSuccessListener(new OnSuccessListener<GoogleSignInAccount>() {
-                @Override
-                public void onSuccess(GoogleSignInAccount googleSignInAccount) {
-                    // Use the authenticated account to sign in to the Drive service.
-                    GoogleAccountCredential credential =
-                            GoogleAccountCredential.usingOAuth2(MainActivity.this,
-                                    Collections.singleton(DriveScopes.DRIVE_APPDATA));
-                    credential.setSelectedAccount(googleSignInAccount.getAccount());
-                    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-                    Drive googleDriveService = new Drive.Builder(new NetHttpTransport(),
-                            jsonFactory, credential)
-                                    .setApplicationName(getString(R.string.app_name))
-                                    .build();
+                // Can't use lamda because Android does not compile with latest Java version.
+                .addOnSuccessListener(new OnSuccessListener<GoogleSignInAccount>() {
+                    @Override
+                    public void onSuccess(GoogleSignInAccount googleSignInAccount) {
+                        // Use the authenticated account to sign in to the Drive service.
+                        GoogleAccountCredential credential =
+                                GoogleAccountCredential.usingOAuth2(MainActivity.this,
+                                        Collections.singleton(DriveScopes.DRIVE_APPDATA));
+                        credential.setSelectedAccount(googleSignInAccount.getAccount());
+                        JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+                        Drive googleDriveService = new Drive.Builder(new NetHttpTransport(),
+                                jsonFactory, credential)
+                                .setApplicationName(getString(R.string.app_name))
+                                .build();
 
-                    // The DriveService encapsulates all REST API and SAF functionality.
-                    MainActivity.this.service = new DriveService(googleDriveService);
-                    MainActivity.this.loadData();
-                }
-            })
-            .addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(Exception e) {
-                    Snackbar message = Snackbar.make(MainActivity.this.background,
-                            getString(R.string.download_failed_msg),
-                            Snackbar.LENGTH_LONG);
-                    message.show();
-                }
-            });
+                        // The DriveService encapsulates all REST API and SAF functionality.
+                        MainActivity.this.service = new DriveService(googleDriveService);
+                        MainActivity.this.loadData();
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(Exception e) {
+                        Snackbar message = Snackbar.make(MainActivity.this.background,
+                                getString(R.string.download_failed_msg),
+                                Snackbar.LENGTH_LONG);
+                        message.show();
+                    }
+                });
     }
 
     /**
@@ -292,12 +285,7 @@ public class MainActivity extends AppCompatActivity
      * @param saveData The data.
      */
     private void onDownloadSuccess(SaveData saveData) {
-        // Output content to text area with the required font size.
-        String content = saveData.getText();
-        int textSize = saveData.getFontSize();
-        Log.d(MAIN_ACTIVITY_TAG, "Downloaded data with " + (textSize));
-        this.textArea.setText(content);
-        this.textArea.setTextSize(textSize);
+        this.adapter.setDisplayData(saveData);
         Snackbar message = Snackbar.make(this.background, getString(R.string.download_success_msg),
                 Snackbar.LENGTH_LONG);
         message.show();
@@ -309,8 +297,7 @@ public class MainActivity extends AppCompatActivity
      */
     private void saveData() {
         this.startLoadScreen(getString(R.string.saving_message));
-        DataUploadTask task = new DataUploadTask(this.service, new SaveData(
-                this.textArea.getText().toString(), (int) this.textArea.getTextSize()),
+        DataUploadTask task = new DataUploadTask(this.service, this.adapter.getSaveData(),
                 Collections.singletonList((UploadDoneListener) this));
         task.execute();
     }
@@ -349,13 +336,13 @@ public class MainActivity extends AppCompatActivity
      */
     private void setTextSize(String textSize) {
         if (textSize.equals(getString(R.string.text_size_tiny))) {
-            this.textArea.setTextSize(getResources().getInteger(R.integer.Tiny));
+            this.adapter.setTextSize(getResources().getInteger(R.integer.Tiny));
         } else if (textSize.equals(getString(R.string.text_size_small))) {
-            this.textArea.setTextSize(getResources().getInteger(R.integer.Small));
+            this.adapter.setTextSize(getResources().getInteger(R.integer.Small));
         } else if (textSize.equals(getString(R.string.text_size_medium))) {
-            this.textArea.setTextSize(getResources().getInteger(R.integer.Medium));
+            this.adapter.setTextSize(getResources().getInteger(R.integer.Medium));
         } else if (textSize.equals(getString(R.string.text_size_large))) {
-            this.textArea.setTextSize(getResources().getInteger(R.integer.Large));
+            this.adapter.setTextSize(getResources().getInteger(R.integer.Large));
         }
     }
 
@@ -420,13 +407,13 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.nav_tools) {
             Intent intent = new Intent(this, SettingsActivity.class);
             String textSize = "";
-            if ((int) this.textArea.getTextSize() == getResources().getInteger(R.integer.Tiny)) {
+            if (this.adapter.getTextSize() == getResources().getInteger(R.integer.Tiny)) {
                 textSize = getString(R.string.text_size_tiny);
-            } else if ((int) this.textArea.getTextSize() == getResources().getInteger(R.integer.Small)) {
+            } else if (this.adapter.getTextSize() == getResources().getInteger(R.integer.Small)) {
                 textSize = getString(R.string.text_size_small);
-            } else if ((int) this.textArea.getTextSize() == getResources().getInteger(R.integer.Medium)) {
+            } else if (this.adapter.getTextSize() == getResources().getInteger(R.integer.Medium)) {
                 textSize = getString(R.string.text_size_medium);
-            } else if ((int) this.textArea.getTextSize() == getResources().getInteger(R.integer.Large)) {
+            } else if (this.adapter.getTextSize() == getResources().getInteger(R.integer.Large)) {
                 textSize = getString(R.string.text_size_large);
             }
             Settings currentSettings = new Settings(textSize);

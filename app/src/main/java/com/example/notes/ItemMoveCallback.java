@@ -4,10 +4,18 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
+/**
+ * Callback that is responsible for letting Adapter know whenever the user drags and drops an item.
+ * Swiping is disabled.
+ */
 public class ItemMoveCallback extends ItemTouchHelper.Callback {
 
     private final ItemTouchHelperContract adapter;
 
+    /**
+     * Create a new Callback for the Adapter. The Adapter will be notified if anything is dragged.
+     * @param adapter The Adapter to callback for.
+     */
     public ItemMoveCallback(ItemTouchHelperContract adapter) {
         this.adapter = adapter;
     }
@@ -24,11 +32,12 @@ public class ItemMoveCallback extends ItemTouchHelper.Callback {
 
     @Override
     public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
-
+        return;
     }
 
     @Override
     public int getMovementFlags(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
+        // Only allow dragging up and down.
         int dragFlags = ItemTouchHelper.UP | ItemTouchHelper.DOWN;
         return makeMovementFlags(dragFlags, 0);
     }
@@ -36,7 +45,7 @@ public class ItemMoveCallback extends ItemTouchHelper.Callback {
     @Override
     public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder,
                           RecyclerView.ViewHolder target) {
-        adapter.onRowMoved(viewHolder.getAdapterPosition(), target.getAdapterPosition());
+        this.adapter.onRowMoved(viewHolder.getAdapterPosition(), target.getAdapterPosition());
         return true;
     }
 
@@ -45,16 +54,17 @@ public class ItemMoveCallback extends ItemTouchHelper.Callback {
                                   int actionState) {
 
         if (actionState != ItemTouchHelper.ACTION_STATE_IDLE) {
-            if (viewHolder instanceof TextAreaHolder) {
-                TextAreaHolder myViewHolder =
-                        (TextAreaHolder) viewHolder;
-                adapter.onRowSelected(myViewHolder);
-            } else if (viewHolder instanceof RecyclerImageViewHolder) {
-                RecyclerImageViewHolder myViewHolder =
-                        (RecyclerImageViewHolder) viewHolder;
-                adapter.onRowSelected(myViewHolder);
-            }
 
+            // Determine which type of item was selected.
+            if (viewHolder instanceof TextAreaHolder) {
+                TextAreaHolder textAreaHolder =
+                        (TextAreaHolder) viewHolder;
+                this.adapter.onRowSelected(textAreaHolder);
+            } else if (viewHolder instanceof RecyclerImageViewHolder) {
+                RecyclerImageViewHolder recyclerImageViewHolder =
+                        (RecyclerImageViewHolder) viewHolder;
+                this.adapter.onRowSelected(recyclerImageViewHolder);
+            }
         }
 
         super.onSelectedChanged(viewHolder, actionState);
@@ -64,17 +74,22 @@ public class ItemMoveCallback extends ItemTouchHelper.Callback {
                           RecyclerView.ViewHolder viewHolder) {
         super.clearView(recyclerView, viewHolder);
 
+        // Determine which type of item was deselected.
         if (viewHolder instanceof TextAreaHolder) {
-            TextAreaHolder myViewHolder=
+            TextAreaHolder textAreaHolder =
                     (TextAreaHolder) viewHolder;
-            adapter.onRowClear(myViewHolder);
+            this.adapter.onRowClear(textAreaHolder);
         } else if (viewHolder instanceof RecyclerImageViewHolder) {
-            RecyclerImageViewHolder myViewHolder=
+            RecyclerImageViewHolder recyclerImageViewHolder =
                     (RecyclerImageViewHolder) viewHolder;
-            adapter.onRowClear(myViewHolder);
+            this.adapter.onRowClear(recyclerImageViewHolder);
         }
     }
 
+    /**
+     * Interface that the Adapter should implement so that ItemMoveCallback can notify when
+     * something happens.
+     */
     public interface ItemTouchHelperContract {
 
         void onRowMoved(int fromPosition, int toPosition);
