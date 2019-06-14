@@ -1,9 +1,14 @@
 package com.example.notes;
 
 import android.graphics.drawable.Drawable;
+import android.text.Editable;
+import android.text.TextWatcher;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * View holder that contains a single textarea.
@@ -12,6 +17,8 @@ public class TextAreaHolder extends RecyclerView.ViewHolder {
 
     private TextArea textArea;
 
+    private List<TextChangeListener> listeners = new ArrayList<>(0);
+
     /**
      * Creates a new TextAreaHolder containing just the specified textarea.
      * @param textArea The View.
@@ -19,6 +26,27 @@ public class TextAreaHolder extends RecyclerView.ViewHolder {
     public TextAreaHolder(@NonNull TextArea textArea) {
         super(textArea);
         this.textArea = textArea;
+
+        // Add listener so that everyone gets notified.
+        this.textArea.addTextChangedListener(new TextWatcher() {
+
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                return;
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                for (TextChangeListener listener : TextAreaHolder.this.listeners) {
+                    listener.onTextChanged(TextAreaHolder.this.textArea.getText().toString());
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                return;
+            }
+        });
     }
 
     /**
@@ -37,5 +65,13 @@ public class TextAreaHolder extends RecyclerView.ViewHolder {
     public void setData(String data, float size) {
         this.textArea.setText(data);
         this.textArea.setTextSize(size);
+    }
+
+    /**
+     * Add listener that listens in and gets notified whenever the text in this item gets changed.
+     * @param listener The listener that listens in.
+     */
+    public void addTextChangeListener(TextChangeListener listener) {
+        this.listeners.add(listener);
     }
 }

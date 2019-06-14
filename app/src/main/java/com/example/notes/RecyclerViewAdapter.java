@@ -56,6 +56,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
      * @param saveData The data to display.
      */
     public void setDisplayData(SaveData saveData) {
+        this.data.clear();
         BufferedReader reader = new BufferedReader(new StringReader(saveData.getText()));
         String line;
         try {
@@ -78,6 +79,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         String dataString = "";
 
         for (int i = 0; i < this.getItemCount(); i ++) {
+            Log.d("Main", this.data.get(i).getData());
             dataString += this.data.get(i).getData();
 
             // Add new line character if we have not reached the end.
@@ -133,6 +135,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         if (this.getItemViewType(position) == ItemViewData.TYPE_TEXT) {
             TextAreaHolder textHolder = (TextAreaHolder) holder;
             textHolder.setData(this.data.get(position).getData(), this.textSize);
+            textHolder.addTextChangeListener(this.data.get(position));
         } else {
             RecyclerImageViewHolder imageHolder = (RecyclerImageViewHolder) holder;
             imageHolder.setImage(data.get(position).getData());
@@ -142,7 +145,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
     @Override
     public int getItemCount() {
-        Log.d("main", this.data.size() + "da");
         return this.data.size();
     }
 

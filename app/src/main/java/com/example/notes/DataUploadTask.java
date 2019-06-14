@@ -4,9 +4,13 @@ import android.os.AsyncTask;
 
 import java.util.List;
 
+/**
+ * Task that is responsible for uploading the app data to Google Drive.
+ */
 public class DataUploadTask extends AsyncTask<Void, Void, String> {
 
-    // Strings used to communicate whether or not the task was successful.
+    // Strings used to communicate whether or not the task was successful. Have to use Strings
+    // because doInBackground has to return a String.
     final private static String SUCCESS = "success";
     final private static String FAILURE = "failed";
 

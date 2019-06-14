@@ -3,7 +3,7 @@ package com.example.notes;
 /**
  * A class for purposes of storing data for a single ItemView in a RecyclerView.
  */
-public class ItemViewData {
+public class ItemViewData implements TextChangeListener {
 
     // Constants for use in identifying which view type this ItemView is for.
     final public static int TYPE_PHOTO = 0;
@@ -41,5 +41,10 @@ public class ItemViewData {
      */
     public String getData() {
         return data;
+    }
+
+    @Override
+    public void onTextChanged(String newText) {
+        this.data = newText;
     }
 }
