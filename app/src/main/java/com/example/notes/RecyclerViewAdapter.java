@@ -79,7 +79,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         String dataString = "";
 
         for (int i = 0; i < this.getItemCount(); i ++) {
-            Log.d("Main", this.data.get(i).getData());
             dataString += this.data.get(i).getData();
 
             // Add new line character if we have not reached the end.
@@ -115,7 +114,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if (viewType == ItemViewData.TYPE_TEXT) {
-            TextArea textArea = (TextArea) LayoutInflater.from(parent.getContext()).inflate(R.layout.textarea, parent, false);
+            TextArea textArea = (TextArea) LayoutInflater.from(parent.getContext()).inflate(
+                    R.layout.textarea, parent, false);
             textArea.setLines(1);
             textArea.setClickable(false);
             textArea.setBackground(parent.getResources().getDrawable(
@@ -123,9 +123,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             return new TextAreaHolder(textArea);
 
         } else {
-            View view = LayoutInflater.from(
-                    parent.getContext()).inflate(R.layout.recycler_imageview, parent, false);
-
+            View view = LayoutInflater.from(parent.getContext()).inflate(
+                    R.layout.recycler_imageview, parent, false);
             return new RecyclerImageViewHolder(view);
         }
     }
@@ -134,8 +133,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         if (this.getItemViewType(position) == ItemViewData.TYPE_TEXT) {
             TextAreaHolder textHolder = (TextAreaHolder) holder;
-            textHolder.setData(this.data.get(position).getData(), this.textSize);
             textHolder.addTextChangeListener(this.data.get(position));
+            textHolder.setData(this.data.get(position).getData(), this.textSize);
         } else {
             RecyclerImageViewHolder imageHolder = (RecyclerImageViewHolder) holder;
             imageHolder.setImage(data.get(position).getData());
