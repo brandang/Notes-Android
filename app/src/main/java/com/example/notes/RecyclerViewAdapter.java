@@ -133,8 +133,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         if (this.getItemViewType(position) == ItemViewData.TYPE_TEXT) {
             TextAreaHolder textHolder = (TextAreaHolder) holder;
-            textHolder.addTextChangeListener(this.data.get(position));
-            textHolder.setData(this.data.get(position).getData(), this.textSize);
+            textHolder.setData(this.data.get(position).getData(), this.textSize,
+                    this.data.get(position));
         } else {
             RecyclerImageViewHolder imageHolder = (RecyclerImageViewHolder) holder;
             imageHolder.setImage(data.get(position).getData());
