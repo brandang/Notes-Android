@@ -59,14 +59,21 @@ public class TextAreaHolder extends RecyclerView.ViewHolder {
     /**
      * Sets the data to display. Also sets listener that listens in and gets notified whenever the
      * text in this item gets changed.
-     * BEFORE calling this method, lest there by bugs.
      * @param data The data.
      * @param size The size of the text.
      * @param listener The listener that listens in.
      */
     public void setData(String data, float size, TextChangeListener listener) {
-        this.listener = listener;
+        this.addTextChangeListener(listener);
         this.textArea.setText(data);
         this.textArea.setTextSize(size);
+    }
+
+    /**
+     * Set listener that listens in and gets notified whenever the text in this item gets changed.
+     * @param listener The listener that listens in.
+     */
+    public void addTextChangeListener(TextChangeListener listener) {
+        this.listener = listener;
     }
 }

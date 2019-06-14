@@ -1,7 +1,6 @@
 package com.example.notes;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,7 +14,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 /**
- * A custom Adapter for a RecyclerView that can hold TextAreas and PhotoViews.
+ * A custom Adapter for a RecyclerView that can hold TextAreas and PhotoViews. Allows user to drag
+ * and drop the various items to change their positions. Also contains functionality that makes
+ * the numerous TextAreas act like one continuous notepad. Features include
  */
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements
         ItemMoveCallback.ItemTouchHelperContract {
@@ -181,5 +182,4 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     public void onRowClear(RecyclerImageViewHolder viewHolder) {
         viewHolder.setBackgroundColor(this.context.getResources().getColor(R.color.colorPrimaryLight));
     }
-
 }
