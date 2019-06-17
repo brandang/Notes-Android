@@ -16,10 +16,11 @@ import java.util.Collections;
 /**
  * A custom Adapter for a RecyclerView that can hold TextAreas and PhotoViews. Allows user to drag
  * and drop the various items to change their positions. Also contains functionality that makes
- * the numerous TextAreas act like one continuous notepad. Features include
+ * the numerous TextAreas act like one continuous notepad. Features include moving on to next line
+ * when user presses ENTER.
  */
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements
-        ItemMoveCallback.ItemTouchHelperContract {
+        ItemMoveCallback.ItemTouchHelperContract, EnterKeyPressedListener {
 
     private ArrayList<ItemViewData> data;
 
@@ -27,6 +28,9 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     private int textSize = 12;
 
     private Context context;
+
+    // Item position in which to request focus.
+    private int focusPosition  = 0;
 
     /**
      * Adapter for displaying TextAreas and PhotoViews.
@@ -49,6 +53,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     public void addData(ItemViewData data) {
         // Add data to top.
         this.data.add(0, data);
+        this.focusPosition = 0;
         this.notifyDataSetChanged();
     }
 
@@ -68,6 +73,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         } catch (IOException e) {
             e.printStackTrace();
         }
+        this.focusPosition = 0;
         this.setTextSize(saveData.getFontSize());
         this.notifyDataSetChanged();
     }
@@ -115,9 +121,9 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if (viewType == ItemViewData.TYPE_TEXT) {
+
             TextArea textArea = (TextArea) LayoutInflater.from(parent.getContext()).inflate(
                     R.layout.textarea, parent, false);
-            textArea.setLines(1);
             textArea.setClickable(false);
             textArea.setBackground(parent.getResources().getDrawable(
                     R.drawable.text_area_unselected, null));
@@ -135,7 +141,14 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         if (this.getItemViewType(position) == ItemViewData.TYPE_TEXT) {
             TextAreaHolder textHolder = (TextAreaHolder) holder;
             textHolder.setData(this.data.get(position).getData(), this.textSize,
-                    this.data.get(position));
+                    this.data.get(position), this);
+
+            // Request focus at the right position.
+            if (position == this.focusPosition) {
+                textHolder.requestFocus();
+            }
+            // Don't forcefully open keyboard because it does not work.
+
         } else {
             RecyclerImageViewHolder imageHolder = (RecyclerImageViewHolder) holder;
             imageHolder.setImage(data.get(position).getData());
@@ -148,6 +161,13 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         return this.data.size();
     }
 
+    @Override
+    public void onEnterPressed(int position, String newLine) {
+        // Add new item because user pressed enter, so move on to next line.
+        this.data.add(position + 1, new ItemViewData(newLine, ItemViewData.TYPE_TEXT));
+        this.focusPosition = position + 1;
+        this.notifyDataSetChanged();
+    }
 
     @Override
     public void onRowMoved(int fromPosition, int toPosition) {
