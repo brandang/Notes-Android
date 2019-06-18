@@ -63,7 +63,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         // Add data to top.
         this.data.add(0, data);
         this.focusPosition = 0;
-        this.notifyDataSetChanged();
+        this.notifyItemInserted(0);
         this.recyclerView.scrollToPosition(0);
     }
 
@@ -176,7 +176,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         this.data.add(position + 1, new ItemViewData(newLine, ItemViewData.TYPE_TEXT));
         this.focusPosition = position + 1;
         this.focusCursor = 0;
-        this.notifyDataSetChanged();
+        this.notifyItemInserted(position + 1);
+        this.notifyItemChanged(position);
         // Scroll to the line so that it does not appear offscreen.
         this.recyclerView.scrollToPosition(position + 1);
     }
@@ -192,7 +193,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         // Remove line and transfer data to line above it.
         this.data.remove(position);
         this.data.get(position - 1).appendData(line);
-        this.notifyDataSetChanged();
+        this.notifyItemRemoved(position);
+        this.notifyItemChanged(position - 1);
         // Scroll to the line so that it does not appear offscreen.
         this.recyclerView.scrollToPosition(position - 1);
     }
