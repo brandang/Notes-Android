@@ -35,14 +35,20 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     // Where to put the cursor once focused.
     private int focusCursor = 0;
 
+    // RecyclerView that this adapter should be used for.
+    private RecyclerView recyclerView;
+
     /**
      * Adapter for displaying TextAreas and PhotoViews.
      * @param context The Context.
      * @param data The data.
+     * @param recyclerView The View that this adapter is used for.
      */
-    public RecyclerViewAdapter(Context context, ArrayList<ItemViewData> data) {
+    public RecyclerViewAdapter(Context context, ArrayList<ItemViewData> data,
+                               RecyclerView recyclerView) {
         this.context = context;
         this.data = data;
+        this.recyclerView = recyclerView;
         if (this.data == null) {
             this.data = new ArrayList<>(0);
         }
@@ -170,6 +176,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         this.focusPosition = position + 1;
         this.focusCursor = 0;
         this.notifyDataSetChanged();
+        // Scroll to the line so that it does not appear offscreen.
+        this.recyclerView.scrollToPosition(position + 1);
     }
 
     @Override
@@ -184,6 +192,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         this.data.remove(position);
         this.data.get(position - 1).appendData(line);
         this.notifyDataSetChanged();
+        // Scroll to the line so that it does not appear offscreen.
+        this.recyclerView.scrollToPosition(position - 1);
     }
 
     @Override
@@ -202,12 +212,14 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
     @Override
     public void onRowSelected(TextAreaHolder viewHolder) {
-        viewHolder.setBackground(this.context.getResources().getDrawable(R.drawable.text_area_selected, null));
+        viewHolder.setBackground(this.context.getResources().getDrawable(
+                R.drawable.text_area_selected, null));
     }
 
     @Override
     public void onRowClear(TextAreaHolder viewHolder) {
-        viewHolder.setBackground(this.context.getResources().getDrawable(R.drawable.text_area_unselected, null));
+        viewHolder.setBackground(this.context.getResources().getDrawable(
+                R.drawable.text_area_unselected, null));
     }
 
     @Override
@@ -217,6 +229,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
     @Override
     public void onRowClear(RecyclerImageViewHolder viewHolder) {
-        viewHolder.setBackgroundColor(this.context.getResources().getColor(R.color.colorPrimaryLight));
+        viewHolder.setBackgroundColor(this.context.getResources().getColor(
+                R.color.colorPrimaryLight));
     }
 }

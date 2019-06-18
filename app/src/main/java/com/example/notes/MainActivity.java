@@ -19,6 +19,7 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.ItemTouchHelper;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -28,6 +29,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.Scope;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
@@ -110,13 +112,14 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         // Setup adapter and RecyclerView.
-        this.adapter = new RecyclerViewAdapter(this, new ArrayList<ItemViewData>(0));
+        this.adapter = new RecyclerViewAdapter(this,
+                new ArrayList<ItemViewData>(0), this.recyclerView);
         // Attach Callback so that this helper will notify the callback, which will in turn notify
         // adapter.
         ItemTouchHelper.Callback callback = new ItemMoveCallback(this.adapter);
         ItemTouchHelper helper = new ItemTouchHelper(callback);
         helper.attachToRecyclerView(this.recyclerView);
-        recyclerView.setAdapter(this.adapter);
+        this.recyclerView.setAdapter(this.adapter);
     }
 
     /**
