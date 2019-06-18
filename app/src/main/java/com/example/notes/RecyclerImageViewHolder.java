@@ -12,7 +12,14 @@ import androidx.recyclerview.widget.RecyclerView;
  */
 public class RecyclerImageViewHolder extends RecyclerView.ViewHolder {
 
+    // Transparency values.
+    final private static float SELECTED_TRANSPARENCY = 0.5f;
+
+    final private static float UNSELECTED_TRANSPARENCY = 1f;
+
+    // Child views.
     private RecyclerImageView imageView;
+
     private LinearLayout background;
 
     /**
@@ -39,5 +46,21 @@ public class RecyclerImageViewHolder extends RecyclerView.ViewHolder {
      */
     public void setBackgroundColor(int color) {
         this.background.setBackgroundColor(color);
+    }
+
+    /**
+     * Handles being selected. Changes transparency.
+     */
+    public void onSelected() {
+        this.imageView.setAlpha(SELECTED_TRANSPARENCY);
+        this.background.setAlpha(SELECTED_TRANSPARENCY);
+    }
+
+    /**
+     * Handles being cleared. Reverts transparency back to normal.
+     */
+    public void onClear() {
+        this.imageView.setAlpha(UNSELECTED_TRANSPARENCY);
+        this.background.setAlpha(UNSELECTED_TRANSPARENCY);
     }
 }

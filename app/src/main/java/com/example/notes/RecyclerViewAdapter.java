@@ -226,11 +226,13 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     @Override
     public void onRowSelected(RecyclerImageViewHolder viewHolder) {
         viewHolder.setBackgroundColor(this.context.getResources().getColor(R.color.colorAccent));
+        viewHolder.onSelected();
     }
 
     @Override
     public void onRowClear(RecyclerImageViewHolder viewHolder) {
         viewHolder.setBackgroundColor(this.context.getResources().getColor(
                 R.color.colorPrimaryLight));
+        viewHolder.onClear();
     }
 }
