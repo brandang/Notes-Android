@@ -1,8 +1,6 @@
 package com.example.notes;
 
 import android.graphics.drawable.Drawable;
-import android.text.Editable;
-import android.text.TextWatcher;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -10,13 +8,15 @@ import androidx.recyclerview.widget.RecyclerView;
 /**
  * View holder that contains a single TextArea.
  */
-public class TextAreaHolder extends RecyclerView.ViewHolder {
+public class TextAreaHolder extends RecyclerView.ViewHolder implements EnterKeyPressedListener,
+        BackKeyPressedListener {
 
     private TextArea textArea;
 
-    private TextChangeListener textChangeListener;
+    // Listeners.
+    private AddLineListener addLineListener;
 
-    private EnterKeyPressedListener enterKeyPressedListener;
+    private RemoveLineListener removeLineListener;
 
     /**
      * Creates a new TextAreaHolder containing just the specified textarea.
@@ -25,33 +25,8 @@ public class TextAreaHolder extends RecyclerView.ViewHolder {
     public TextAreaHolder(@NonNull TextArea textArea) {
         super(textArea);
         this.textArea = textArea;
-
-        // Add textChangeListener so that everyone gets notified.
-        this.textArea.addTextChangedListener(new TextWatcher() {
-
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                return;
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
-                // User just clicked enter.
-                if (before == 0 && count == 1 && charSequence.charAt(start) == '\n') {
-                    TextAreaHolder.this.onEnterPressed();
-                }
-                TextChangeListener listener = TextAreaHolder.this.textChangeListener;
-                if (listener != null) {
-                    listener.onTextChanged(
-                            TextAreaHolder.this.textArea.getText().toString());
-                }
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-                return;
-            }
-        });
+        this.textArea.setEnterListener(this);
+        this.textArea.setBackListener(this);
     }
 
     /**
@@ -63,53 +38,45 @@ public class TextAreaHolder extends RecyclerView.ViewHolder {
     }
 
     /**
-     * Sets the data to display. Also sets textChangeListener that listens in and gets notified whenever the
-     * text in this item gets changed.
+     * Sets the data to display. Also sets textChangeListener that listens in and gets notified
+     * whenever the text in this item gets changed.
      * @param data The data.
      * @param size The size of the text.
      * @param textListener The textChangeListener that listens in.
      */
-    public void setData(String data, float size, TextChangeListener textListener, EnterKeyPressedListener enterListener) {
-        this.addTextChangeListener(textListener);
-        this.addEnterKeyPressedListener(enterListener);
+    public void setData(String data, float size, TextChangeListener textListener,
+                         AddLineListener addLineListener, RemoveLineListener removeLineListener) {
+        // Update which listeners to notify.
+        this.setTextChangeListener(textListener);
+        this.setEnterKeyPressedListener(addLineListener);
+        this.setBackKeyPressedListesner(removeLineListener);
         this.textArea.setText(data);
         this.textArea.setTextSize(size);
-    }
-
-    /**
-     * Notify listeners that the user just pressed enter.
-     */
-    private void onEnterPressed() {
-        this.enterKeyPressedListener.onEnterPressed(this.getAdapterPosition(),
-                this.cutTextAfterCursor());
-    }
-
-    /**
-     * Deletes and returns the text after the current position of the cursor.
-     * @return The text.
-     */
-    private String cutTextAfterCursor() {
-        int start = this.textArea.getSelectionStart();
-        String endText = this.textArea.getText().toString().substring(start);
-        String startText = this.textArea.getText().toString().substring(0, start-1);
-        this.textArea.setText(startText);
-        return endText;
     }
 
     /**
      * Set textChangeListener that listens in and gets notified whenever the text in this item gets changed.
      * @param listener The textChangeListener that listens in.
      */
-    public void addTextChangeListener(TextChangeListener listener) {
-        this.textChangeListener = listener;
+    public void setTextChangeListener(TextChangeListener listener) {
+        // Pass on to text area.
+        this.textArea.setTextChangeListener(listener);
     }
 
     /**
      * Add a new EnterKeyPressedListener.
      * @param listener The listener to add.
      */
-    public void addEnterKeyPressedListener(EnterKeyPressedListener listener) {
-        this.enterKeyPressedListener = listener;
+    public void setEnterKeyPressedListener(AddLineListener listener) {
+        this.addLineListener = listener;
+    }
+
+    /**
+     * Add a new BackKeyPressedListener.
+     * @param listener The listener to add.
+     */
+    public void setBackKeyPressedListesner(RemoveLineListener listener) {
+        this.removeLineListener = listener;
     }
 
     /**
@@ -117,5 +84,24 @@ public class TextAreaHolder extends RecyclerView.ViewHolder {
      */
     public void requestFocus() {
         this.textArea.requestFocus();
+    }
+
+    @Override
+    public void onBackPressed(String previousLine) {
+        if (this.getAdapterPosition() == 0) {
+            return;
+        }
+        this.removeLineListener.removeLine(getAdapterPosition(), previousLine);
+    }
+
+    @Override
+    public void onEnterPressed(int position, String newLine) {
+        // Delete everything after and including the new line character.
+        position --;
+        if (position < 0)
+            position = 0;
+
+        this.textArea.setText(this.textArea.getText().toString().substring(0, position));
+        this.addLineListener.addLine(this.getAdapterPosition(), newLine);
     }
 }

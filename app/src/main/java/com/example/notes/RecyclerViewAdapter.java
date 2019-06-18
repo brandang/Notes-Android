@@ -20,7 +20,7 @@ import java.util.Collections;
  * when user presses ENTER.
  */
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements
-        ItemMoveCallback.ItemTouchHelperContract, EnterKeyPressedListener {
+        ItemMoveCallback.ItemTouchHelperContract, AddLineListener, RemoveLineListener {
 
     private ArrayList<ItemViewData> data;
 
@@ -141,7 +141,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         if (this.getItemViewType(position) == ItemViewData.TYPE_TEXT) {
             TextAreaHolder textHolder = (TextAreaHolder) holder;
             textHolder.setData(this.data.get(position).getData(), this.textSize,
-                    this.data.get(position), this);
+                    this.data.get(position),this, this);
 
             // Request focus at the right position.
             if (position == this.focusPosition) {
@@ -155,17 +155,29 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         }
     }
 
-
     @Override
     public int getItemCount() {
         return this.data.size();
     }
 
     @Override
-    public void onEnterPressed(int position, String newLine) {
+    public void addLine(int position, String newLine) {
         // Add new item because user pressed enter, so move on to next line.
         this.data.add(position + 1, new ItemViewData(newLine, ItemViewData.TYPE_TEXT));
         this.focusPosition = position + 1;
+        this.notifyDataSetChanged();
+    }
+
+    @Override
+    public void removeLine(int position, String line) {
+        // We cant remove line because this one is already at the top.
+        if (position - 1 < 0)
+            return;
+        // Remove line and transfer data to line above it.
+        this.data.remove(position);
+        this.data.get(position - 1).appendData(line);
+        // Set new focus.
+        this.focusPosition = position - 1;
         this.notifyDataSetChanged();
     }
 

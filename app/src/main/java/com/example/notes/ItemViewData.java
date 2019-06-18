@@ -43,6 +43,14 @@ public class ItemViewData implements TextChangeListener {
         return data;
     }
 
+    /**
+     * Append data to the end.
+     * @param appendData The data to append.
+     */
+    public void appendData(String appendData) {
+        this.data += appendData;
+    }
+
     @Override
     public void onTextChanged(String newText) {
         this.data = newText;
