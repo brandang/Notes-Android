@@ -30,7 +30,10 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     private Context context;
 
     // Item position in which to request focus.
-    private int focusPosition  = 0;
+    private int focusPosition = 0;
+
+    // Where to put the cursor once focused.
+    private int focusCursor = 0;
 
     /**
      * Adapter for displaying TextAreas and PhotoViews.
@@ -145,7 +148,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
             // Request focus at the right position.
             if (position == this.focusPosition) {
-                textHolder.requestFocus();
+                textHolder.requestFocus(this.focusCursor);
             }
             // Don't forcefully open keyboard because it does not work.
 
@@ -165,6 +168,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         // Add new item because user pressed enter, so move on to next line.
         this.data.add(position + 1, new ItemViewData(newLine, ItemViewData.TYPE_TEXT));
         this.focusPosition = position + 1;
+        this.focusCursor = 0;
         this.notifyDataSetChanged();
     }
 
@@ -173,11 +177,12 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         // We cant remove line because this one is already at the top.
         if (position - 1 < 0)
             return;
+        // Set new focus.
+        this.focusPosition = position - 1;
+        this.focusCursor = this.data.get(position - 1).getData().length();
         // Remove line and transfer data to line above it.
         this.data.remove(position);
         this.data.get(position - 1).appendData(line);
-        // Set new focus.
-        this.focusPosition = position - 1;
         this.notifyDataSetChanged();
     }
 

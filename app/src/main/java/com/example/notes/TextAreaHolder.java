@@ -80,10 +80,12 @@ public class TextAreaHolder extends RecyclerView.ViewHolder implements EnterKeyP
     }
 
     /**
-     * Request focus for this item.
+     * Request focus for this item at the given cursor position.
+     * @param cursorPosition The position to focus the cursor to.
      */
-    public void requestFocus() {
+    public void requestFocus(int cursorPosition) {
         this.textArea.requestFocus();
+        this.textArea.setSelection(cursorPosition);
     }
 
     @Override
