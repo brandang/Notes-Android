@@ -64,6 +64,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         this.data.add(0, data);
         this.focusPosition = 0;
         this.notifyDataSetChanged();
+        this.recyclerView.scrollToPosition(0);
     }
 
     /**

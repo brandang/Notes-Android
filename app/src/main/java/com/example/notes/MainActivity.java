@@ -201,8 +201,9 @@ public class MainActivity extends AppCompatActivity
             case REQUEST_CODE_PHOTO:
                 if (resultCode == RESULT_OK) {
                     Uri photoUri = data.getParcelableExtra("photo");
-                    Log.d(MAIN_ACTIVITY_TAG, photoUri + "");
-                    this.adapter.addData(new ItemViewData(photoUri.toString(),ItemViewData.TYPE_PHOTO));
+                    if (photoUri == null)
+                        break;
+                    this.adapter.addData(new ItemViewData(photoUri.toString(), ItemViewData.TYPE_PHOTO));
                 }
         }
     }
