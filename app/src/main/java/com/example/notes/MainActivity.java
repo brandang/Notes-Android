@@ -19,7 +19,6 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.ItemTouchHelper;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -29,7 +28,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.Scope;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.material.appbar.AppBarLayout;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
@@ -64,17 +63,32 @@ public class MainActivity extends AppCompatActivity
     // The layout that contains the loading screen.
     private LinearLayout loadingScreen;
 
+    // View that contains the text area and photos.
+    private LinearLayout noteScreen;
+
+    // View that allows user to drag and drop to reorder components.
+    private LinearLayout reorderScreen;
+
     // TextView that displays message for loading screen.
     private TextView loadingMessage;
 
-    // View that contains the text area and photos.
-    private LinearLayout textScreen;
+    // View holding items for the note screen.
+    private RecyclerView noteRecyclerView;
 
-    // View that displays similar to ListView but allows drag and drop.
-    private RecyclerView recyclerView;
+    // View holding items for re-order screen. Allows drag and drop.
+    private RecyclerView reorderRecyclerView;
 
     // Adapter for the above.
-    private RecyclerViewAdapter adapter;
+    private RecyclerViewAdapter noteAdapter;
+
+    // Adapter for reorderRecyclerView.
+    private RecyclerViewAdapter reorderAdapter;
+
+    // Floating action buttons.
+    private FloatingActionButton acceptButton, declineButton, reorderButton;
+
+    // Container for the floating action buttons.
+    private LinearLayout reorderContainer, acceptContainer;
 
     // Layout containing app bar and everything else.
     private CoordinatorLayout background;
@@ -95,11 +109,22 @@ public class MainActivity extends AppCompatActivity
     @SuppressLint("WrongViewCast")
     private void setupComponents() {
         setContentView(R.layout.activity_main);
+        // Views.
         this.background = findViewById(R.id.background);
         this.loadingScreen = findViewById(R.id.loading_screen);
         this.loadingMessage = findViewById(R.id.loading_message);
-        this.textScreen = findViewById(R.id.text_screen);
-        this.recyclerView = findViewById(R.id.recycler);
+        this.noteScreen = findViewById(R.id.note_screen);
+        this.noteRecyclerView = findViewById(R.id.note_recycler);
+        this.reorderScreen = findViewById(R.id.reorder_screen);
+        this.reorderRecyclerView = findViewById(R.id.reorder_recycler);
+        this.reorderContainer = findViewById(R.id.reorder_button_container);
+        this.acceptContainer = findViewById(R.id.accept_button_container);
+        // Buttons.
+        this.acceptButton = findViewById(R.id.accept_button);
+        this.declineButton = findViewById(R.id.decline_button);
+        this.reorderButton = findViewById(R.id.reorder_button);
+
+        // Setup toolbar.
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
@@ -111,15 +136,21 @@ public class MainActivity extends AppCompatActivity
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
 
-        // Setup adapter and RecyclerView.
-        this.adapter = new RecyclerViewAdapter(this,
-                new ArrayList<ItemViewData>(0), this.recyclerView);
+        // Setup noteAdapter and RecyclerView.
+        this.noteAdapter = new RecyclerViewAdapter(this,
+                new ArrayList<ItemViewData>(0), this.noteRecyclerView);
+        // Dont attach a callback because we dont need any gestures here.
+        this.noteRecyclerView.setAdapter(this.noteAdapter);
+
+        // Setup Reorder screen adapter and recyclerview.
+        this.reorderAdapter = new RecyclerViewAdapter(this,
+                new ArrayList<ItemViewData>(0), this.reorderRecyclerView);
         // Attach Callback so that this helper will notify the callback, which will in turn notify
-        // adapter.
-        ItemTouchHelper.Callback callback = new ItemMoveCallback(this.adapter);
+        // the adapter.
+        ItemTouchHelper.Callback callback = new ItemMoveCallback(this.reorderAdapter);
         ItemTouchHelper helper = new ItemTouchHelper(callback);
-        helper.attachToRecyclerView(this.recyclerView);
-        this.recyclerView.setAdapter(this.adapter);
+        helper.attachToRecyclerView(this.reorderRecyclerView);
+        this.reorderRecyclerView.setAdapter(this.reorderAdapter);
     }
 
     /**
@@ -145,11 +176,28 @@ public class MainActivity extends AppCompatActivity
     }
 
     /**
-     * Stops the loading screen and go back to the text screen.
+     * Starts the loading screen with the specified message.
+     * @param message The message to display.
      */
-    private void stopLoadScreen() {
+    private void startLoadScreen(String message) {
+        this.loadingScreen.setVisibility(View.VISIBLE);
+        this.reorderScreen.setVisibility(View.GONE);
+        this.noteScreen.setVisibility(View.GONE);
+        this.loadingMessage.setText(message);
+        this.acceptContainer.setVisibility(View.GONE);
+        this.reorderContainer.setVisibility(View.GONE);
+    }
+
+    /**
+     * Starts the note screen and disable the other screens.
+     */
+    private void startNoteScreen() {
         this.loadingScreen.setVisibility(View.GONE);
-        this.textScreen.setVisibility(View.VISIBLE);
+        this.reorderScreen.setVisibility(View.GONE);
+        this.noteScreen.setVisibility(View.VISIBLE);
+
+        this.acceptContainer.setVisibility(View.GONE);
+        this.reorderContainer.setVisibility(View.VISIBLE);
 
         /*
         this.textarea.requestFocus();
@@ -165,13 +213,15 @@ public class MainActivity extends AppCompatActivity
     }
 
     /**
-     * Starts the loading screen with the specified message, if DriveService is not busy.
-     * @param message The message to display.
+     * Starts the re-order screen and disable the other screens.
      */
-    private void startLoadScreen(String message) {
-        this.loadingScreen.setVisibility(View.VISIBLE);
-        this.textScreen.setVisibility(View.GONE);
-        this.loadingMessage.setText(message);
+    private void startReorderScreen() {
+        this.loadingScreen.setVisibility(View.GONE);
+        this.reorderScreen.setVisibility(View.VISIBLE);
+        this.noteScreen.setVisibility(View.GONE);
+        
+        this.acceptContainer.setVisibility(View.VISIBLE);
+        this.reorderContainer.setVisibility(View.GONE);
     }
 
     @Override
@@ -203,7 +253,7 @@ public class MainActivity extends AppCompatActivity
                     Uri photoUri = data.getParcelableExtra("photo");
                     if (photoUri == null)
                         break;
-                    this.adapter.addData(new ItemViewData(photoUri.toString(), ItemViewData.TYPE_PHOTO));
+                    this.noteAdapter.addData(new ItemViewData(photoUri.toString(), ItemViewData.TYPE_PHOTO));
                 }
         }
     }
@@ -249,7 +299,7 @@ public class MainActivity extends AppCompatActivity
      * Handles case where Sign in to Google failed.
      */
     private void onSignInFailed() {
-        this.stopLoadScreen();
+        this.startNoteScreen();
         Snackbar message = Snackbar.make(this.background, getString(R.string.sign_in_fail_msg),
                 Snackbar.LENGTH_LONG);
         message.show();
@@ -267,7 +317,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onDownloadComplete(SaveData saveData) {
-        this.stopLoadScreen();
+        this.startNoteScreen();
         if (saveData != null) {
             this.onDownloadSuccess(saveData);
         } else {
@@ -289,7 +339,7 @@ public class MainActivity extends AppCompatActivity
      * @param saveData The data.
      */
     private void onDownloadSuccess(SaveData saveData) {
-        this.adapter.setDisplayData(saveData);
+        this.noteAdapter.setDisplayData(saveData);
         Snackbar message = Snackbar.make(this.background, getString(R.string.download_success_msg),
                 Snackbar.LENGTH_LONG);
         message.show();
@@ -301,14 +351,14 @@ public class MainActivity extends AppCompatActivity
      */
     private void saveData() {
         this.startLoadScreen(getString(R.string.saving_message));
-        DataUploadTask task = new DataUploadTask(this.service, this.adapter.getSaveData(),
+        DataUploadTask task = new DataUploadTask(this.service, this.noteAdapter.getSaveData(),
                 Collections.singletonList((UploadDoneListener) this));
         task.execute();
     }
 
     @Override
     public void onUploadComplete(boolean successful) {
-        this.stopLoadScreen();
+        this.startNoteScreen();
         if (successful) {
             this.onUploadSuccess();
         } else {
@@ -340,13 +390,13 @@ public class MainActivity extends AppCompatActivity
      */
     private void setTextSize(String textSize) {
         if (textSize.equals(getString(R.string.text_size_tiny))) {
-            this.adapter.setTextSize(getResources().getInteger(R.integer.Tiny));
+            this.noteAdapter.setTextSize(getResources().getInteger(R.integer.Tiny));
         } else if (textSize.equals(getString(R.string.text_size_small))) {
-            this.adapter.setTextSize(getResources().getInteger(R.integer.Small));
+            this.noteAdapter.setTextSize(getResources().getInteger(R.integer.Small));
         } else if (textSize.equals(getString(R.string.text_size_medium))) {
-            this.adapter.setTextSize(getResources().getInteger(R.integer.Medium));
+            this.noteAdapter.setTextSize(getResources().getInteger(R.integer.Medium));
         } else if (textSize.equals(getString(R.string.text_size_large))) {
-            this.adapter.setTextSize(getResources().getInteger(R.integer.Large));
+            this.noteAdapter.setTextSize(getResources().getInteger(R.integer.Large));
         }
     }
 
@@ -411,13 +461,13 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.nav_tools) {
             Intent intent = new Intent(this, SettingsActivity.class);
             String textSize = "";
-            if (this.adapter.getTextSize() == getResources().getInteger(R.integer.Tiny)) {
+            if (this.noteAdapter.getTextSize() == getResources().getInteger(R.integer.Tiny)) {
                 textSize = getString(R.string.text_size_tiny);
-            } else if (this.adapter.getTextSize() == getResources().getInteger(R.integer.Small)) {
+            } else if (this.noteAdapter.getTextSize() == getResources().getInteger(R.integer.Small)) {
                 textSize = getString(R.string.text_size_small);
-            } else if (this.adapter.getTextSize() == getResources().getInteger(R.integer.Medium)) {
+            } else if (this.noteAdapter.getTextSize() == getResources().getInteger(R.integer.Medium)) {
                 textSize = getString(R.string.text_size_medium);
-            } else if (this.adapter.getTextSize() == getResources().getInteger(R.integer.Large)) {
+            } else if (this.noteAdapter.getTextSize() == getResources().getInteger(R.integer.Large)) {
                 textSize = getString(R.string.text_size_large);
             }
             Settings currentSettings = new Settings(textSize);

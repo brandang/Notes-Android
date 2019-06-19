@@ -7,6 +7,8 @@
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:showIn="@layout/app_bar_main">
 
+    <!-- Loading screen -->
+
     <LinearLayout
         android:visibility="visible"
         android:id="@+id/loading_screen"
@@ -15,7 +17,6 @@
         android:layout_height="match_parent"
         android:gravity="center"
         android:orientation="vertical"
-
         android:background="@color/colorPrimaryLight">
 
         <ProgressBar
@@ -32,14 +33,36 @@
 
     </LinearLayout>
 
+    <!-- The main note screen -->
+
     <LinearLayout
-        android:id="@+id/text_screen"
+        android:id="@+id/note_screen"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/colorPrimaryLight">
+        android:background="@color/colorPrimaryLight"
+        android:visibility="gone">
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recycler"
+            android:id="@+id/note_recycler"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            android:background="@color/colorPrimaryLight" />
+
+    </LinearLayout>
+
+    <!-- The re-order screen to adjust the notes -->
+
+    <LinearLayout
+        android:id="@+id/reorder_screen"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimaryLight"
+        android:visibility="gone">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/reorder_recycler"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
