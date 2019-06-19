@@ -1,7 +1,10 @@
 package com.example.notes;
 
+import android.content.Context;
 import android.net.Uri;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
@@ -26,10 +29,11 @@ public class RecyclerImageViewHolder extends RecyclerView.ViewHolder {
      * Creates a new RecyclerImageViewHolder containing a RecyclerImageView and a LinearLayout.
      * @param view The View.
      */
-    public RecyclerImageViewHolder(@NonNull View view) {
+    public RecyclerImageViewHolder(@NonNull View view, Context context) {
         super(view);
         this.imageView = view.findViewById(R.id.item_imageview);
         this.background = view.findViewById(R.id.item_background);
+        this.startAnimation(context);
     }
 
     /**
@@ -62,5 +66,10 @@ public class RecyclerImageViewHolder extends RecyclerView.ViewHolder {
     public void onClear() {
         this.imageView.setAlpha(UNSELECTED_TRANSPARENCY);
         this.background.setAlpha(UNSELECTED_TRANSPARENCY);
+    }
+
+    private void startAnimation(Context context) {
+        Animation animation = AnimationUtils.loadAnimation(context, R.anim.pop_in_anim);
+        this.imageView.startAnimation(animation);
     }
 }

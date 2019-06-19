@@ -142,7 +142,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         } else {
             View view = LayoutInflater.from(parent.getContext()).inflate(
                     R.layout.recycler_imageview, parent, false);
-            return new RecyclerImageViewHolder(view);
+            return new RecyclerImageViewHolder(view, parent.getContext());
         }
     }
 
