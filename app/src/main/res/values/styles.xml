@@ -14,7 +14,7 @@
         <item name="windowNoTitle">true</item>
     </style>
 
-    <style name="AppTheme.Settings" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="AppTheme.CustomTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
         <item name="colorPrimary">@color/colorPrimary</item>
@@ -26,7 +26,7 @@
         <item name="android:dialogTheme">@style/AppTheme.AlertDialog</item>
     </style>
 
-    <style name="AppTheme.Settings.Toolbar">
+    <style name="AppTheme.CustomTheme.Toolbar">
         <item name="titleTextColor">@color/textColor</item>
         <item name="colorAccent">@color/textColor</item>
         <item name="colorButtonNormal">@color/textColor</item>

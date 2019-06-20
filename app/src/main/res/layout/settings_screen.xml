@@ -10,7 +10,7 @@
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
         android:minHeight="?attr/actionBarSize"
-        android:theme="@style/AppTheme.Settings.Toolbar"
+        android:theme="@style/AppTheme.CustomTheme.Toolbar"
         android:background="?attr/colorPrimary" />
     <FrameLayout
         android:id="@+id/settings_fragment_container"
