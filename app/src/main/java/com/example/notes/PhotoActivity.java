@@ -43,8 +43,8 @@ public class PhotoActivity extends AppCompatActivity {
     private PhotoView photoView;
     private TextView prompt;
 
-    // Floating action buttons at the bottom.
-    private FloatingActionButton capture, search, accept, decline;
+    // Custom action buttons at the bottom.
+    private AnimatedActionButton capture, search, accept, decline;
 
     // Views that contain the sets of buttons at the bottom.
     private LinearLayout photoButtons, promptButtons;
@@ -93,36 +93,27 @@ public class PhotoActivity extends AppCompatActivity {
         this.accept = findViewById(R.id.accept_button);
         this.decline = findViewById(R.id.decline_button);
 
-        final Animation captureAnim = this.getFabClickAnim(this.capture);
-        final Animation searchAnim = this.getFabClickAnim(this.search);
-        final Animation acceptAnim = this.getFabClickAnim(this.accept);
-        final Animation declineAnim = this.getFabClickAnim(this.decline);
-
         this.capture.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                PhotoActivity.this.capture.startAnimation(captureAnim);
                 PhotoActivity.this.startImageCapture();
             }
         });
         this.search.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                PhotoActivity.this.search.startAnimation(searchAnim);
                 PhotoActivity.this.startImageSearch();
             }
         });
         this.accept.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                PhotoActivity.this.accept.startAnimation(acceptAnim);
                 PhotoActivity.this.onAcceptClick();
             }
         });
         this.decline.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                PhotoActivity.this.decline.startAnimation(declineAnim);
                 PhotoActivity.this.onDeclineClick();
             }
         });
@@ -197,10 +188,8 @@ public class PhotoActivity extends AppCompatActivity {
         this.photoView.startAnimation(popIn);
 
         // Animations for buttons.
-        Animation acceptPopUpAnim = this.getFabPopUpAnim(this.accept);
-        this.accept.startAnimation(acceptPopUpAnim);
-        Animation declinePopUpAnim = this.getFabPopUpAnim(this.decline);
-        this.decline.startAnimation(declinePopUpAnim);
+        this.accept.show();
+        this.decline.show();
     }
 
     /**
@@ -214,62 +203,9 @@ public class PhotoActivity extends AppCompatActivity {
         this.photoButtons.setVisibility(View.GONE);
         this.promptButtons.setVisibility(View.VISIBLE);
 
-        // Animations for buttons.
-        Animation capturePopUpAnim = this.getFabPopUpAnim(this.capture);
-        this.capture.startAnimation(capturePopUpAnim);
-        Animation searchPopUpAnim = this.getFabPopUpAnim(this.search);
-        this.search.startAnimation(searchPopUpAnim);
-    }
-
-    /**
-     * Returns an animation to use for whenever a FAB is clicked.
-     * @param button The button to apply the animation to.
-     * @return The Animation.
-     */
-    private Animation getFabClickAnim(final FloatingActionButton button) {
-        Animation jumpUp = AnimationUtils.loadAnimation(PhotoActivity.this,
-                R.anim.jump_up_anim);
-        final Animation jumpDown = AnimationUtils.loadAnimation(PhotoActivity.this,
-                R.anim.jump_down_anim);
-        jumpUp.setAnimationListener(new Animation.AnimationListener() {
-            @Override
-            public void onAnimationStart(Animation animation) {
-            }
-
-            @Override
-            public void onAnimationEnd(Animation animation) {
-                button.startAnimation(jumpDown);
-            }
-
-            @Override
-            public void onAnimationRepeat(Animation animation) {
-
-            }
-        });
-        return jumpUp;
-    }
-
-    /**
-     * Returns animation for use on a floating action button to pop up.
-     * @param button The button to get attention for.
-     * @return The Animation.
-     */
-    private Animation getFabPopUpAnim(final FloatingActionButton button) {
-        Animation popUp = AnimationUtils.loadAnimation(this, R.anim.pop_up_anim);
-        final Animation attention = AnimationUtils.loadAnimation(this, R.anim.attention_anim);
-        popUp.setAnimationListener(new Animation.AnimationListener() {
-            @Override
-            public void onAnimationStart(Animation animation) {
-            }
-            @Override
-            public void onAnimationEnd(Animation animation) {
-                button.startAnimation(attention);
-            }
-            @Override
-            public void onAnimationRepeat(Animation animation) {
-            }
-        });
-        return popUp;
+        // Show the buttons.
+        this.capture.show();
+        this.search.show();
     }
 
     /**

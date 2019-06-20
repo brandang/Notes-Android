@@ -9,8 +9,8 @@ import android.view.animation.AnimationUtils;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 /**
- * A custom Floating Action Button that has a custom animation when it appears and another custom
- * animation for when it is clicked.
+ * A custom Floating Action Button that has a custom animation when it appears. Also has a method to
+ * activate a click animation for when it is clicked.
  */
 public class AnimatedActionButton extends FloatingActionButton {
 
@@ -20,7 +20,6 @@ public class AnimatedActionButton extends FloatingActionButton {
      */
     public AnimatedActionButton(Context context) {
         super(context);
-        this.setupButton();
     }
 
     /**
@@ -30,28 +29,25 @@ public class AnimatedActionButton extends FloatingActionButton {
      */
     public AnimatedActionButton(Context context, AttributeSet attrs) {
         super(context, attrs);
-        this.setupButton();
     }
 
     /**
      * Create a new Action button with the given info.
      * @param context The context.
-     * @param attrs Tje attribute set.
+     * @param attrs The attribute set.
      * @param defStyleAttr The style.
      */
     public AnimatedActionButton(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        this.setupButton();
     }
 
-    /**
-     * Sets up the button. Attaches listeners so that it can start the appropriate animations.
-     */
-    private void setupButton() {
-        this.setOnClickListener(new OnClickListener() {
+    @Override
+    public void setOnClickListener (final View.OnClickListener l) {
+        super.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
                 AnimatedActionButton.this.startClickAnimation();
+                l.onClick(view);
             }
         });
     }
@@ -108,7 +104,8 @@ public class AnimatedActionButton extends FloatingActionButton {
      */
     private Animation getPopInAnim() {
         Animation popUp = AnimationUtils.loadAnimation(this.getContext(), R.anim.pop_up_anim);
-        final Animation attention = AnimationUtils.loadAnimation(this.getContext(), R.anim.attention_anim);
+        final Animation attention = AnimationUtils.loadAnimation(this.getContext(),
+                R.anim.attention_anim);
         popUp.setAnimationListener(new Animation.AnimationListener() {
             @Override
             public void onAnimationStart(Animation animation) {return;}
