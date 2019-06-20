@@ -38,7 +38,7 @@
         android:layout_gravity="bottom|right"
         android:visibility="gone">
 
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
+        <com.example.notes.AnimatedActionButton
             android:id="@+id/reorder_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -67,7 +67,7 @@
         android:visibility="gone"
         app:layout_anchorGravity="bottom">
 
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
+        <com.example.notes.AnimatedActionButton
             android:id="@+id/accept_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -82,7 +82,7 @@
             app:layout_anchorGravity="bottom|center"
             app:srcCompat="@drawable/check_icon" />
 
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
+        <com.example.notes.AnimatedActionButton
             android:id="@+id/decline_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

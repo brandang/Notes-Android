@@ -85,7 +85,7 @@ public class MainActivity extends AppCompatActivity
     private RecyclerViewAdapter reorderAdapter;
 
     // Floating action buttons.
-    private FloatingActionButton acceptButton, declineButton, reorderButton;
+    private AnimatedActionButton acceptButton, declineButton, reorderButton;
 
     // Container for the floating action buttons.
     private LinearLayout reorderContainer, acceptContainer;
@@ -199,6 +199,8 @@ public class MainActivity extends AppCompatActivity
         this.acceptContainer.setVisibility(View.GONE);
         this.reorderContainer.setVisibility(View.VISIBLE);
 
+        this.reorderButton.show();
+
         /*
         this.textarea.requestFocus();
         // Move cursor to beginning.
@@ -222,6 +224,9 @@ public class MainActivity extends AppCompatActivity
 
         this.acceptContainer.setVisibility(View.VISIBLE);
         this.reorderContainer.setVisibility(View.GONE);
+
+        this.acceptButton.show();
+        this.declineButton.show();
     }
 
     @Override
