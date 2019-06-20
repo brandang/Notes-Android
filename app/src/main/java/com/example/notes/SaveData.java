@@ -1,10 +1,12 @@
 package com.example.notes;
 
+import java.io.Serializable;
+
 /**
  * Class that represents the Save Data. Used to encapsulate the Save Data or convert it into usable form. The Save Data
  * includes the text that the user entered, and the font the user used.
  */
-public class SaveData {
+public class SaveData implements Serializable {
 
     private String data;
 

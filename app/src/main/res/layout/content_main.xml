@@ -52,9 +52,7 @@
 
     </LinearLayout>
 
-    <!-- The re-order screen to adjust the notes -->
-
-    <LinearLayout
+    <!--<LinearLayout
         android:id="@+id/reorder_screen"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -69,6 +67,6 @@
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             android:background="@color/colorPrimaryLight" />
 
-    </LinearLayout>
+    </LinearLayout>-->
 
 </RelativeLayout>

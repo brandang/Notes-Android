@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/background"
+    android:id="@+id/reorder_screen"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    android:background="@color/colorPrimaryLight">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
@@ -13,49 +12,26 @@
         android:theme="@style/AppTheme.AppBarOverlay">
 
         <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
+            android:id="@+id/reorder_toolbar"
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
+            android:layout_height="wrap_content"
             android:background="?attr/colorPrimary"
-            app:popupTheme="@style/AppTheme.PopupOverlay" />
+            android:minHeight="?attr/actionBarSize"
+            android:theme="@style/AppTheme.Photos.Toolbar" />
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <include layout="@layout/content_main" />
+    <!-- The scrolling view behaviour ensures that the toolbar is above this layout. /-->
+    <include layout="@layout/reorder_content" />
 
-    <!--<android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="@dimen/fab_margin"
-        app:srcCompat="@android:drawable/ic_dialog_email" />-->
-
-    <com.example.notes.AnimatedActionButton
-        android:id="@+id/reorder_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|center|right"
-        android:layout_marginLeft="@dimen/fab_margin"
-        android:layout_marginTop="36dp"
-        android:layout_marginRight="36dp"
-        android:layout_marginBottom="36dp"
-        android:clickable="true"
-        app:backgroundTint="@color/colorAccent"
-        app:elevation="0dp"
-        app:layout_anchorGravity="bottom|right"
-        app:srcCompat="@drawable/reorder_icon" />
-
-  <!--  <LinearLayout
-        android:id="@+id/accept_button_container"
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|center"
         android:background="@android:color/transparent"
         android:orientation="horizontal"
-        android:visibility="gone"
         app:layout_anchorGravity="bottom"
-        app:layout_dodgeInsetEdges="bottom" >
+        app:layout_dodgeInsetEdges="bottom">
 
         <com.example.notes.AnimatedActionButton
             android:id="@+id/accept_button"
@@ -87,6 +63,6 @@
             app:layout_anchorGravity="bottom|center"
             app:srcCompat="@drawable/cancel_icon" />
 
-    </LinearLayout>-->
+    </LinearLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

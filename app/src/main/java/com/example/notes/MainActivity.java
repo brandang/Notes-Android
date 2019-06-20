@@ -18,7 +18,6 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -56,8 +55,11 @@ public class MainActivity extends AppCompatActivity
     // Request code to identify user modifying settings.
     final private static int REQUEST_CODE_SETTINGS = 2;
 
+    // Request code to identify user rearranged the notes.
+    final private static int REQUEST_CODE_REARRANGED = 3;
+
     // Request code to capture photo.
-    final private static int REQUEST_CODE_PHOTO = 3;
+    final private static int REQUEST_CODE_PHOTO = 4;
 
     // The layout that contains the loading screen.
     private LinearLayout loadingScreen;
@@ -65,29 +67,17 @@ public class MainActivity extends AppCompatActivity
     // View that contains the text area and photos.
     private LinearLayout noteScreen;
 
-    // View that allows user to drag and drop to reorder components.
-    private LinearLayout reorderScreen;
-
     // TextView that displays message for loading screen.
     private TextView loadingMessage;
 
     // View holding items for the note screen.
     private RecyclerView noteRecyclerView;
 
-    // View holding items for re-order screen. Allows drag and drop.
-    private RecyclerView reorderRecyclerView;
-
     // Adapter for the above.
     private NoteAdapter noteAdapter;
 
-    // Adapter for reorderRecyclerView.
-    private ReorderAdapter reorderAdapter;
-
-    // Floating action buttons.
-    private AnimatedActionButton acceptButton, declineButton, reorderButton;
-
-    // Container for the floating action buttons.
-    private LinearLayout acceptContainer;
+    // Floating action button.
+    private AnimatedActionButton reorderButton;
 
     // Layout containing app bar and everything else.
     private CoordinatorLayout background;
@@ -115,12 +105,7 @@ public class MainActivity extends AppCompatActivity
         this.loadingMessage = findViewById(R.id.loading_message);
         this.noteScreen = findViewById(R.id.note_screen);
         this.noteRecyclerView = findViewById(R.id.note_recycler);
-        this.reorderScreen = findViewById(R.id.reorder_screen);
-        this.reorderRecyclerView = findViewById(R.id.reorder_recycler);
-        this.acceptContainer = findViewById(R.id.accept_button_container);
-        // Buttons.
-        this.acceptButton = findViewById(R.id.accept_button);
-        this.declineButton = findViewById(R.id.decline_button);
+        // Button.
         this.reorderButton = findViewById(R.id.reorder_button);
 
         // Setup toolbar.
@@ -140,16 +125,6 @@ public class MainActivity extends AppCompatActivity
                 new ArrayList<ItemViewData>(0), this.noteRecyclerView);
         // Don't attach a callback because we don't need any gestures here.
         this.noteRecyclerView.setAdapter(this.noteAdapter);
-
-        // Setup Reorder screen adapter and recyclerview.
-        this.reorderAdapter = new ReorderAdapter(this,
-                new ArrayList<ItemViewData>(0), this.reorderRecyclerView);
-        // Attach Callback so that this helper will notify the callback, which will in turn notify
-        // the adapter.
-        ItemTouchHelper.Callback callback = new ItemMoveCallback(this.reorderAdapter);
-        ItemTouchHelper helper = new ItemTouchHelper(callback);
-        helper.attachToRecyclerView(this.reorderRecyclerView);
-        this.reorderRecyclerView.setAdapter(this.reorderAdapter);
     }
 
     /**
@@ -160,21 +135,7 @@ public class MainActivity extends AppCompatActivity
         this.reorderButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                MainActivity.this.startReorderScreen();
-            }
-        });
-
-        this.acceptButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-            }
-        });
-
-        this.declineButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
+                MainActivity.this.startReorderActivity();
             }
         });
     }
@@ -207,10 +168,8 @@ public class MainActivity extends AppCompatActivity
      */
     private void startLoadScreen(String message) {
         this.loadingScreen.setVisibility(View.VISIBLE);
-        this.reorderScreen.setVisibility(View.GONE);
         this.noteScreen.setVisibility(View.GONE);
         this.loadingMessage.setText(message);
-        this.acceptContainer.setVisibility(View.GONE);
     }
 
     /**
@@ -218,11 +177,7 @@ public class MainActivity extends AppCompatActivity
      */
     private void startNoteScreen() {
         this.loadingScreen.setVisibility(View.GONE);
-        this.reorderScreen.setVisibility(View.GONE);
         this.noteScreen.setVisibility(View.VISIBLE);
-
-        this.acceptContainer.setVisibility(View.GONE);
-
         this.reorderButton.show();
 
         /*
@@ -239,19 +194,44 @@ public class MainActivity extends AppCompatActivity
     }
 
     /**
-     * Starts the re-order screen and disable the other screens.
+     * Starts the re-order activity.
      */
-    private void startReorderScreen() {
-        this.loadingScreen.setVisibility(View.GONE);
-        this.reorderScreen.setVisibility(View.VISIBLE);
-        this.noteScreen.setVisibility(View.GONE);
+    private void startReorderActivity() {
+        Intent intent = new Intent(this, ReorderActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("saveData", this.noteAdapter.getSaveData());
+        intent.putExtras(bundle);
+        startActivityForResult(intent, REQUEST_CODE_REARRANGED);
+    }
 
-        this.acceptContainer.setVisibility(View.VISIBLE);
+    /**
+     * Starts the photo activity to choose a photo.
+     */
+    private void startPhotoActivity() {
+        Intent intent = new Intent(this, PhotoActivity.class);
+        startActivityForResult(intent, REQUEST_CODE_PHOTO);
+    }
 
-        this.acceptButton.show();
-        this.declineButton.show();
-
-        this.reorderAdapter.setDisplayData(this.noteAdapter.getSaveData());
+    /**
+     * Begins the settings activity.
+     */
+    private void startSettingsActivity() {
+        Intent intent = new Intent(this, SettingsActivity.class);
+        String textSize = "";
+        if (this.noteAdapter.getTextSize() == getResources().getInteger(R.integer.Tiny)) {
+            textSize = getString(R.string.text_size_tiny);
+        } else if (this.noteAdapter.getTextSize() == getResources().getInteger(R.integer.Small)) {
+            textSize = getString(R.string.text_size_small);
+        } else if (this.noteAdapter.getTextSize() == getResources().getInteger(R.integer.Medium)) {
+            textSize = getString(R.string.text_size_medium);
+        } else if (this.noteAdapter.getTextSize() == getResources().getInteger(R.integer.Large)) {
+            textSize = getString(R.string.text_size_large);
+        }
+        Settings currentSettings = new Settings(textSize);
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("settings", currentSettings);
+        intent.putExtras(bundle);
+        startActivityForResult(intent, REQUEST_CODE_SETTINGS);
     }
 
     @Override
@@ -475,8 +455,7 @@ public class MainActivity extends AppCompatActivity
                 break;
 
             case R.id.action_photo:
-                Intent intent = new Intent(this, PhotoActivity.class);
-                startActivityForResult(intent, REQUEST_CODE_PHOTO);
+                this.startPhotoActivity();
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -489,22 +468,7 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_tools) {
-            Intent intent = new Intent(this, SettingsActivity.class);
-            String textSize = "";
-            if (this.noteAdapter.getTextSize() == getResources().getInteger(R.integer.Tiny)) {
-                textSize = getString(R.string.text_size_tiny);
-            } else if (this.noteAdapter.getTextSize() == getResources().getInteger(R.integer.Small)) {
-                textSize = getString(R.string.text_size_small);
-            } else if (this.noteAdapter.getTextSize() == getResources().getInteger(R.integer.Medium)) {
-                textSize = getString(R.string.text_size_medium);
-            } else if (this.noteAdapter.getTextSize() == getResources().getInteger(R.integer.Large)) {
-                textSize = getString(R.string.text_size_large);
-            }
-            Settings currentSettings = new Settings(textSize);
-            Bundle bundle = new Bundle();
-            bundle.putSerializable("settings", currentSettings);
-            intent.putExtras(bundle);
-            startActivityForResult(intent, REQUEST_CODE_SETTINGS);
+            this.startSettingsActivity();
         }
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
