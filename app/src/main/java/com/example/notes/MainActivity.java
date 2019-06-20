@@ -28,7 +28,6 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.Scope;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
@@ -79,10 +78,10 @@ public class MainActivity extends AppCompatActivity
     private RecyclerView reorderRecyclerView;
 
     // Adapter for the above.
-    private RecyclerViewAdapter noteAdapter;
+    private NoteAdapter noteAdapter;
 
     // Adapter for reorderRecyclerView.
-    private RecyclerViewAdapter reorderAdapter;
+    private ReorderAdapter reorderAdapter;
 
     // Floating action buttons.
     private AnimatedActionButton acceptButton, declineButton, reorderButton;
@@ -100,6 +99,7 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.setupComponents();
+        this.bindButtons();
         this.signIn();
     }
 
@@ -137,13 +137,13 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         // Setup noteAdapter and RecyclerView.
-        this.noteAdapter = new RecyclerViewAdapter(this,
+        this.noteAdapter = new NoteAdapter(this,
                 new ArrayList<ItemViewData>(0), this.noteRecyclerView);
-        // Dont attach a callback because we dont need any gestures here.
+        // Don't attach a callback because we don't need any gestures here.
         this.noteRecyclerView.setAdapter(this.noteAdapter);
 
         // Setup Reorder screen adapter and recyclerview.
-        this.reorderAdapter = new RecyclerViewAdapter(this,
+        this.reorderAdapter = new ReorderAdapter(this,
                 new ArrayList<ItemViewData>(0), this.reorderRecyclerView);
         // Attach Callback so that this helper will notify the callback, which will in turn notify
         // the adapter.
@@ -151,6 +151,32 @@ public class MainActivity extends AppCompatActivity
         ItemTouchHelper helper = new ItemTouchHelper(callback);
         helper.attachToRecyclerView(this.reorderRecyclerView);
         this.reorderRecyclerView.setAdapter(this.reorderAdapter);
+    }
+
+    /**
+     * Bind the action buttons.
+     */
+    private void bindButtons() {
+        this.reorderButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                MainActivity.this.startReorderScreen();
+            }
+        });
+
+        this.acceptButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+
+        this.declineButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
     }
 
     /**
@@ -227,6 +253,8 @@ public class MainActivity extends AppCompatActivity
 
         this.acceptButton.show();
         this.declineButton.show();
+
+        this.reorderAdapter.setDisplayData(this.noteAdapter.getSaveData());
     }
 
     @Override

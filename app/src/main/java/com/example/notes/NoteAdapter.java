@@ -14,12 +14,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 /**
- * A custom Adapter for a RecyclerView that can hold TextAreas and PhotoViews. Allows user to drag
- * and drop the various items to change their positions. Also contains functionality that makes
- * the numerous TextAreas act like one continuous notepad. Features include moving on to next line
- * when user presses ENTER.
+ * A custom Adapter for a RecyclerView that can hold TextAreas and PhotoViews. Acts like a ListView.
+ * Does not allow user to drag and drop. However, allows users to edit the notes.
  */
-public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements
+public class NoteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements
         ItemMoveCallback.ItemTouchHelperContract, AddLineListener, RemoveLineListener {
 
     private ArrayList<ItemViewData> data;
@@ -44,8 +42,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
      * @param data The data.
      * @param recyclerView The View that this adapter is used for.
      */
-    public RecyclerViewAdapter(Context context, ArrayList<ItemViewData> data,
-                               RecyclerView recyclerView) {
+    public NoteAdapter(Context context, ArrayList<ItemViewData> data,
+                          RecyclerView recyclerView) {
         this.context = context;
         this.data = data;
         this.recyclerView = recyclerView;
@@ -73,16 +71,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
      */
     public void setDisplayData(SaveData saveData) {
         this.data.clear();
-        BufferedReader reader = new BufferedReader(new StringReader(saveData.getText()));
-        String line;
-        try {
-            while ((line = reader.readLine()) != null) {
-                ItemViewData item = new ItemViewData(line, ItemViewData.TYPE_TEXT);
-                this.data.add(item);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        this.data.add(new ItemViewData(saveData.getText(), ItemViewData.TYPE_TEXT));
         this.focusPosition = 0;
         this.setTextSize(saveData.getFontSize());
         this.notifyDataSetChanged();
