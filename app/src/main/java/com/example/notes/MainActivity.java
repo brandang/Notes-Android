@@ -219,7 +219,7 @@ public class MainActivity extends AppCompatActivity
         this.loadingScreen.setVisibility(View.GONE);
         this.reorderScreen.setVisibility(View.VISIBLE);
         this.noteScreen.setVisibility(View.GONE);
-        
+
         this.acceptContainer.setVisibility(View.VISIBLE);
         this.reorderContainer.setVisibility(View.GONE);
     }
