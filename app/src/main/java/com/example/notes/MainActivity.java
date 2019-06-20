@@ -87,7 +87,7 @@ public class MainActivity extends AppCompatActivity
     private AnimatedActionButton acceptButton, declineButton, reorderButton;
 
     // Container for the floating action buttons.
-    private LinearLayout reorderContainer, acceptContainer;
+    private LinearLayout acceptContainer;
 
     // Layout containing app bar and everything else.
     private CoordinatorLayout background;
@@ -117,7 +117,6 @@ public class MainActivity extends AppCompatActivity
         this.noteRecyclerView = findViewById(R.id.note_recycler);
         this.reorderScreen = findViewById(R.id.reorder_screen);
         this.reorderRecyclerView = findViewById(R.id.reorder_recycler);
-        this.reorderContainer = findViewById(R.id.reorder_button_container);
         this.acceptContainer = findViewById(R.id.accept_button_container);
         // Buttons.
         this.acceptButton = findViewById(R.id.accept_button);
@@ -157,6 +156,7 @@ public class MainActivity extends AppCompatActivity
      * Bind the action buttons.
      */
     private void bindButtons() {
+        this.reorderButton.hide();
         this.reorderButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -211,7 +211,6 @@ public class MainActivity extends AppCompatActivity
         this.noteScreen.setVisibility(View.GONE);
         this.loadingMessage.setText(message);
         this.acceptContainer.setVisibility(View.GONE);
-        this.reorderContainer.setVisibility(View.GONE);
     }
 
     /**
@@ -223,7 +222,6 @@ public class MainActivity extends AppCompatActivity
         this.noteScreen.setVisibility(View.VISIBLE);
 
         this.acceptContainer.setVisibility(View.GONE);
-        this.reorderContainer.setVisibility(View.VISIBLE);
 
         this.reorderButton.show();
 
@@ -249,7 +247,6 @@ public class MainActivity extends AppCompatActivity
         this.noteScreen.setVisibility(View.GONE);
 
         this.acceptContainer.setVisibility(View.VISIBLE);
-        this.reorderContainer.setVisibility(View.GONE);
 
         this.acceptButton.show();
         this.declineButton.show();

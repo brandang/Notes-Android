@@ -1,5 +1,6 @@
 package com.example.notes;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
@@ -55,9 +56,11 @@ public class AnimatedActionButton extends FloatingActionButton {
     /**
      * Show the button by starting a fade in animation.
      */
+    @SuppressLint("RestrictedApi")
     public void show() {
         Animation animation = this.getPopInAnim();
         this.startAnimation(animation);
+        this.setVisibility(VISIBLE);
     }
 
     /**

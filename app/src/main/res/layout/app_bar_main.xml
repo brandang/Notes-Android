@@ -31,29 +31,20 @@
         android:layout_margin="@dimen/fab_margin"
         app:srcCompat="@android:drawable/ic_dialog_email" />-->
 
-    <LinearLayout
-        android:id="@+id/reorder_button_container"
+    <com.example.notes.AnimatedActionButton
+        android:id="@+id/reorder_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom|right"
-        android:visibility="gone">
-
-        <com.example.notes.AnimatedActionButton
-            android:id="@+id/reorder_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom|center|right"
-            android:layout_marginLeft="@dimen/fab_margin"
-            android:layout_marginTop="36dp"
-            android:layout_marginRight="36dp"
-            android:layout_marginBottom="36dp"
-            android:clickable="true"
-            app:backgroundTint="@color/colorAccent"
-            app:elevation="0dp"
-            app:layout_anchorGravity="bottom|right"
-            app:srcCompat="@drawable/reorder_icon" />
-
-    </LinearLayout>
+        android:layout_gravity="bottom|center|right"
+        android:layout_marginLeft="@dimen/fab_margin"
+        android:layout_marginTop="36dp"
+        android:layout_marginRight="36dp"
+        android:layout_marginBottom="36dp"
+        android:clickable="true"
+        app:backgroundTint="@color/colorAccent"
+        app:elevation="0dp"
+        app:layout_anchorGravity="bottom|right"
+        app:srcCompat="@drawable/reorder_icon" />
 
     <LinearLayout
         android:id="@+id/accept_button_container"
