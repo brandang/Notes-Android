@@ -96,19 +96,9 @@ public class ReorderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
         for (int i = 0; i < this.getItemCount(); i ++) {
             dataString += this.data.get(i).getData();
-            dataString += "\n";
-
-            // We have reached the end.
-            if (i == this.getItemCount() - 1) {
-
-                /*
-                If the last line is empty, must insert a extra new line character. This is because
-                BufferedReader will ignore any instances of the last line being empty. Thus, we must
-                work around this by inserting an extra new line.
-                 */
-                if (this.data.get(i).getData().equals(""))
-                    dataString += "\n";
-            }
+            // Don't add an extra new line at the end.
+            if (i < this.getItemCount() - 1)
+                dataString += "\n";
         }
         return new SaveData(dataString, this.getTextSize());
     }

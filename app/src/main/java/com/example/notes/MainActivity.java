@@ -257,6 +257,7 @@ public class MainActivity extends AppCompatActivity
                     String fontSize = settings.getTextSize();
                     this.setTextSize(fontSize);
                 }
+                break;
 
             case REQUEST_CODE_PHOTO:
                 if (resultCode == RESULT_OK) {
@@ -264,6 +265,16 @@ public class MainActivity extends AppCompatActivity
                     if (photoUri == null)
                         break;
                     this.noteAdapter.addData(new ItemViewData(photoUri.toString(), ItemViewData.TYPE_PHOTO));
+                }
+                break;
+
+            case REQUEST_CODE_REARRANGED:
+                if (resultCode == RESULT_OK) {
+                    SaveData saveData = (SaveData) data.getExtras().getSerializable("saveData");
+                    if (saveData == null)
+                        break;
+                    this.noteAdapter.setDisplayData(saveData);
+                    break;
                 }
         }
     }

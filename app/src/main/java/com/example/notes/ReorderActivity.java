@@ -1,9 +1,7 @@
 package com.example.notes;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -12,7 +10,6 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.gms.dynamic.IFragmentWrapper;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
@@ -41,7 +38,7 @@ public class ReorderActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.reorder_screen);
-        this.toolbar = (Toolbar) findViewById(R.id.reorder_toolbar);
+        this.toolbar = findViewById(R.id.reorder_toolbar);
         this.toolbar.setTitle(getString(R.string.choose_photo_title));
         setSupportActionBar(toolbar);
 
@@ -126,7 +123,12 @@ public class ReorderActivity extends AppCompatActivity {
      * Return the rearranged notes and return to parent activity.
      */
     private void acceptChanges() {
-
+        Intent results = new Intent();
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("saveData", this.adapter.getSaveData());
+        results.putExtras(bundle);
+        setResult(RESULT_OK, results);
+        finish();
     }
 
     /**
@@ -134,7 +136,7 @@ public class ReorderActivity extends AppCompatActivity {
      */
     private void cancelChanges() {
         Intent results = new Intent();
-        setResult(Activity.RESULT_CANCELED, results);
+        setResult(RESULT_CANCELED, results);
         finish();
     }
 }
