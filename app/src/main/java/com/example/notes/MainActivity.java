@@ -243,7 +243,6 @@ public class MainActivity extends AppCompatActivity
                 + " Data: " + data);
         switch (requestCode) {
             case REQUEST_CODE_SIGN_IN:
-                this.reorderButton.show();
                 if (resultCode == Activity.RESULT_OK && data != null) {
                     Log.d(MAIN_ACTIVITY_TAG, "Successfully signed in.");
                     this.onSignInSuccess(data);
