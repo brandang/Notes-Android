@@ -41,4 +41,7 @@
     <string name="choose_photo_title">Add Photo</string>
     <string name="choose_photo_prompt">Take a new photo, or choose one from your device.</string>
 
+    <string name="reorder_title">Rearrange Notes</string>
+    <string name="reorder_prompt">Drag and Drop to rearrange your notes.</string>
+
 </resources>

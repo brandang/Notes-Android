@@ -243,6 +243,7 @@ public class MainActivity extends AppCompatActivity
                 + " Data: " + data);
         switch (requestCode) {
             case REQUEST_CODE_SIGN_IN:
+                this.reorderButton.show();
                 if (resultCode == Activity.RESULT_OK && data != null) {
                     Log.d(MAIN_ACTIVITY_TAG, "Successfully signed in.");
                     this.onSignInSuccess(data);
@@ -252,6 +253,7 @@ public class MainActivity extends AppCompatActivity
                 break;
 
             case REQUEST_CODE_SETTINGS:
+                this.reorderButton.show();
                 if (resultCode == Activity.RESULT_OK) {
                     Settings settings = (Settings) data.getExtras().getSerializable("settings");
                     String fontSize = settings.getTextSize();
@@ -260,6 +262,7 @@ public class MainActivity extends AppCompatActivity
                 break;
 
             case REQUEST_CODE_PHOTO:
+                this.reorderButton.show();
                 if (resultCode == RESULT_OK) {
                     Uri photoUri = data.getParcelableExtra("photo");
                     if (photoUri == null)
@@ -269,6 +272,7 @@ public class MainActivity extends AppCompatActivity
                 break;
 
             case REQUEST_CODE_REARRANGED:
+                this.reorderButton.show();
                 if (resultCode == RESULT_OK) {
                     SaveData saveData = (SaveData) data.getExtras().getSerializable("saveData");
                     if (saveData == null)

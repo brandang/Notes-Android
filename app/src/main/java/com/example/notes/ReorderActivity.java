@@ -39,7 +39,7 @@ public class ReorderActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.reorder_screen);
         this.toolbar = findViewById(R.id.reorder_toolbar);
-        this.toolbar.setTitle(getString(R.string.choose_photo_title));
+        this.toolbar.setTitle(getString(R.string.reorder_title));
         setSupportActionBar(toolbar);
 
         this.background = findViewById(R.id.reorder_screen);
@@ -100,7 +100,7 @@ public class ReorderActivity extends AppCompatActivity {
      */
     private void showPrompt() {
         Snackbar message = Snackbar.make(ReorderActivity.this.background,
-                getString(R.string.download_failed_msg),
+                getString(R.string.reorder_prompt),
                 Snackbar.LENGTH_LONG);
         message.show();
     }
