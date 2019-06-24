@@ -1,16 +1,26 @@
 package com.example.notes;
 
+import android.content.Context;
 import android.util.Log;
 
 import com.google.api.client.http.ByteArrayContent;
+import com.google.api.client.http.FileContent;
 import com.google.api.services.drive.Drive;
 import com.google.api.services.drive.model.File;
 import com.google.api.services.drive.model.FileList;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutput;
+import java.io.ObjectOutputStream;
+import java.util.ArrayList;
 import java.util.Collections;
 
 /**
@@ -96,7 +106,7 @@ public class DriveService {
      * Downloads and returns the app data.
      * @return The app data. Returns empty String if it does not exist.
      */
-    public String downloadData() {
+    public SaveData downloadData() {
 
         this.setBusy(true);
 
@@ -113,23 +123,14 @@ public class DriveService {
 
             // Stream the file contents to a String.
             InputStream input = this.service.files().get(downloadUrl).executeMediaAsInputStream();
-            BufferedReader reader = new BufferedReader(new InputStreamReader(input));
-            StringBuilder stringBuilder = new StringBuilder();
-            String line;
-            boolean firstLine = true;
-            while ((line = reader.readLine()) != null) {
-                if (firstLine) {
-                    firstLine = false;
-                } else {
-                    // BufferedReader does not keep new line character, so add it back.
-                    stringBuilder.append("\n");
-                }
-                stringBuilder.append(line);
-            }
+            ObjectInputStream object = new ObjectInputStream(input);
+            SaveData data = (SaveData) object.readObject();
+            object.close();
             setBusy(false);
             input.close();
-            return stringBuilder.toString();
-        } catch (IOException e) {
+            setBusy(false);
+            return data;
+        } catch (Exception e) {
             setBusy(false);
             return null;
         }
@@ -140,7 +141,7 @@ public class DriveService {
      * @param data The data to upload.
      * @return Whether or not the upload was successful.
      */
-    public boolean uploadData(String data) {
+    public boolean uploadData(SaveData data) {
         setBusy(true);
         try {
             if (this.saveFileExists()) {
@@ -151,6 +152,7 @@ public class DriveService {
             setBusy(false);
             return true;
         } catch (IOException e) {
+            e.printStackTrace();
             setBusy(false);
             return false;
         }
@@ -186,14 +188,21 @@ public class DriveService {
      * Update the data file. Throws IO exception whenever
      * @param data The data.
      */
-    private void updateData(String data) throws IOException {
+    private void updateData(SaveData data) throws IOException {
 
         // Create a new File.
         File metadata = new File().setName(SAVE_FILE_NAME);
 
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        ObjectOutput out;
+        out = new ObjectOutputStream(bos);
+        out.writeObject(data);
+        out.flush();
+        byte[] yourBytes = bos.toByteArray();
+
         // Convert content to an AbstractInputStreamContent instance.
         // This means we don't actually have to create a new file.
-        ByteArrayContent contentStream = ByteArrayContent.fromString(SAVE_FILE_TYPE, data);
+        ByteArrayContent contentStream = new ByteArrayContent(SAVE_FILE_TYPE, yourBytes);
 
         // Update the metadata and contents.
         String fileID = this.getSaveFileID();
@@ -207,7 +216,7 @@ public class DriveService {
      * @param data The data.
      * @return True if creation was successful, False if it wasn't.
      */
-    private boolean createAndUpload(String data) throws IOException {
+    private boolean createAndUpload(SaveData data) throws IOException {
 
         File fileMetadata = new File()
                 .setSpaces(Collections.singletonList(APPDATAFOLDER))

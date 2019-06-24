@@ -1,9 +1,11 @@
 package com.example.notes;
 
+import java.io.Serializable;
+
 /**
  * A class for purposes of storing data for a single ItemView in a RecyclerView.
  */
-public class ItemViewData implements TextChangeListener {
+public class ItemData implements TextChangeListener, Serializable {
 
     // Constants for use in identifying which view type this ItemView is for.
     final public static int TYPE_PHOTO = 0;
@@ -18,7 +20,7 @@ public class ItemViewData implements TextChangeListener {
      * @param data The data.
      * @param viewType The type. Will set type to TYPE_TEXT if invalid input.
      */
-    public ItemViewData(String data, int viewType) {
+    public ItemData(String data, int viewType) {
         this.data = data;
         this.viewType = viewType;
         if (this.viewType != TYPE_PHOTO && this.viewType != TYPE_TEXT) {

@@ -1,13 +1,14 @@
 package com.example.notes;
 
 import android.os.AsyncTask;
+import android.util.Log;
 
 import java.util.List;
 
 /**
  * Task that is responsible for downloading the app data from Google Drive.
  */
-public class DataDownloadTask extends AsyncTask<Void, Void, String> {
+public class DataDownloadTask extends AsyncTask<Void, Void, SaveData> {
 
     private DriveService service;
     private List<DownloadDoneListener> listeners;
@@ -23,18 +24,19 @@ public class DataDownloadTask extends AsyncTask<Void, Void, String> {
     }
 
     @Override
-    protected String doInBackground(Void... voids) {
+    protected SaveData doInBackground(Void... voids) {
         return this.service.downloadData();
     }
 
     @Override
-    protected void onPostExecute(String data) {
+    protected void onPostExecute(SaveData data) {
         super.onPostExecute(data);
         for (DownloadDoneListener listener : this.listeners) {
             if (data == null) {
+                Log.d("Main", "data null");
                 listener.onDownloadComplete(null);
             } else {
-                listener.onDownloadComplete(new SaveData(data));
+                listener.onDownloadComplete(data);
             }
         }
     }

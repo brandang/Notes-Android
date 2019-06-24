@@ -32,7 +32,7 @@ public class DataUploadTask extends AsyncTask<Void, Void, String> {
 
     @Override
     protected String doInBackground(Void... voids) {
-        boolean success = this.service.uploadData(this.data.getSaveData());
+        boolean success = this.service.uploadData(this.data);
         if (success) {
             return this.SUCCESS;
         } else {

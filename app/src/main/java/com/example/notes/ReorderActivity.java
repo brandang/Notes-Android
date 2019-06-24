@@ -46,7 +46,7 @@ public class ReorderActivity extends AppCompatActivity {
 
         // Set up the recyclerView and its adapter.
         this.recyclerView = findViewById(R.id.reorder_recycler);
-        this.adapter = new ReorderAdapter(this, new ArrayList<ItemViewData>(0),
+        this.adapter = new ReorderAdapter(this, new ArrayList<ItemData>(0),
                 this.recyclerView);
         SaveData saveData = (SaveData) getIntent().getSerializableExtra("saveData");
         if (saveData != null)

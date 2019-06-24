@@ -21,7 +21,7 @@ import java.util.Collections;
 public class ReorderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements
         ItemMoveCallback.ItemTouchHelperContract, AddLineListener, RemoveLineListener {
 
-    private ArrayList<ItemViewData> data;
+    private ArrayList<ItemData> data;
 
     // The size at which to display the text.
     private int textSize = 12;
@@ -43,7 +43,7 @@ public class ReorderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
      * @param data The data.
      * @param recyclerView The View that this adapter is used for.
      */
-    public ReorderAdapter(Context context, ArrayList<ItemViewData> data,
+    public ReorderAdapter(Context context, ArrayList<ItemData> data,
                           RecyclerView recyclerView) {
         this.context = context;
         this.data = data;
@@ -58,7 +58,7 @@ public class ReorderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
      * Adds new data to display to the top.
      * @param data The data.
      */
-    public void addData(ItemViewData data) {
+    public void addData(ItemData data) {
         // Add data to top.
         this.data.add(0, data);
         this.focusPosition = 0;
@@ -71,17 +71,18 @@ public class ReorderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
      * @param saveData The data to display.
      */
     public void setDisplayData(SaveData saveData) {
-        this.data.clear();
+        this.data.clear();/*
         BufferedReader reader = new BufferedReader(new StringReader(saveData.getText()));
         String line;
         try {
             while ((line = reader.readLine()) != null) {
-                ItemViewData item = new ItemViewData(line, ItemViewData.TYPE_TEXT);
+                ItemData item = new ItemData(line, ItemData.TYPE_TEXT);
                 this.data.add(item);
             }
         } catch (IOException e) {
             e.printStackTrace();
-        }
+        }*/
+        this.data = saveData.getData();
         this.focusPosition = 0;
         this.setTextSize(saveData.getFontSize());
         this.notifyDataSetChanged();
@@ -100,7 +101,7 @@ public class ReorderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             if (i < this.getItemCount() - 1)
                 dataString += "\n";
         }
-        return new SaveData(dataString, this.getTextSize());
+        return new SaveData(this.data, this.getTextSize());
     }
 
     /**
@@ -127,7 +128,7 @@ public class ReorderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        if (viewType == ItemViewData.TYPE_TEXT) {
+        if (viewType == ItemData.TYPE_TEXT) {
 
             TextArea textArea = (TextArea) LayoutInflater.from(parent.getContext()).inflate(
                     R.layout.textarea, parent, false);
@@ -148,7 +149,7 @@ public class ReorderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        if (this.getItemViewType(position) == ItemViewData.TYPE_TEXT) {
+        if (this.getItemViewType(position) == ItemData.TYPE_TEXT) {
             TextAreaHolder textHolder = (TextAreaHolder) holder;
             textHolder.setData(this.data.get(position).getData(), this.textSize,
                     this.data.get(position),this, this);
@@ -173,7 +174,7 @@ public class ReorderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     @Override
     public void addLine(int position, String newLine) {
         // Add new item because user pressed enter, so move on to next line.
-        this.data.add(position + 1, new ItemViewData(newLine, ItemViewData.TYPE_TEXT));
+        this.data.add(position + 1, new ItemData(newLine, ItemData.TYPE_TEXT));
         this.focusPosition = position + 1;
         this.focusCursor = 0;
         this.notifyItemInserted(position + 1);

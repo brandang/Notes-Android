@@ -7,9 +7,6 @@ import android.view.ViewGroup;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -20,7 +17,7 @@ import java.util.Collections;
 public class NoteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements
         ItemMoveCallback.ItemTouchHelperContract, AddLineListener, RemoveLineListener {
 
-    private ArrayList<ItemViewData> data;
+    private ArrayList<ItemData> data;
 
     // The size at which to display the text.
     private int textSize = 12;
@@ -42,7 +39,7 @@ public class NoteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
      * @param data The data.
      * @param recyclerView The View that this adapter is used for.
      */
-    public NoteAdapter(Context context, ArrayList<ItemViewData> data,
+    public NoteAdapter(Context context, ArrayList<ItemData> data,
                           RecyclerView recyclerView) {
         this.context = context;
         this.data = data;
@@ -57,7 +54,7 @@ public class NoteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
      * Adds new data to display to the top.
      * @param data The data.
      */
-    public void addData(ItemViewData data) {
+    public void addData(ItemData data) {
         // Add data to top.
         this.data.add(0, data);
         this.focusPosition = 0;
@@ -71,7 +68,7 @@ public class NoteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
      */
     public void setDisplayData(SaveData saveData) {
         this.data.clear();
-        this.data.add(new ItemViewData(saveData.getText(), ItemViewData.TYPE_TEXT));
+        this.data = saveData.getData();
         this.focusPosition = 0;
         this.setTextSize(saveData.getFontSize());
         this.notifyDataSetChanged();
@@ -100,7 +97,7 @@ public class NoteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
                     dataString += "\n";
             }
         }
-        return new SaveData(dataString, this.getTextSize());
+        return new SaveData(this.data, this.getTextSize());
     }
 
     /**
@@ -127,7 +124,7 @@ public class NoteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        if (viewType == ItemViewData.TYPE_TEXT) {
+        if (viewType == ItemData.TYPE_TEXT) {
 
             TextArea textArea = (TextArea) LayoutInflater.from(parent.getContext()).inflate(
                     R.layout.textarea, parent, false);
@@ -145,7 +142,7 @@ public class NoteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        if (this.getItemViewType(position) == ItemViewData.TYPE_TEXT) {
+        if (this.getItemViewType(position) == ItemData.TYPE_TEXT) {
             TextAreaHolder textHolder = (TextAreaHolder) holder;
             textHolder.setData(this.data.get(position).getData(), this.textSize,
                     this.data.get(position),this, this);
@@ -170,7 +167,7 @@ public class NoteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
     @Override
     public void addLine(int position, String newLine) {
         // Add new item because user pressed enter, so move on to next line.
-        this.data.add(position + 1, new ItemViewData(newLine, ItemViewData.TYPE_TEXT));
+        this.data.add(position + 1, new ItemData(newLine, ItemData.TYPE_TEXT));
         this.focusPosition = position + 1;
         this.focusCursor = 0;
         this.notifyItemInserted(position + 1);

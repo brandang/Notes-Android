@@ -122,7 +122,7 @@ public class MainActivity extends AppCompatActivity
 
         // Setup noteAdapter and RecyclerView.
         this.noteAdapter = new NoteAdapter(this,
-                new ArrayList<ItemViewData>(0), this.noteRecyclerView);
+                new ArrayList<ItemData>(0), this.noteRecyclerView);
         // Don't attach a callback because we don't need any gestures here.
         this.noteRecyclerView.setAdapter(this.noteAdapter);
     }
@@ -266,7 +266,7 @@ public class MainActivity extends AppCompatActivity
                     Uri photoUri = data.getParcelableExtra("photo");
                     if (photoUri == null)
                         break;
-                    this.noteAdapter.addData(new ItemViewData(photoUri.toString(), ItemViewData.TYPE_PHOTO));
+                    this.noteAdapter.addData(new ItemData(photoUri.toString(), ItemData.TYPE_PHOTO));
                 }
                 break;
 
@@ -508,7 +508,7 @@ public class MainActivity extends AppCompatActivity
      */
     private void resetData() {
         DataUploadTask task = new DataUploadTask(this.service, new SaveData(
-                "Reset Data", 12),
+                new ArrayList<ItemData>(), 12),
                 Collections.singletonList((UploadDoneListener) this));
         task.execute();
     }
