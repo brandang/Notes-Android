@@ -8,6 +8,7 @@ import com.google.api.client.http.FileContent;
 import com.google.api.services.drive.Drive;
 import com.google.api.services.drive.model.File;
 import com.google.api.services.drive.model.FileList;
+import com.google.gson.Gson;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
@@ -123,10 +124,19 @@ public class DriveService {
 
             // Stream the file contents to a String.
             InputStream input = this.service.files().get(downloadUrl).executeMediaAsInputStream();
-            ObjectInputStream object = new ObjectInputStream(input);
-            SaveData data = (SaveData) object.readObject();
-            object.close();
-            setBusy(false);
+
+            StringBuilder stringBuilder = new StringBuilder();
+            String line = null;
+
+            try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(input))) {
+                while ((line = bufferedReader.readLine()) != null) {
+                    stringBuilder.append(line);
+                }
+            }
+
+            Gson gson = new Gson();
+            SaveData data = gson.fromJson(stringBuilder.toString(), SaveData.class);
+
             input.close();
             setBusy(false);
             return data;
@@ -193,6 +203,7 @@ public class DriveService {
         // Create a new File.
         File metadata = new File().setName(SAVE_FILE_NAME);
 
+        /*
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         ObjectOutput out;
         out = new ObjectOutputStream(bos);
@@ -203,6 +214,12 @@ public class DriveService {
         // Convert content to an AbstractInputStreamContent instance.
         // This means we don't actually have to create a new file.
         ByteArrayContent contentStream = new ByteArrayContent(SAVE_FILE_TYPE, yourBytes);
+        */
+
+        // Use Gson so that the save format can be used in other apps.
+        Gson gson = new Gson();
+        String json = gson.toJson(data, SaveData.class);
+        ByteArrayContent contentStream = new ByteArrayContent(SAVE_FILE_TYPE, json.getBytes());
 
         // Update the metadata and contents.
         String fileID = this.getSaveFileID();

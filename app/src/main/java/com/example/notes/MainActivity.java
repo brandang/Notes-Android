@@ -507,8 +507,10 @@ public class MainActivity extends AppCompatActivity
      * empty String.
      */
     private void resetData() {
+        ArrayList<ItemData> data = new ArrayList<>();
+        data.add(new ItemData("Testing 123", ItemData.TYPE_TEXT));
         DataUploadTask task = new DataUploadTask(this.service, new SaveData(
-                new ArrayList<ItemData>(), 12),
+                data, 16),
                 Collections.singletonList((UploadDoneListener) this));
         task.execute();
     }

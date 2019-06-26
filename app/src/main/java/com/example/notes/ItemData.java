@@ -29,7 +29,7 @@ public class ItemData implements TextChangeListener, Serializable {
     }
 
     /**
-     * Returns what kind type this ItemView is.
+     * Returns what kind of type this ItemView is.
      * @return The type.
      */
     public int getViewType() {
