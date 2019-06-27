@@ -1,15 +1,19 @@
 package com.example.notes;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.net.Uri;
+import android.provider.MediaStore;
+import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.io.BufferedReader;
+import com.squareup.picasso.Picasso;
+
 import java.io.IOException;
-import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -27,12 +31,6 @@ public class ReorderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     private int textSize = 12;
 
     private Context context;
-
-    // Item position in which to request focus.
-    private int focusPosition = 0;
-
-    // Where to put the cursor once focused.
-    private int focusCursor = 0;
 
     // RecyclerView that this adapter should be used for.
     private RecyclerView recyclerView;
@@ -61,7 +59,6 @@ public class ReorderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     public void addData(ItemData data) {
         // Add data to top.
         this.data.add(0, data);
-        this.focusPosition = 0;
         this.notifyItemInserted(0);
         this.recyclerView.scrollToPosition(0);
     }
@@ -71,19 +68,8 @@ public class ReorderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
      * @param saveData The data to display.
      */
     public void setDisplayData(SaveData saveData) {
-        this.data.clear();/*
-        BufferedReader reader = new BufferedReader(new StringReader(saveData.getText()));
-        String line;
-        try {
-            while ((line = reader.readLine()) != null) {
-                ItemData item = new ItemData(line, ItemData.TYPE_TEXT);
-                this.data.add(item);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }*/
+        this.data.clear();
         this.data = saveData.getData();
-        this.focusPosition = 0;
         this.setTextSize(saveData.getFontSize());
         this.notifyDataSetChanged();
     }
@@ -93,14 +79,6 @@ public class ReorderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
      * @return The SaveData.
      */
     public SaveData getSaveData() {
-        String dataString = "";
-
-        for (int i = 0; i < this.getItemCount(); i ++) {
-            dataString += this.data.get(i).getData();
-            // Don't add an extra new line at the end.
-            if (i < this.getItemCount() - 1)
-                dataString += "\n";
-        }
         return new SaveData(this.data, this.getTextSize());
     }
 
@@ -132,10 +110,10 @@ public class ReorderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
             TextArea textArea = (TextArea) LayoutInflater.from(parent.getContext()).inflate(
                     R.layout.textarea, parent, false);
-            // Disable editing.
-            textArea.setFocusable(false);
             textArea.setClickable(false);
-            textArea.setCursorVisible(false);
+            // Prevent user from editing.
+            textArea.setInputType(InputType.TYPE_NULL);
+            textArea.setFocusable(false);
             textArea.setBackground(parent.getResources().getDrawable(
                     R.drawable.text_area_unselected, null));
             return new TextAreaHolder(textArea);
@@ -153,16 +131,17 @@ public class ReorderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             TextAreaHolder textHolder = (TextAreaHolder) holder;
             textHolder.setData(this.data.get(position).getData(), this.textSize,
                     this.data.get(position),this, this);
-
-            // Request focus at the right position.
-            if (position == this.focusPosition) {
-                textHolder.requestFocus(this.focusCursor);
-            }
-            // Don't forcefully open keyboard because it does not work.
-
         } else {
             RecyclerImageViewHolder imageHolder = (RecyclerImageViewHolder) holder;
+            imageHolder.setImage(null);
             imageHolder.setImage(data.get(position).getData());
+//            Picasso.with(context).load(this.data.get(position).getData()).into(imageHolder.getImageView());
+            /*try {
+                Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.context.getContentResolver(), Uri.parse(this.data.get(position).getData()));
+                imageHolder.getImageView().setImageBitmap(bitmap);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }*/
         }
     }
 
@@ -175,12 +154,8 @@ public class ReorderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     public void addLine(int position, String newLine) {
         // Add new item because user pressed enter, so move on to next line.
         this.data.add(position + 1, new ItemData(newLine, ItemData.TYPE_TEXT));
-        this.focusPosition = position + 1;
-        this.focusCursor = 0;
         this.notifyItemInserted(position + 1);
         this.notifyItemChanged(position);
-        // Scroll to the line so that it does not appear offscreen.
-        this.recyclerView.scrollToPosition(position + 1);
     }
 
     @Override
@@ -188,16 +163,11 @@ public class ReorderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         // We cant remove line because this one is already at the top.
         if (position - 1 < 0)
             return;
-        // Set new focus.
-        this.focusPosition = position - 1;
-        this.focusCursor = this.data.get(position - 1).getData().length();
         // Remove line and transfer data to line above it.
         this.data.remove(position);
         this.data.get(position - 1).appendData(line);
         this.notifyItemRemoved(position);
         this.notifyItemChanged(position - 1);
-        // Scroll to the line so that it does not appear offscreen.
-        this.recyclerView.scrollToPosition(position - 1);
     }
 
     @Override

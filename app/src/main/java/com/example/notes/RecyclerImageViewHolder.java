@@ -1,10 +1,13 @@
 package com.example.notes;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.net.Uri;
+import android.provider.MediaStore;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
@@ -25,6 +28,8 @@ public class RecyclerImageViewHolder extends RecyclerView.ViewHolder {
 
     private LinearLayout background;
 
+    private Context context;
+
     /**
      * Creates a new RecyclerImageViewHolder containing a RecyclerImageView and a LinearLayout.
      * @param view The View.
@@ -33,7 +38,7 @@ public class RecyclerImageViewHolder extends RecyclerView.ViewHolder {
         super(view);
         this.imageView = view.findViewById(R.id.item_imageview);
         this.background = view.findViewById(R.id.item_background);
-        this.startAnimation(context);
+        this.context = context;
     }
 
     /**
@@ -41,7 +46,17 @@ public class RecyclerImageViewHolder extends RecyclerView.ViewHolder {
      * @param uri The uri of the image as a String.
      */
     public void setImage(String uri) {
-        this.imageView.setImageURI(Uri.parse(uri));
+        if (uri == null)
+            this.imageView.setImageURI(null);
+        else
+            this.imageView.setImageURI(Uri.parse(uri));
+        this.imageView.invalidate();
+        this.background.invalidate();
+        this.startAnimation(context);
+    }
+
+    public ImageView getImageView() {
+        return this.imageView;
     }
 
     /**

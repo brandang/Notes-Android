@@ -3,10 +3,12 @@ package com.example.notes;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.provider.OpenableColumns;
 import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
@@ -16,11 +18,17 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
 
 import com.github.chrisbanes.photoview.PhotoView;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Calendar;
 
 /**
@@ -28,6 +36,9 @@ import java.util.Calendar;
  * a photo, the returned result will be null.
  */
 public class PhotoActivity extends AppCompatActivity {
+
+    // Folder to save photos in.
+    final private static String DATA_SAVE_FOLDER = "data/notes";
 
     // Request code used to obtain photo from camera.
     final private static int REQUEST_CODE_CAPTURE = 0;
@@ -49,6 +60,9 @@ public class PhotoActivity extends AppCompatActivity {
     // Views that contain the sets of buttons at the bottom.
     private LinearLayout photoButtons, promptButtons;
 
+    // Layout containing app bar and everything else.
+    private CoordinatorLayout background;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         // Initially assume user did not choose any image.
@@ -59,6 +73,8 @@ public class PhotoActivity extends AppCompatActivity {
         this.toolbar = (Toolbar) findViewById(R.id.photos_toolbar);
         this.toolbar.setTitle(getString(R.string.choose_photo_title));
         setSupportActionBar(toolbar);
+
+        this.background = findViewById(R.id.photos_screen);
 
         this.promptButtons = findViewById(R.id.prompt_buttons);
         this.photoButtons = findViewById(R.id.photo_buttons);
@@ -133,7 +149,7 @@ public class PhotoActivity extends AppCompatActivity {
         this.uriFilePath = null;
         PackageManager packageManager = getPackageManager();
         if (packageManager.hasSystemFeature(PackageManager.FEATURE_CAMERA)) {
-            File mainDirectory = new File(Environment.getExternalStorageDirectory(), "MyFolder/tmp");
+            File mainDirectory = new File(Environment.getExternalStorageDirectory(), "data/notes");
             if (!mainDirectory.exists())
                 mainDirectory.mkdirs();
 
@@ -162,15 +178,65 @@ public class PhotoActivity extends AppCompatActivity {
                 + " Data: " + data);
 
         if (resultCode == RESULT_OK) {
+
             if (requestCode == REQUEST_CODE_CAPTURE) {
                 this.photoView.setImageURI(this.uriFilePath);
                 this.showPhoto();
-            } else if (requestCode == REQUEST_CODE_SEARCH) {
-                this.uriFilePath = data.getData();
-                this.photoView.setImageURI(this.uriFilePath);
-                this.showPhoto();
+            }
+            else if (requestCode == REQUEST_CODE_SEARCH) {
+                this.uriFilePath = this.copyPhoto(data.getData());
+                // Show message if there was an error.
+                if (this.uriFilePath == null) {
+                    Snackbar message = Snackbar.make(this.background,
+                            getString(R.string.choose_photo_failed),
+                            Snackbar.LENGTH_LONG);
+                    message.show();
+                }
+                // Else show the photo and ask user to accept.
+                else {
+                    this.photoView.setImageURI(this.uriFilePath);
+                    this.showPhoto();
+                }
             }
         }
+    }
+
+    /**
+     * Copies the photo from the given URI into the folder that the app uses to store data.
+     * Returns null if save was not successful.
+     * @param photo To URI for the photo to save.
+     * @return The URI of the new photo.
+     */
+    private Uri copyPhoto(Uri photo) {
+        // Create folder.
+        File mainDirectory = new File(Environment.getExternalStorageDirectory(), DATA_SAVE_FOLDER);
+        if (!mainDirectory.exists())
+            mainDirectory.mkdirs();
+
+        File outputFile = new File(mainDirectory, this.getFileName(photo));
+
+        // Save the data.
+        InputStream in;
+        OutputStream out;
+        try {
+            in = this.getContentResolver().openInputStream(photo);
+            out = new FileOutputStream(outputFile);
+            byte[] buf = new byte[1024];
+            int len;
+            while((len = in.read(buf)) > 0){
+                out.write(buf, 0, len);
+            }
+
+            Uri save = Uri.fromFile(outputFile);
+            out.close();
+            in.close();
+            return save;
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     /**
@@ -232,5 +298,21 @@ public class PhotoActivity extends AppCompatActivity {
         results.putExtra("photo", this.uriFilePath);
         setResult(Activity.RESULT_OK, results);
         finish();
+    }
+
+    /**
+     * Returns the name of the file given the URI.
+     * @param uri The URI.
+     * @return The name of the file.
+     */
+    private String getFileName(Uri uri) {
+        Cursor returnCursor =
+                this.getContentResolver().query(uri, null, null, null, null);
+        assert returnCursor != null;
+        int nameIndex = returnCursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
+        returnCursor.moveToFirst();
+        String name = returnCursor.getString(nameIndex);
+        returnCursor.close();
+        return name;
     }
 }

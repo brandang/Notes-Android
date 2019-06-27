@@ -9,7 +9,8 @@
     <com.example.notes.RecyclerImageView
         android:id="@+id/item_imageview"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        android:scrollbars="vertical">
     </com.example.notes.RecyclerImageView>
 
 </LinearLayout>

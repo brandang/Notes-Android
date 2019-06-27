@@ -266,7 +266,18 @@ public class MainActivity extends AppCompatActivity
                     Uri photoUri = data.getParcelableExtra("photo");
                     if (photoUri == null)
                         break;
+                    Log.d("Main", photoUri.toString());
                     this.noteAdapter.addData(new ItemData(photoUri.toString(), ItemData.TYPE_PHOTO));
+                    Snackbar message = Snackbar.make(MainActivity.this.background,
+                            getString(R.string.opened_photo_msg),
+                            Snackbar.LENGTH_LONG);
+                    message.show();
+                    //test
+                    Intent intent = new Intent(this, ReorderActivity.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable("saveData", this.noteAdapter.getSaveData());
+                    intent.putExtras(bundle);
+//                    startActivityForResult(intent, REQUEST_CODE_REARRANGED);
                 }
                 break;
 

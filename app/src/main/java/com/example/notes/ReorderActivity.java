@@ -1,8 +1,12 @@
 package com.example.notes;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.view.View;
+import android.view.WindowManager;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -12,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.snackbar.Snackbar;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 /**
@@ -68,6 +73,24 @@ public class ReorderActivity extends AppCompatActivity {
 
         this.setupButtons();
         this.showPrompt();
+
+        // Prevent keyboard from popping up in this Activity.
+        this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+
+        RecyclerImageView imageView = findViewById(R.id.image);
+        /*imageView.setImageURI(Uri.parse("content://com.android.providers.media.documents/document/image%3A20069"));
+        imageView.postInvalidate();
+        imageView.invalidate();*/
+
+        /*Bitmap bitmap = null;
+        try {
+            bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), Uri.parse("content://com.android.providers.media.documents/document/image%3A20069"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        imageView.setImageBitmap(bitmap);*/
+
     }
 
     /**
