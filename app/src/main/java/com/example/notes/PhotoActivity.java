@@ -184,6 +184,8 @@ public class PhotoActivity extends AppCompatActivity {
                 this.showPhoto();
             }
             else if (requestCode == REQUEST_CODE_SEARCH) {
+                // Copy this image into the data folder. Have to do this because URI may not be
+                // valid when starting other activities.
                 this.uriFilePath = this.copyPhoto(data.getData());
                 // Show message if there was an error.
                 if (this.uriFilePath == null) {
