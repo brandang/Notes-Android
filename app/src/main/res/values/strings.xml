@@ -44,6 +44,9 @@
     <string name="choose_photo_failed">Failed to load photo.</string>
 
     <string name="reorder_title">Rearrange Notes</string>
-    <string name="reorder_prompt">Drag and Drop to rearrange your notes.</string>
+    <string name="reorder_prompt">Drag and Drop to rearrange your notes. Swipe to remove items.</string>
+    <string name="text_item_delete_msg">Text deleted.</string>
+    <string name="image_item_delete_msg">Image deleted.</string>
+    <string name="undo_delete_msg">Undo</string>
 
 </resources>

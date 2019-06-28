@@ -1,9 +1,7 @@
 package com.example.notes;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.net.Uri;
-import android.provider.MediaStore;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -83,6 +81,10 @@ public class RecyclerImageViewHolder extends RecyclerView.ViewHolder {
         this.background.setAlpha(UNSELECTED_TRANSPARENCY);
     }
 
+    /**
+     * Start animation for the photo appearing.
+     * @param context The context.
+     */
     private void startAnimation(Context context) {
         Animation animation = AnimationUtils.loadAnimation(context, R.anim.pop_in_anim);
         this.imageView.startAnimation(animation);

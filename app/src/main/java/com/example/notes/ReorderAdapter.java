@@ -1,9 +1,6 @@
 package com.example.notes;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.net.Uri;
-import android.provider.MediaStore;
 import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,9 +8,8 @@ import android.view.ViewGroup;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.squareup.picasso.Picasso;
+import com.google.android.material.snackbar.Snackbar;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -25,6 +21,9 @@ import java.util.Collections;
 public class ReorderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements
         ItemMoveCallback.ItemTouchHelperContract, AddLineListener, RemoveLineListener {
 
+    // How long to wait until an item is removed.
+    final private static long REMOVAL_DELAY = 2500;
+
     private ArrayList<ItemData> data;
 
     // The size at which to display the text.
@@ -35,20 +34,24 @@ public class ReorderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     // RecyclerView that this adapter should be used for.
     private RecyclerView recyclerView;
 
+    private SnackbarDisplayer displayer;
+
     /**
      * Adapter for displaying TextAreas and PhotoViews.
      * @param context The Context.
      * @param data The data.
      * @param recyclerView The View that this adapter is used for.
+     * @param displayer The SnackbarDisplayer to use to show Snackbars.
      */
     public ReorderAdapter(Context context, ArrayList<ItemData> data,
-                          RecyclerView recyclerView) {
+                          RecyclerView recyclerView, SnackbarDisplayer displayer) {
         this.context = context;
         this.data = data;
         this.recyclerView = recyclerView;
         if (this.data == null) {
             this.data = new ArrayList<>(0);
         }
+        this.displayer = displayer;
         this.notifyDataSetChanged();
     }
 
@@ -58,9 +61,20 @@ public class ReorderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
      */
     public void addData(ItemData data) {
         // Add data to top.
-        this.data.add(0, data);
-        this.notifyItemInserted(0);
-        this.recyclerView.scrollToPosition(0);
+        this.addData(data, 0);
+    }
+
+    /**
+     * Adds the specified data to the position.
+     * @param data The data.
+     * @param position The position.
+     */
+    private void addData(ItemData data, int position) {
+        if (position > this.getItemCount())
+            position = this.getItemCount();
+        this.data.add(position, data);
+        this.notifyItemInserted(position);
+        this.recyclerView.scrollToPosition(position);
     }
 
     /**
@@ -135,13 +149,6 @@ public class ReorderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             RecyclerImageViewHolder imageHolder = (RecyclerImageViewHolder) holder;
             imageHolder.setImage(null);
             imageHolder.setImage(data.get(position).getData());
-//            Picasso.with(context).load(this.data.get(position).getData()).into(imageHolder.getImageView());
-            /*try {
-                Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.context.getContentResolver(), Uri.parse(this.data.get(position).getData()));
-                imageHolder.getImageView().setImageBitmap(bitmap);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }*/
         }
     }
 
@@ -207,5 +214,37 @@ public class ReorderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         viewHolder.setBackgroundColor(this.context.getResources().getColor(
                 R.color.colorPrimaryLight));
         viewHolder.onClear();
+    }
+
+    @Override
+    public void onRowSwiped(final int position) {
+        final ItemData item = this.data.get(position);
+        this.remove(position);
+
+        // Show Snackbar with the option of adding the item back.
+        String msg;
+        if (item.getViewType() == ItemData.TYPE_TEXT)
+            msg = this.context.getResources().getString(R.string.text_item_delete_msg);
+        else
+            msg = this.context.getResources().getString(R.string.image_item_delete_msg);
+
+        String undo = this.context.getResources().getString(R.string.undo_delete_msg);
+        int length = Snackbar.LENGTH_LONG;
+        View.OnClickListener listener = new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ReorderAdapter.this.addData(item, position);
+            }
+        };
+        this.displayer.showSnackbar(msg, undo, length, listener);
+    }
+
+    /**
+     * Removes item at the position.
+     * @param position The position to be removed.
+     */
+    private void remove(int position) {
+        this.data.remove(position);
+        this.notifyItemRemoved(position);
     }
 }

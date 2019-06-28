@@ -1,10 +1,7 @@
 package com.example.notes;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.view.View;
 import android.view.WindowManager;
 
@@ -16,14 +13,13 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.snackbar.Snackbar;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
 /**
  * Activity that is responsible for obtaining photo from user. If the user returned without choosing
  * a photo, the returned result will be null.
  */
-public class ReorderActivity extends AppCompatActivity {
+public class ReorderActivity extends AppCompatActivity implements SnackbarDisplayer {
 
     private Toolbar toolbar;
 
@@ -52,12 +48,13 @@ public class ReorderActivity extends AppCompatActivity {
         // Set up the recyclerView and its adapter.
         this.recyclerView = findViewById(R.id.reorder_recycler);
         this.adapter = new ReorderAdapter(this, new ArrayList<ItemData>(0),
-                this.recyclerView);
+                this.recyclerView, this);
         SaveData saveData = (SaveData) getIntent().getSerializableExtra("saveData");
         if (saveData != null)
             this.adapter.setDisplayData(saveData);
+
         // Assign callback so that we can handle dragging and dropping.
-        ItemTouchHelper.Callback callback = new ItemMoveCallback(this.adapter);
+        ItemTouchHelper.Callback callback = new ItemMoveCallback(this.adapter, this);
         ItemTouchHelper helper = new ItemTouchHelper(callback);
         helper.attachToRecyclerView(this.recyclerView);
         this.recyclerView.setAdapter(this.adapter);
@@ -76,21 +73,6 @@ public class ReorderActivity extends AppCompatActivity {
 
         // Prevent keyboard from popping up in this Activity.
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-
-        RecyclerImageView imageView = findViewById(R.id.image);
-        /*imageView.setImageURI(Uri.parse("content://com.android.providers.media.documents/document/image%3A20069"));
-        imageView.postInvalidate();
-        imageView.invalidate();*/
-
-        /*Bitmap bitmap = null;
-        try {
-            bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), Uri.parse("content://com.android.providers.media.documents/document/image%3A20069"));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        imageView.setImageBitmap(bitmap);*/
-
     }
 
     /**
@@ -161,5 +143,10 @@ public class ReorderActivity extends AppCompatActivity {
         Intent results = new Intent();
         setResult(RESULT_CANCELED, results);
         finish();
+    }
+
+    @Override
+    public void showSnackbar(String msg, String actionMsg, int length, View.OnClickListener listener) {
+        Snackbar.make(this.background, msg, length).setAction(actionMsg, listener).show();
     }
 }

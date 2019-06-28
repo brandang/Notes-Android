@@ -231,4 +231,9 @@ public class NoteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
                 R.color.colorPrimaryLight));
         viewHolder.onClear();
     }
+
+    @Override
+    public void onRowSwiped(int position) {
+        return;
+    }
 }

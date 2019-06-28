@@ -1,12 +1,14 @@
 package com.example.notes;
 
+import android.content.Context;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
 /**
  * Callback that is responsible for letting Adapter know whenever the user drags and drops an item.
- * Swiping is disabled.
+ * Swiping is used to delete items.
  */
 public class ItemMoveCallback extends ItemTouchHelper.Callback {
 
@@ -16,7 +18,7 @@ public class ItemMoveCallback extends ItemTouchHelper.Callback {
      * Create a new Callback for the Adapter. The Adapter will be notified if anything is dragged.
      * @param adapter The Adapter to callback for.
      */
-    public ItemMoveCallback(ItemTouchHelperContract adapter) {
+    public ItemMoveCallback(ItemTouchHelperContract adapter, Context context) {
         this.adapter = adapter;
     }
 
@@ -27,19 +29,21 @@ public class ItemMoveCallback extends ItemTouchHelper.Callback {
 
     @Override
     public boolean isItemViewSwipeEnabled() {
-        return false;
+        return true;
     }
 
     @Override
-    public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
-        return;
+    public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+        int position = viewHolder.getAdapterPosition();
+        this.adapter.onRowSwiped(position);
     }
 
     @Override
     public int getMovementFlags(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
         // Only allow dragging up and down.
         int dragFlags = ItemTouchHelper.UP | ItemTouchHelper.DOWN;
-        return makeMovementFlags(dragFlags, 0);
+        int swipeFlags = ItemTouchHelper.RIGHT | ItemTouchHelper.LEFT;
+        return makeMovementFlags(dragFlags, swipeFlags);
     }
 
     @Override
@@ -97,6 +101,7 @@ public class ItemMoveCallback extends ItemTouchHelper.Callback {
         void onRowClear(TextAreaHolder myViewHolder);
         void onRowSelected(RecyclerImageViewHolder myViewHolder);
         void onRowClear(RecyclerImageViewHolder myViewHolder);
+        void onRowSwiped(int position);
     }
 
 }
