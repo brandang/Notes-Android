@@ -2,6 +2,7 @@ package com.example.notes;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.ClipData;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -36,6 +37,7 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.drive.Drive;
 import com.google.api.services.drive.DriveScopes;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -272,12 +274,6 @@ public class MainActivity extends AppCompatActivity
                             getString(R.string.opened_photo_msg),
                             Snackbar.LENGTH_LONG);
                     message.show();
-                    //test
-                    Intent intent = new Intent(this, ReorderActivity.class);
-                    Bundle bundle = new Bundle();
-                    bundle.putSerializable("saveData", this.noteAdapter.getSaveData());
-                    intent.putExtras(bundle);
-//                    startActivityForResult(intent, REQUEST_CODE_REARRANGED);
                 }
                 break;
 
@@ -287,9 +283,16 @@ public class MainActivity extends AppCompatActivity
                     SaveData saveData = (SaveData) data.getExtras().getSerializable("saveData");
                     if (saveData == null)
                         break;
+
+                    // Some items were removed by user. Delete unnecessary photos.
+                    if (saveData.getData().size() != this.noteAdapter.getItemCount()) {
+                        this.removeDeletedPhotos(this.noteAdapter.getSaveData().getData(),
+                                saveData.getData());
+                    }
+
                     this.noteAdapter.setDisplayData(saveData);
-                    break;
                 }
+                break;
         }
     }
 
@@ -499,6 +502,27 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    /**
+     * Deletes all removed photos from the device.
+     * @param oldData The old list of items.
+     * @param newData The new list of items.
+     */
+    private void removeDeletedPhotos(ArrayList<ItemData> oldData, ArrayList<ItemData> newData) {
+        ArrayList<ItemData> clone = (ArrayList<ItemData>) oldData.clone();
+        // Ignore all items that were not removed.
+        for (ItemData itemData : newData) {
+            clone.remove(itemData);
+        }
+        // The items left have been removed by the user. Loop through them and delete images.
+        for (ItemData itemData : clone) {
+            if (itemData.getViewType() == ItemData.TYPE_PHOTO) {
+//                this.getContentResolver().delete(Uri.parse(itemData.getData()), null, null);
+                File file = new File(Uri.parse(itemData.getData()).getPath());
+                file.delete();
+            }
+        }
     }
 
     /**

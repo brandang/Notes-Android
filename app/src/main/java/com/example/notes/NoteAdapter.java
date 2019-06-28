@@ -67,7 +67,7 @@ public class NoteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
      * @param saveData The data to display.
      */
     public void setDisplayData(SaveData saveData) {
-        this.data.clear();
+//        this.data.clear();
         this.data = saveData.getData();
         this.focusPosition = 0;
         this.setTextSize(saveData.getFontSize());
