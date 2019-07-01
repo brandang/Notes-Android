@@ -7,6 +7,8 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 
+import androidx.core.view.ViewCompat;
+
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 /**
@@ -58,9 +60,25 @@ public class AnimatedActionButton extends FloatingActionButton {
      */
     @SuppressLint("RestrictedApi")
     public void show() {
-        Animation animation = this.getPopInAnim();
-        this.startAnimation(animation);
-        this.setVisibility(VISIBLE);
+        // Animation does not start when the View is not laid out, so force it to start by using
+        // our own animation.
+        if (ViewCompat.isLaidOut(this)) {
+            this.setVisibility(INVISIBLE);
+            super.show();
+        } else {
+            this.setVisibility(VISIBLE);
+            Animation animation = AnimationUtils.loadAnimation(this.getContext(),
+                    R.anim.show_button_anim);
+            this.startAnimation(animation);
+        }
+
+
+        super.show();
+    }
+
+    @SuppressLint("RestrictedApi")
+    public void hide() {
+        this.setVisibility(INVISIBLE);
     }
 
     /**

@@ -249,11 +249,14 @@ public class PhotoActivity extends AppCompatActivity {
             return;
         this.photoView.setVisibility(View.VISIBLE);
         this.prompt.setVisibility(View.GONE);
-        this.photoButtons.setVisibility(View.VISIBLE);
-        this.promptButtons.setVisibility(View.GONE);
+
         // Animation for photo coming in.
         Animation popIn = AnimationUtils.loadAnimation(this, R.anim.pop_in_anim);
         this.photoView.startAnimation(popIn);
+
+        // Hide buttons.
+        this.search.hide();
+        this.capture.hide();
 
         // Animations for buttons.
         this.accept.show();
@@ -268,8 +271,10 @@ public class PhotoActivity extends AppCompatActivity {
             return;
         this.photoView.setVisibility(View.GONE);
         this.prompt.setVisibility(View.VISIBLE);
-        this.photoButtons.setVisibility(View.GONE);
-        this.promptButtons.setVisibility(View.VISIBLE);
+
+        // Hide buttons.
+        this.accept.hide();
+        this.decline.hide();
 
         // Show the buttons.
         this.capture.show();

@@ -34,8 +34,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|center"
         android:orientation="horizontal"
-        app:layout_anchorGravity="bottom"
-        android:visibility="visible">
+        app:layout_anchorGravity="bottom">
 
         <com.example.notes.AnimatedActionButton
             android:id="@+id/capture_button"
@@ -76,8 +75,7 @@
         android:layout_gravity="bottom|center"
         android:orientation="horizontal"
         android:background="@android:color/transparent"
-        app:layout_anchorGravity="bottom"
-        android:visibility="visible">
+        app:layout_anchorGravity="bottom">
 
         <com.example.notes.AnimatedActionButton
             android:id="@+id/accept_button"
