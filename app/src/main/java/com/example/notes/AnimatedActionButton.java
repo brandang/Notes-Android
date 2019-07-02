@@ -13,9 +13,12 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 /**
  * A custom Floating Action Button that has a custom animation when it appears. Also has a method to
- * activate a click animation for when it is clicked.
+ * optionally activate a click animation for when it is clicked.
  */
 public class AnimatedActionButton extends FloatingActionButton {
+
+    // Whether or not to play an animation when clicked.
+    private boolean enableAnimation = true;
 
     /**
      * Creates a new Action Button with the the given Context.
@@ -71,22 +74,87 @@ public class AnimatedActionButton extends FloatingActionButton {
                     R.anim.show_button_anim);
             this.startAnimation(animation);
         }
-
-
-        super.show();
     }
 
+    /**
+     * Hides the button.
+     */
     @SuppressLint("RestrictedApi")
     public void hide() {
         this.setVisibility(INVISIBLE);
     }
 
     /**
-     * Start the animation for when this button gets clicked.
+     * Enable or disable animation showing up when the button is clicked.
+     * @param enable True for yes, False for no.
+     */
+    public void enableClickAnimation(boolean enable) {
+        this.enableAnimation = enable;
+    }
+
+    /**
+     * Start the animation for when this button gets clicked. Does nothing if the animation is
+     * disabled.
      */
     private void startClickAnimation() {
+        if (!this.enableAnimation)
+            return;
         Animation animation = this.getButtonClickAnim();
         this.startAnimation(animation);
+    }
+
+    /**
+     * Start animation for button to show up and grab attention of user.
+     */
+    @SuppressLint("RestrictedApi")
+    public void startShowAndFocusAnimation() {
+        this.setVisibility(VISIBLE);
+        this.startAnimation(this.getButtonShowAndFocusAnimation());
+    }
+
+    /**
+     * Returns animation that makes button show up and then grabs attention of user.
+     * @return The animation.
+     */
+    private Animation getButtonShowAndFocusAnimation() {
+        Animation showAnim = AnimationUtils.loadAnimation(this.getContext(), R.anim.show_button_anim);
+        final Animation scaleUp = AnimationUtils.loadAnimation(this.getContext(), R.anim.scale_up_anim);
+        final Animation scaleDown = AnimationUtils.loadAnimation(this.getContext(), R.anim.scale_down_anim);
+
+        showAnim.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+                return;
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                AnimatedActionButton.this.startAnimation(scaleUp);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+                return;
+            }
+        });
+
+        scaleUp.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+                return;
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                AnimatedActionButton.this.startAnimation(scaleDown);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+                return;
+            }
+        });
+        return showAnim;
     }
 
     /**
@@ -117,26 +185,5 @@ public class AnimatedActionButton extends FloatingActionButton {
             }
         });
         return jumpUp;
-    }
-
-    /**
-     * Returns animation for use on the button to show up.
-     * @return The Animation.
-     */
-    private Animation getPopInAnim() {
-        Animation popUp = AnimationUtils.loadAnimation(this.getContext(), R.anim.pop_up_anim);
-        final Animation attention = AnimationUtils.loadAnimation(this.getContext(),
-                R.anim.attention_anim);
-        popUp.setAnimationListener(new Animation.AnimationListener() {
-            @Override
-            public void onAnimationStart(Animation animation) {return;}
-            @Override
-            public void onAnimationEnd(Animation animation) {
-                AnimatedActionButton.this.startAnimation(attention);
-            }
-            @Override
-            public void onAnimationRepeat(Animation animation) {return;}
-        });
-        return popUp;
     }
 }

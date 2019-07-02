@@ -108,6 +108,7 @@ public class PhotoActivity extends AppCompatActivity {
         this.search = findViewById(R.id.search_button);
         this.accept = findViewById(R.id.accept_button);
         this.decline = findViewById(R.id.decline_button);
+        this.decline.enableClickAnimation(false);
 
         this.capture.setOnClickListener(new View.OnClickListener() {
             @Override

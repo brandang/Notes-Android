@@ -263,7 +263,6 @@ public class MainActivity extends AppCompatActivity
                 break;
 
             case REQUEST_CODE_PHOTO:
-                this.reorderButton.show();
                 if (resultCode == RESULT_OK) {
                     Uri photoUri = data.getParcelableExtra("photo");
                     if (photoUri == null)
@@ -273,7 +272,10 @@ public class MainActivity extends AppCompatActivity
                     Snackbar message = Snackbar.make(MainActivity.this.background,
                             getString(R.string.opened_photo_msg),
                             Snackbar.LENGTH_LONG);
-                    message.show();
+//                    message.show();
+                    this.reorderButton.startShowAndFocusAnimation();
+                } else {
+                    this.reorderButton.show();
                 }
                 break;
 
