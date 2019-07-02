@@ -2,7 +2,6 @@ package com.example.notes;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.content.ClipData;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -44,6 +43,8 @@ import java.util.Collections;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, DownloadDoneListener,
         UploadDoneListener {
+
+    private boolean debug = false;
 
     // Tag used for debugging.
     final private static String MAIN_ACTIVITY_TAG = "Main Activity:";
@@ -321,7 +322,10 @@ public class MainActivity extends AppCompatActivity
 
                         // The DriveService encapsulates all REST API and SAF functionality.
                         MainActivity.this.service = new DriveService(googleDriveService);
-                        MainActivity.this.loadData();
+                        if (!MainActivity.this.debug)
+                            MainActivity.this.loadData();
+                        else
+                            MainActivity.this.resetData();
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
@@ -545,6 +549,8 @@ public class MainActivity extends AppCompatActivity
      */
     private void resetData() {
         ArrayList<ItemData> data = new ArrayList<>();
+        data.add(new ItemData("Testing 123", ItemData.TYPE_TEXT));
+        data.add(new ItemData("", ItemData.TYPE_TEXT));
         data.add(new ItemData("Testing 123", ItemData.TYPE_TEXT));
         DataUploadTask task = new DataUploadTask(this.service, new SaveData(
                 data, 16),

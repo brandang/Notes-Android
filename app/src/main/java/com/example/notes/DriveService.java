@@ -1,27 +1,17 @@
 package com.example.notes;
 
-import android.content.Context;
 import android.util.Log;
 
 import com.google.api.client.http.ByteArrayContent;
-import com.google.api.client.http.FileContent;
 import com.google.api.services.drive.Drive;
 import com.google.api.services.drive.model.File;
 import com.google.api.services.drive.model.FileList;
 import com.google.gson.Gson;
 
 import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutput;
-import java.io.ObjectOutputStream;
-import java.util.ArrayList;
 import java.util.Collections;
 
 /**
@@ -142,6 +132,7 @@ public class DriveService {
             return data;
         } catch (Exception e) {
             setBusy(false);
+            Log.d("Main", "Error converting data to SaveData object.");
             return null;
         }
     }
