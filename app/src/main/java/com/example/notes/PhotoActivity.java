@@ -185,9 +185,9 @@ public class PhotoActivity extends AppCompatActivity {
                 this.showPhoto();
             }
             else if (requestCode == REQUEST_CODE_SEARCH) {
-                // Copy this image into the data folder. Have to do this because URI may not be
-                // valid when starting other activities.
-                this.uriFilePath = this.copyPhoto(data.getData());
+
+                this.uriFilePath = data.getData();
+
                 // Show message if there was an error.
                 if (this.uriFilePath == null) {
                     Snackbar message = Snackbar.make(this.background,
@@ -206,17 +206,31 @@ public class PhotoActivity extends AppCompatActivity {
 
     /**
      * Copies the photo from the given URI into the folder that the app uses to store data.
-     * Returns null if save was not successful.
+     * Returns null if save was not successful. Returns the given URI if save is unnecessary.
      * @param photo To URI for the photo to save.
      * @return The URI of the new photo.
      */
     private Uri copyPhoto(Uri photo) {
+
         // Create folder.
         File mainDirectory = new File(Environment.getExternalStorageDirectory(), DATA_SAVE_FOLDER);
-        if (!mainDirectory.exists())
+        File noMedia = new File(Environment.getExternalStorageDirectory(), DATA_SAVE_FOLDER + "/data.nomedia");
+        if (!mainDirectory.exists()) {
             mainDirectory.mkdirs();
+        }
+        // A .nomedia file ensures that gallery would not include media in this folder.
+        if (!noMedia.exists()) {
+            try {
+                noMedia.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
 
+        // If the file already exists in this data folder, don't copy again.
         File outputFile = new File(mainDirectory, this.getFileName(photo));
+        if (outputFile.exists())
+            return photo;
 
         // Save the data.
         InputStream in;
@@ -303,6 +317,9 @@ public class PhotoActivity extends AppCompatActivity {
      */
     private void returnResults() {
         Intent results = new Intent();
+        // Copy this image into the data folder. Have to do this because URI may not be
+        // valid when starting other activities.
+        this.uriFilePath = this.copyPhoto(this.uriFilePath);
         results.putExtra("photo", this.uriFilePath);
         setResult(Activity.RESULT_OK, results);
         finish();

@@ -1,6 +1,9 @@
 package com.example.notes;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.view.View;
 import android.view.animation.Animation;
@@ -44,6 +47,8 @@ public class RecyclerImageViewHolder extends RecyclerView.ViewHolder {
      * @param uri The uri of the image as a String.
      */
     public void setImage(String uri) {
+//        Bitmap ThumbImage = ThumbnailUtils.extractThumbnail(BitmapFactory.decodeFile(uri),
+//                64, 64);
         if (uri == null)
             this.imageView.setImageURI(null);
         else
