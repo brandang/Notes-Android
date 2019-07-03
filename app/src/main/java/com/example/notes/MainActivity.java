@@ -88,6 +88,7 @@ public class MainActivity extends AppCompatActivity
     // Helper to manage files.
     private DriveService service;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -268,12 +269,11 @@ public class MainActivity extends AppCompatActivity
                     Uri photoUri = data.getParcelableExtra("photo");
                     if (photoUri == null)
                         break;
-                    Log.d("Main", photoUri.toString());
                     this.noteAdapter.addData(new ItemData(photoUri.toString(), ItemData.TYPE_PHOTO));
                     Snackbar message = Snackbar.make(MainActivity.this.background,
                             getString(R.string.opened_photo_msg),
                             Snackbar.LENGTH_LONG);
-//                    message.show();
+                    // message.show();
                     this.reorderButton.startShowAndFocusAnimation();
                 } else {
                     this.reorderButton.show();

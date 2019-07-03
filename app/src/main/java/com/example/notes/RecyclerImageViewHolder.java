@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.ThumbnailUtils;
 import android.net.Uri;
+import android.provider.MediaStore;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -14,10 +15,17 @@ import android.widget.LinearLayout;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.api.services.drive.model.File;
+
+import java.io.IOException;
+
 /**
  * View holder that contains a single recycler_imageview.
  */
 public class RecyclerImageViewHolder extends RecyclerView.ViewHolder {
+
+    // Thumbnail size.
+    final private static int THUMBNAIL_SIZE = 512;
 
     // Transparency values.
     final private static float SELECTED_TRANSPARENCY = 0.5f;
@@ -43,16 +51,22 @@ public class RecyclerImageViewHolder extends RecyclerView.ViewHolder {
     }
 
     /**
-     * Set the image to display.
+     * Set the image to display. If the given URI is null, it will not display anything.
      * @param uri The uri of the image as a String.
      */
     public void setImage(String uri) {
-//        Bitmap ThumbImage = ThumbnailUtils.extractThumbnail(BitmapFactory.decodeFile(uri),
-//                64, 64);
-        if (uri == null)
-            this.imageView.setImageURI(null);
-        else
-            this.imageView.setImageURI(Uri.parse(uri));
+
+        try {
+            Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.context.getContentResolver(),
+                    Uri.parse(uri));
+            Bitmap thumbnail = ThumbnailUtils.extractThumbnail(bitmap, THUMBNAIL_SIZE,
+                    THUMBNAIL_SIZE);
+            this.imageView.setImageBitmap(thumbnail);
+        } catch (IOException e) {
+            e.printStackTrace();
+            this.imageView.setImageURI(Uri.parse(null));
+        }
+
         this.imageView.invalidate();
         this.background.invalidate();
         this.startAnimation(context);
