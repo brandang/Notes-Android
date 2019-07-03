@@ -320,10 +320,12 @@ public class PhotoActivity extends AppCompatActivity {
      */
     private void returnResults() {
         Intent results = new Intent();
-        // Copy this image into the data folder. Have to do this because URI may not be
-        // valid when starting other activities.
+        // Copy this image into the data folder.
         this.uriFilePath = this.copyPhoto(this.uriFilePath);
         results.putExtra("photo", this.uriFilePath);
+        // Grant permissions forever (or at least until the receiving activity is itself destroyed.
+        // Have to do this so that URI is valid for calling activity.
+        results.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
         setResult(Activity.RESULT_OK, results);
         finish();
     }

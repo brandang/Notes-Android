@@ -40,7 +40,7 @@
     <string name="text_size_large">Large</string>
 
     <string name="choose_photo_title">Add Photo</string>
-    <string name="choose_photo_prompt">Take a new photo, or choose one from your device.</string>
+    <string name="choose_photo_prompt">Take a new photo, or import one from your device.</string>
     <string name="choose_photo_failed">Failed to load photo.</string>
 
     <string name="reorder_title">Rearrange Notes</string>
