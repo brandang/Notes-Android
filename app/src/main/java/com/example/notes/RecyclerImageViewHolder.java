@@ -55,6 +55,12 @@ public class RecyclerImageViewHolder extends RecyclerView.ViewHolder {
      */
     public void setImage(String uri) {
 
+        if (uri == null) {
+            this.imageUri = null;
+            this.imageView.setImageURI(null);
+            return;
+        }
+
         if (this.imageUri == Uri.parse(uri))
             return;
 
@@ -68,7 +74,6 @@ public class RecyclerImageViewHolder extends RecyclerView.ViewHolder {
             this.imageView.setImageBitmap(thumbnail);
         } catch (IOException e) {
             e.printStackTrace();
-            this.imageView.setImageURI(Uri.parse(null));
         }
 
         this.imageView.invalidate();

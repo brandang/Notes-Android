@@ -28,6 +28,7 @@
     <string name="download_success_msg">Sync Successful.</string>
     <string name="download_failed_msg">Error Syncing, Check Internet Connection.</string>
     <string name="opened_photo_msg">Loaded Image. Click Sort Button to Re-arrange Notes.</string>
+    <string name="error_photo_msg">Unable to load image.</string>
 
     <string name="settings_title">Settings</string>
     <string name="text_size_title">Font Size</string>

@@ -2,11 +2,9 @@ package com.example.notes;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.UriPermission;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -322,11 +320,16 @@ public class PhotoActivity extends AppCompatActivity {
         Intent results = new Intent();
         // Copy this image into the data folder.
         this.uriFilePath = this.copyPhoto(this.uriFilePath);
+
         results.putExtra("photo", this.uriFilePath);
-        // Grant permissions forever (or at least until the receiving activity is itself destroyed.
-        // Have to do this so that URI is valid for calling activity.
+        // Grant permissions to calling activity to read file.
         results.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-        setResult(Activity.RESULT_OK, results);
+
+        // Attempt to get long term permission for image.
+        if (!this.obtainPersistedPermission(this.uriFilePath)) {
+            setResult(Activity.RESULT_CANCELED);
+        } else
+            setResult(Activity.RESULT_OK, results);
         finish();
     }
 
@@ -344,5 +347,29 @@ public class PhotoActivity extends AppCompatActivity {
         String name = returnCursor.getString(nameIndex);
         returnCursor.close();
         return name;
+    }
+
+    /**
+     * Obtain read permissions for URI so that long term access to this file is allowed.
+     * @param uri The URI of the file.
+     * @return True if successful, False if not.
+     */
+    private boolean obtainPersistedPermission(Uri uri) {
+        boolean obtained = false;
+        try {
+            getContentResolver()
+                    .takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
+            for (UriPermission perm : getContentResolver().getPersistedUriPermissions()) {
+                if (perm.getUri().equals(uri)) {
+                    obtained = true;
+                    break;
+                }
+            }
+        }
+        catch (SecurityException e) {
+            obtained = false;
+        }
+        return obtained;
     }
 }

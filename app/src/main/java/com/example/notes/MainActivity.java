@@ -205,6 +205,8 @@ public class MainActivity extends AppCompatActivity
         Bundle bundle = new Bundle();
         bundle.putSerializable("saveData", this.noteAdapter.getSaveData());
         intent.putExtras(bundle);
+        // Allow activity to actually read files.
+        intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
         startActivityForResult(intent, REQUEST_CODE_REARRANGED);
     }
 
@@ -276,6 +278,14 @@ public class MainActivity extends AppCompatActivity
                     // message.show();
                     this.reorderButton.startShowAndFocusAnimation();
                 } else {
+                    Uri photoUri = data.getParcelableExtra("photo");
+                    // Image chosen, but result cancelled, implying Permissions were not obtained.
+                    if (photoUri != null) {
+                        Snackbar message = Snackbar.make(MainActivity.this.background,
+                                getString(R.string.error_photo_msg),
+                                Snackbar.LENGTH_LONG);
+                         message.show();
+                    }
                     this.reorderButton.show();
                 }
                 break;
