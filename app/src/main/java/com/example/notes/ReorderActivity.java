@@ -8,12 +8,9 @@ import android.view.WindowManager;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
-import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.snackbar.Snackbar;
-
-import java.util.ArrayList;
 
 /**
  * Activity that is responsible for obtaining photo from user. If the user returned without choosing
@@ -34,6 +31,8 @@ public class ReorderActivity extends AppCompatActivity implements SnackbarDispla
     // Background/root view.
     private CoordinatorLayout background;
 
+    private ReorderFragment fragment;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -45,19 +44,12 @@ public class ReorderActivity extends AppCompatActivity implements SnackbarDispla
 
         this.background = findViewById(R.id.reorder_screen);
 
-        // Set up the recyclerView and its adapter.
-        this.recyclerView = findViewById(R.id.reorder_recycler);
-        this.adapter = new ReorderAdapter(this, new ArrayList<ItemData>(0),
-                this.recyclerView, this);
+        // Set up fragment.
+        this.fragment = new ReorderFragment();
         SaveData saveData = (SaveData) getIntent().getSerializableExtra("saveData");
-        if (saveData != null)
-            this.adapter.setDisplayData(saveData);
-
-        // Assign callback so that we can handle dragging and dropping.
-        ItemTouchHelper.Callback callback = new ItemMoveCallback(this.adapter, this);
-        ItemTouchHelper helper = new ItemTouchHelper(callback);
-        helper.attachToRecyclerView(this.recyclerView);
-        this.recyclerView.setAdapter(this.adapter);
+        getSupportFragmentManager().beginTransaction().replace(R.id.reorder_fragment_container,
+                this.fragment).commit();
+        this.fragment.setData(saveData, this);
 
         // Enable the back button in the toolbar.
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -130,7 +122,7 @@ public class ReorderActivity extends AppCompatActivity implements SnackbarDispla
     private void acceptChanges() {
         Intent results = new Intent();
         Bundle bundle = new Bundle();
-        bundle.putSerializable("saveData", this.adapter.getSaveData());
+        bundle.putSerializable("saveData", this.fragment.getData());
         results.putExtras(bundle);
         setResult(RESULT_OK, results);
         finish();

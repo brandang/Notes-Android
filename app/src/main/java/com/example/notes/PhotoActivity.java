@@ -330,6 +330,7 @@ public class PhotoActivity extends AppCompatActivity {
             setResult(Activity.RESULT_CANCELED);
         } else
             setResult(Activity.RESULT_OK, results);
+
         finish();
     }
 

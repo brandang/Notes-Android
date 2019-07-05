@@ -126,7 +126,7 @@ public class MainActivity extends AppCompatActivity
 
         // Setup noteAdapter and RecyclerView.
         this.noteAdapter = new NoteAdapter(this,
-                new ArrayList<ItemData>(0), this.noteRecyclerView);
+                null, this.noteRecyclerView);
         // Don't attach a callback because we don't need any gestures here.
         this.noteRecyclerView.setAdapter(this.noteAdapter);
     }

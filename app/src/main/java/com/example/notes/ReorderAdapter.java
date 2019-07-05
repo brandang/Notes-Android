@@ -21,9 +21,6 @@ import java.util.Collections;
 public class ReorderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements
         ItemMoveCallback.ItemTouchHelperContract, AddLineListener, RemoveLineListener {
 
-    // How long to wait until an item is removed.
-    final private static long REMOVAL_DELAY = 2500;
-
     private ArrayList<ItemData> data;
 
     // The size at which to display the text.
@@ -39,18 +36,20 @@ public class ReorderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     /**
      * Adapter for displaying TextAreas and PhotoViews.
      * @param context The Context.
-     * @param data The data.
+     * @param data The SaveData. If it is null, nothing will be displayed.
      * @param recyclerView The View that this adapter is used for.
      * @param displayer The SnackbarDisplayer to use to show Snackbars.
      */
-    public ReorderAdapter(Context context, ArrayList<ItemData> data,
+    public ReorderAdapter(Context context, SaveData data,
                           RecyclerView recyclerView, SnackbarDisplayer displayer) {
         this.context = context;
-        this.data = data;
-        this.recyclerView = recyclerView;
-        if (this.data == null) {
-            this.data = new ArrayList<>(0);
+        if (data == null)
+            this.data = new ArrayList<>();
+        else {
+            this.data = data.getData();
+            this.setTextSize(data.getFontSize());
         }
+        this.recyclerView = recyclerView;
         this.displayer = displayer;
         this.notifyDataSetChanged();
     }
@@ -148,7 +147,7 @@ public class ReorderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         } else {
             RecyclerImageViewHolder imageHolder = (RecyclerImageViewHolder) holder;
             imageHolder.setImage(null);
-            imageHolder.setImage(data.get(position).getData());
+                imageHolder.setImage(data.get(position).getData());
         }
     }
 

@@ -36,17 +36,19 @@ public class NoteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
     /**
      * Adapter for displaying TextAreas and PhotoViews.
      * @param context The Context.
-     * @param data The data.
+     * @param data The SaveData. If it is null, nothing will be displayed.
      * @param recyclerView The View that this adapter is used for.
      */
-    public NoteAdapter(Context context, ArrayList<ItemData> data,
+    public NoteAdapter(Context context, SaveData data,
                           RecyclerView recyclerView) {
         this.context = context;
-        this.data = data;
-        this.recyclerView = recyclerView;
-        if (this.data == null) {
-            this.data = new ArrayList<>(0);
+        if (data == null)
+            this.data = new ArrayList<>();
+        else {
+            this.data = data.getData();
+            this.setTextSize(data.getFontSize());
         }
+        this.recyclerView = recyclerView;
         this.notifyDataSetChanged();
     }
 
