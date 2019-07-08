@@ -12,16 +12,12 @@ import android.provider.MediaStore;
 import android.provider.OpenableColumns;
 import android.util.Log;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 
-import com.github.chrisbanes.photoview.PhotoView;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.io.File;
@@ -52,9 +48,6 @@ public class PhotoActivity extends AppCompatActivity {
 
     private Toolbar toolbar;
 
-    private PhotoView photoView;
-    private TextView prompt;
-
     // Custom action buttons at the bottom.
     private AnimatedActionButton capture, search, accept, decline;
 
@@ -63,6 +56,10 @@ public class PhotoActivity extends AppCompatActivity {
 
     // Layout containing app bar and everything else.
     private CoordinatorLayout background;
+
+    private PhotoContentFragment photoContentFragment;
+
+    private ReorderFragment reorderFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,8 +77,10 @@ public class PhotoActivity extends AppCompatActivity {
         this.promptButtons = findViewById(R.id.prompt_buttons);
         this.photoButtons = findViewById(R.id.photo_buttons);
 
-        this.photoView = findViewById(R.id.photo);
-        this.prompt = findViewById(R.id.choose_photo_prompt);
+        // Create fragments.
+        this.reorderFragment = new ReorderFragment();
+        this.photoContentFragment = new PhotoContentFragment();
+        this.attachPhotoContentFragment();
 
         // Enable the back button.
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -137,6 +136,22 @@ public class PhotoActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Attach the PhotoContentFragment to the container in this Activity.
+     */
+    private void attachPhotoContentFragment() {
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                this.photoContentFragment).commit();
+    }
+
+    /**
+     * Attach the ReorderFragment to the container in this Activity.
+     */
+    private void attachReorderFragment() {
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                this.reorderFragment).commit();
+    }
+
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         if (uriFilePath != null)
@@ -182,8 +197,7 @@ public class PhotoActivity extends AppCompatActivity {
         if (resultCode == RESULT_OK) {
 
             if (requestCode == REQUEST_CODE_CAPTURE) {
-                this.photoView.setImageURI(this.uriFilePath);
-                this.showPhoto();
+                this.showPhoto(this.uriFilePath);
             }
             else if (requestCode == REQUEST_CODE_SEARCH) {
 
@@ -198,8 +212,7 @@ public class PhotoActivity extends AppCompatActivity {
                 }
                 // Else show the photo and ask user to accept.
                 else {
-                    this.photoView.setImageURI(this.uriFilePath);
-                    this.showPhoto();
+                    this.showPhoto(this.uriFilePath);
                 }
             }
         }
@@ -260,16 +273,7 @@ public class PhotoActivity extends AppCompatActivity {
     /**
      * Shows the photo and hides the prompt. Does the same for the buttons.
      */
-    private void showPhoto() {
-        if (this.photoView == null || this.prompt == null)
-            return;
-        this.photoView.setVisibility(View.VISIBLE);
-        this.prompt.setVisibility(View.GONE);
-
-        // Animation for photo coming in.
-        Animation popIn = AnimationUtils.loadAnimation(this, R.anim.pop_in_anim);
-        this.photoView.startAnimation(popIn);
-
+    private void showPhoto(Uri uri) {
         // Hide buttons.
         this.search.hide();
         this.capture.hide();
@@ -277,16 +281,14 @@ public class PhotoActivity extends AppCompatActivity {
         // Animations for buttons.
         this.accept.show();
         this.decline.show();
+
+        this.photoContentFragment.showImage(uri);
     }
 
     /**
      * Shows the prompt and hides the photo. Does the same for the buttons.
      */
     private void showPrompt() {
-        if (this.photoView == null || this.prompt == null)
-            return;
-        this.photoView.setVisibility(View.GONE);
-        this.prompt.setVisibility(View.VISIBLE);
 
         // Hide buttons.
         this.accept.hide();
@@ -295,6 +297,8 @@ public class PhotoActivity extends AppCompatActivity {
         // Show the buttons.
         this.capture.show();
         this.search.show();
+
+        this.photoContentFragment.showPrompt();
     }
 
     /**
@@ -302,7 +306,6 @@ public class PhotoActivity extends AppCompatActivity {
      */
     private void onDeclineClick() {
         this.uriFilePath = null;
-        this.photoView.setImageURI(null);
         this.showPrompt();
     }
 
