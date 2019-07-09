@@ -1,6 +1,5 @@
 package com.example.notes;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,24 +23,24 @@ public class ReorderFragment extends Fragment {
     private SaveData saveData;
     private SnackbarDisplayer displayer;
 
-    private boolean attached = false;
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         // Inflate the layout for this fragment.
         View layout = inflater.inflate(R.layout.reorder_content, container,false);
-
-        this.recycler = layout.findViewById(R.id.reorder_recycler);
-
-        // Assign callback so that we can handle dragging and dropping.
-        ItemTouchHelper.Callback callback = new ItemMoveCallback(this.adapter, this.getActivity());
-        ItemTouchHelper helper = new ItemTouchHelper(callback);
-        helper.attachToRecyclerView(this.recycler);
-        this.recycler.setAdapter(this.adapter);
-
         return layout;
+    }
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+
+        // Have to attain child views here.
+        this.recycler = view.findViewById(R.id.reorder_recycler);
+
+        if (this.saveData != null || this.displayer != null) {
+            this.setupRecycler();
+        }
     }
 
     /**
@@ -53,9 +52,24 @@ public class ReorderFragment extends Fragment {
     public void setData(SaveData saveData, SnackbarDisplayer displayer) {
         this.saveData = saveData;
         this.displayer = displayer;
-        if (attached)
-            this.adapter = new ReorderAdapter(this.getActivity(), this.saveData, this.recycler,
-                    this.displayer);
+        if (this.recycler != null) {
+            this.setupRecycler();
+        }
+    }
+
+    /**
+     * Sets up the RecyclerView with ItemTouchHelpers and an Adapter.
+     */
+    private void setupRecycler() {
+
+        this.adapter = new ReorderAdapter(this.getActivity(), this.saveData, this.recycler,
+                this.displayer);
+        this.recycler.setAdapter(this.adapter);
+
+        // Assign callback so that we can handle dragging and dropping.
+        ItemTouchHelper.Callback callback = new ItemMoveCallback(this.adapter, this.getActivity());
+        ItemTouchHelper helper = new ItemTouchHelper(callback);
+        helper.attachToRecyclerView(this.recycler);
     }
 
     /**
@@ -66,19 +80,5 @@ public class ReorderFragment extends Fragment {
         if (this.adapter == null)
             return null;
         return this.adapter.getSaveData();
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        this.attached = true;
-        this.adapter = new ReorderAdapter(this.getActivity(), this.saveData, this.recycler,
-                this.displayer);
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        this.attached = false;
     }
 }

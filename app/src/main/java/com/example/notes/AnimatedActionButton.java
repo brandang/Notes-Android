@@ -13,7 +13,8 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 /**
  * A custom Floating Action Button that has a custom animation when it appears. Also has a method to
- * optionally activate a click animation for when it is clicked.
+ * optionally activate a click animation for when it is clicked. Overrides hide() method so that
+ * it is guaranteed to work in all cases.
  */
 public class AnimatedActionButton extends FloatingActionButton {
 
@@ -76,12 +77,11 @@ public class AnimatedActionButton extends FloatingActionButton {
         }
     }
 
-    /**
-     * Hides the button.
-     */
     @SuppressLint("RestrictedApi")
+    @Override
     public void hide() {
-        this.setVisibility(INVISIBLE);
+        this.setVisibility(VISIBLE);
+        this.startAnimation(this.getHideAnim());
     }
 
     /**
@@ -185,5 +185,31 @@ public class AnimatedActionButton extends FloatingActionButton {
             }
         });
         return jumpUp;
+    }
+
+    /**
+     * Returns Animation for Button to hide.
+     * @return The Animation.
+     */
+    private Animation getHideAnim() {
+        Animation hide = AnimationUtils.loadAnimation(this.getContext(), R.anim.hide_button_anim);
+        hide.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+                return;
+            }
+
+            @SuppressLint("RestrictedApi")
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                AnimatedActionButton.this.setVisibility(INVISIBLE);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+                return;
+            }
+        });
+        return hide;
     }
 }

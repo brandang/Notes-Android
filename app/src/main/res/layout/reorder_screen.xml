@@ -28,6 +28,7 @@
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
 
+    <!-- DodgeInsetsEdges to bottom ensures that buttons move with Snackbar. -->
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -36,21 +37,6 @@
         android:orientation="horizontal"
         app:layout_anchorGravity="bottom"
         app:layout_dodgeInsetEdges="bottom">
-
-        <com.example.notes.AnimatedActionButton
-            android:id="@+id/accept_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginLeft="@dimen/fab_margin"
-            android:layout_marginTop="36dp"
-            android:layout_marginRight="@dimen/fab_margin"
-            android:layout_marginBottom="36dp"
-            android:clickable="true"
-            app:backgroundTint="@color/colorAccent"
-            app:elevation="0dp"
-            app:layout_anchorGravity="bottom|center"
-            app:srcCompat="@drawable/check_icon" />
 
         <com.example.notes.AnimatedActionButton
             android:id="@+id/decline_button"
@@ -66,6 +52,21 @@
             app:elevation="0dp"
             app:layout_anchorGravity="bottom|center"
             app:srcCompat="@drawable/cancel_icon" />
+
+        <com.example.notes.AnimatedActionButton
+            android:id="@+id/accept_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginLeft="@dimen/fab_margin"
+            android:layout_marginTop="36dp"
+            android:layout_marginRight="@dimen/fab_margin"
+            android:layout_marginBottom="36dp"
+            android:clickable="true"
+            app:backgroundTint="@color/colorAccent"
+            app:elevation="0dp"
+            app:layout_anchorGravity="bottom|center"
+            app:srcCompat="@drawable/check_icon" />
 
     </LinearLayout>
 

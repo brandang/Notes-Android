@@ -29,19 +29,20 @@
         android:visibility="visible"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
 
+    <!-- DodgeInsetsEdges to bottom ensures that buttons move with Snackbar. -->
     <LinearLayout
-        android:id="@+id/prompt_buttons"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|center"
         android:orientation="horizontal"
-        app:layout_anchorGravity="bottom">
+        app:layout_anchorGravity="bottom"
+        app:layout_dodgeInsetEdges="bottom">
 
         <com.example.notes.AnimatedActionButton
             android:id="@+id/capture_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
+            android:layout_gravity="bottom|center"
             android:layout_marginLeft="@dimen/fab_margin"
             android:layout_marginRight="@dimen/fab_margin"
             android:layout_marginBottom="36dp"
@@ -76,22 +77,8 @@
         android:layout_gravity="bottom|center"
         android:orientation="horizontal"
         android:background="@android:color/transparent"
-        app:layout_anchorGravity="bottom">
-
-        <com.example.notes.AnimatedActionButton
-            android:id="@+id/accept_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginLeft="@dimen/fab_margin"
-            android:layout_marginRight="@dimen/fab_margin"
-            android:layout_marginBottom="36dp"
-            android:layout_marginTop="36dp"
-            android:clickable="true"
-            app:backgroundTint="@color/colorAccent"
-            app:elevation="0dp"
-            app:layout_anchorGravity="bottom|center"
-            app:srcCompat="@drawable/check_icon" />
+        app:layout_anchorGravity="bottom"
+        app:layout_dodgeInsetEdges="bottom">
 
         <com.example.notes.AnimatedActionButton
             android:id="@+id/decline_button"
@@ -107,6 +94,21 @@
             app:elevation="0dp"
             app:layout_anchorGravity="bottom|center"
             app:srcCompat="@drawable/cancel_icon" />
+
+        <com.example.notes.AnimatedActionButton
+            android:id="@+id/accept_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginLeft="@dimen/fab_margin"
+            android:layout_marginRight="@dimen/fab_margin"
+            android:layout_marginBottom="36dp"
+            android:layout_marginTop="36dp"
+            android:clickable="true"
+            app:backgroundTint="@color/colorAccent"
+            app:elevation="0dp"
+            app:layout_anchorGravity="bottom|center"
+            app:srcCompat="@drawable/check_icon" />
 
     </LinearLayout>
 

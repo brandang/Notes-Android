@@ -215,6 +215,11 @@ public class MainActivity extends AppCompatActivity
      */
     private void startPhotoActivity() {
         Intent intent = new Intent(this, PhotoActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("saveData", this.noteAdapter.getSaveData());
+        intent.putExtras(bundle);
+        // Allow activity to read URI photos.
+        intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
         startActivityForResult(intent, REQUEST_CODE_PHOTO);
     }
 
@@ -271,11 +276,13 @@ public class MainActivity extends AppCompatActivity
                     Uri photoUri = data.getParcelableExtra("photo");
                     if (photoUri == null)
                         break;
-                    this.noteAdapter.addData(new ItemData(photoUri.toString(), ItemData.TYPE_PHOTO));
+//                    this.noteAdapter.addData(new ItemData(photoUri.toString(), ItemData.TYPE_PHOTO));
                     Snackbar message = Snackbar.make(MainActivity.this.background,
                             getString(R.string.opened_photo_msg),
                             Snackbar.LENGTH_LONG);
                     // message.show();
+                    SaveData saveData = (SaveData) data.getExtras().getSerializable("saveData");
+                    this.noteAdapter.setDisplayData(saveData);
                     this.reorderButton.startShowAndFocusAnimation();
                 } else {
                     Uri photoUri = data.getParcelableExtra("photo");

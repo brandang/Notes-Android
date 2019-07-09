@@ -8,15 +8,19 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Parcelable;
 import android.provider.MediaStore;
 import android.provider.OpenableColumns;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.transition.TransitionManager;
 
 import com.google.android.material.snackbar.Snackbar;
 
@@ -32,7 +36,7 @@ import java.util.Calendar;
  * Activity that is responsible for obtaining photo from user. If the user returned without choosing
  * a photo, the returned result will be null.
  */
-public class PhotoActivity extends AppCompatActivity {
+public class PhotoActivity extends AppCompatActivity implements SnackbarDisplayer {
 
     // Folder to save photos in.
     final private static String DATA_SAVE_FOLDER = "data/notes";
@@ -43,6 +47,13 @@ public class PhotoActivity extends AppCompatActivity {
     // Request code to obtain image from internal storage.
     final private static int REQUEST_CODE_SEARCH = 1;
 
+    // States.
+    final private static int STATE_PROMPT = 0;
+    final private static int STATE_PHOTO = 1;
+    final private static int STATE_REORDER = 2;
+
+    private int state = STATE_PROMPT;
+
     // Uri of the photo that the user choose. Null if unspecified.
     private Uri uriFilePath;
 
@@ -51,8 +62,7 @@ public class PhotoActivity extends AppCompatActivity {
     // Custom action buttons at the bottom.
     private AnimatedActionButton capture, search, accept, decline;
 
-    // Views that contain the sets of buttons at the bottom.
-    private LinearLayout photoButtons, promptButtons;
+    private LinearLayout acceptContainer;
 
     // Layout containing app bar and everything else.
     private CoordinatorLayout background;
@@ -60,6 +70,9 @@ public class PhotoActivity extends AppCompatActivity {
     private PhotoContentFragment photoContentFragment;
 
     private ReorderFragment reorderFragment;
+
+    // SaveData obtained from parent Activity.
+    private SaveData saveData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,9 +86,10 @@ public class PhotoActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         this.background = findViewById(R.id.photos_screen);
+        this.acceptContainer = findViewById(R.id.photo_buttons);
 
-        this.promptButtons = findViewById(R.id.prompt_buttons);
-        this.photoButtons = findViewById(R.id.photo_buttons);
+        // Obtain SaveData.
+        this.saveData = (SaveData) getIntent().getSerializableExtra("saveData");
 
         // Create fragments.
         this.reorderFragment = new ReorderFragment();
@@ -88,8 +102,8 @@ public class PhotoActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent resultIntent = new Intent();
-                resultIntent.putExtra("photo", PhotoActivity.this.uriFilePath);
-                setResult(Activity.RESULT_OK, resultIntent);
+                resultIntent.putExtra("photo", (Parcelable[]) null);
+                setResult(Activity.RESULT_CANCELED, resultIntent);
                 onBackPressed();
                 finish();
             }
@@ -145,11 +159,17 @@ public class PhotoActivity extends AppCompatActivity {
     }
 
     /**
-     * Attach the ReorderFragment to the container in this Activity.
+     * Attach the ReorderFragment to the container in this Activity. Also adds specified photo to
+     * top of the list in the Fragment.
+     * @param saveData The SaveData to display in the Fragment.
+     * @param uri The uri of the new photo to add.
      */
-    private void attachReorderFragment() {
+    private void attachReorderFragment(SaveData saveData, Uri uri) {
+        this.state = STATE_REORDER;
+        saveData.getData().add(0, new ItemData(uri.toString(), ItemData.TYPE_PHOTO));
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                 this.reorderFragment).commit();
+        this.reorderFragment.setData(saveData, this);
     }
 
     @Override
@@ -220,7 +240,8 @@ public class PhotoActivity extends AppCompatActivity {
 
     /**
      * Copies the photo from the given URI into the folder that the app uses to store data.
-     * Returns null if save was not successful. Returns the given URI if save is unnecessary.
+     * Returns null if save was not successful. If the photo already exists in the folder, returns
+     * the URI to that photo instead.
      * @param photo To URI for the photo to save.
      * @return The URI of the new photo.
      */
@@ -244,7 +265,7 @@ public class PhotoActivity extends AppCompatActivity {
         // If the file already exists in this data folder, don't copy again.
         File outputFile = new File(mainDirectory, this.getFileName(photo));
         if (outputFile.exists())
-            return photo;
+            return Uri.fromFile(outputFile);
 
         // Save the data.
         InputStream in;
@@ -274,6 +295,8 @@ public class PhotoActivity extends AppCompatActivity {
      * Shows the photo and hides the prompt. Does the same for the buttons.
      */
     private void showPhoto(Uri uri) {
+        this.state = STATE_PHOTO;
+
         // Hide buttons.
         this.search.hide();
         this.capture.hide();
@@ -289,6 +312,7 @@ public class PhotoActivity extends AppCompatActivity {
      * Shows the prompt and hides the photo. Does the same for the buttons.
      */
     private void showPrompt() {
+        this.state = STATE_PROMPT;
 
         // Hide buttons.
         this.accept.hide();
@@ -313,7 +337,33 @@ public class PhotoActivity extends AppCompatActivity {
      * Accept floating action button was just clicked. Handles it.
      */
     private void onAcceptClick() {
-        this.returnResults();
+        // Take action based on what state it currently is.
+        if (this.state != STATE_REORDER) {
+            this.decline.hide();
+            // Copy this image into the data folder.
+            this.uriFilePath = this.copyPhoto(this.uriFilePath);
+            this.attachReorderFragment(this.saveData, this.uriFilePath);
+            this.obtainPersistedPermission(this.uriFilePath);
+            // Show prompt.
+            Snackbar message = Snackbar.make(this.background,
+                    getString(R.string.reorder_prompt),
+                    Snackbar.LENGTH_LONG);
+            message.show();
+            this.toolbar.setTitle(getString(R.string.reorder_title));
+            this.moveAcceptButtonRight();
+        } else {
+            this.returnResults();
+        }
+    }
+
+    /**
+     * Transitions the Accept button to the right.
+     */
+    private void moveAcceptButtonRight() {
+        TransitionManager.beginDelayedTransition((ViewGroup) this.acceptContainer.getParent());
+        CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams) this.acceptContainer.getLayoutParams();
+        layoutParams.gravity = Gravity.BOTTOM | Gravity.RIGHT;
+        this.acceptContainer.setLayoutParams(layoutParams);
     }
 
     /**
@@ -321,19 +371,23 @@ public class PhotoActivity extends AppCompatActivity {
      */
     private void returnResults() {
         Intent results = new Intent();
-        // Copy this image into the data folder.
-        this.uriFilePath = this.copyPhoto(this.uriFilePath);
+
+        Log.d("Main", "" + this.uriFilePath);
 
         results.putExtra("photo", this.uriFilePath);
         // Grant permissions to calling activity to read file.
         results.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
 
-        // Attempt to get long term permission for image.
-        if (!this.obtainPersistedPermission(this.uriFilePath)) {
-            setResult(Activity.RESULT_CANCELED);
-        } else
-            setResult(Activity.RESULT_OK, results);
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("saveData", this.reorderFragment.getData());
+        results.putExtras(bundle);
 
+        // Attempt to get long term permission for image.
+        /*if (!this.obtainPersistedPermission(this.uriFilePath)) {
+            setResult(Activity.RESULT_CANCELED, results);
+            Log.d("Main", "cancelled");
+        } else*/
+            setResult(Activity.RESULT_OK, results);
         finish();
     }
 
@@ -375,5 +429,10 @@ public class PhotoActivity extends AppCompatActivity {
             obtained = false;
         }
         return obtained;
+    }
+
+    @Override
+    public void showSnackbar(String msg, String actionMsg, int length, View.OnClickListener listener) {
+        Snackbar.make(this.background, msg, length).setAction(actionMsg, listener).show();
     }
 }
