@@ -101,11 +101,7 @@ public class PhotoActivity extends AppCompatActivity implements SnackbarDisplaye
         this.toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent resultIntent = new Intent();
-                resultIntent.putExtra("photo", (Parcelable[]) null);
-                setResult(Activity.RESULT_CANCELED, resultIntent);
-                onBackPressed();
-                finish();
+                cancelResults();
             }
         });
 
@@ -177,6 +173,11 @@ public class PhotoActivity extends AppCompatActivity implements SnackbarDisplaye
         if (uriFilePath != null)
             outState.putString("uri_file_path", uriFilePath.toString());
         super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public void onBackPressed() {
+        this.cancelResults();
     }
 
     /**
@@ -360,6 +361,7 @@ public class PhotoActivity extends AppCompatActivity implements SnackbarDisplaye
      * Transitions the Accept button to the right.
      */
     private void moveAcceptButtonRight() {
+        // Change layout gravity and enable Animation for it.
         TransitionManager.beginDelayedTransition((ViewGroup) this.acceptContainer.getParent());
         CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams) this.acceptContainer.getLayoutParams();
         layoutParams.gravity = Gravity.BOTTOM | Gravity.RIGHT;
@@ -388,6 +390,16 @@ public class PhotoActivity extends AppCompatActivity implements SnackbarDisplaye
             Log.d("Main", "cancelled");
         } else*/
             setResult(Activity.RESULT_OK, results);
+        finish();
+    }
+
+    /**
+     * Cancel choosing an image and return to calling Activity.
+     */
+    private void cancelResults() {
+        Intent resultIntent = new Intent();
+        resultIntent.putExtra("photo", (Parcelable[]) null);
+        setResult(Activity.RESULT_CANCELED, resultIntent);
         finish();
     }
 
