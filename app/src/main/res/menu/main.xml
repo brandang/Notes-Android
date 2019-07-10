@@ -3,24 +3,31 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
+        android:id="@+id/action_reorder"
+        android:orderInCategory="100"
+        android:title="@string/toolbar_reorder"
+        android:icon="@drawable/reorder_icon"
+        app:showAsAction="always" />
+
+    <item
         android:id="@+id/action_photo"
         android:orderInCategory="200"
         android:title="@string/toolbar_photo"
         android:icon="@drawable/photo_icon"
-        app:showAsAction="ifRoom"/>
+        app:showAsAction="always"/>
 
     <item
         android:id="@+id/action_sync"
         android:orderInCategory="300"
         android:title="@string/toolbar_sync"
         android:icon="@drawable/sync_icon"
-        app:showAsAction="ifRoom"/>
+        app:showAsAction="always"/>
 
     <item
         android:id="@+id/action_save"
         android:orderInCategory="400"
         android:title="@string/toolbar_save"
         android:icon="@drawable/save_icon"
-        app:showAsAction="ifRoom"/>
+        app:showAsAction="always"/>
 
 </menu>

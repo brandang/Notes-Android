@@ -18,6 +18,7 @@
     <string name="toolbar_save">Save</string>
     <string name="toolbar_sync">Sync</string>
     <string name="toolbar_photo">Take Photo</string>
+    <string name="toolbar_reorder">Rearrange Notes</string>
 
     <string name="loading_message">Syncing Data…</string>
     <string name="sign_in_message">Signing In…</string>

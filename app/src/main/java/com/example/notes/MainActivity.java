@@ -79,9 +79,6 @@ public class MainActivity extends AppCompatActivity
     // Adapter for the above.
     private NoteAdapter noteAdapter;
 
-    // Floating action button.
-    private AnimatedActionButton reorderButton;
-
     // Layout containing app bar and everything else.
     private CoordinatorLayout background;
 
@@ -93,7 +90,6 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.setupComponents();
-        this.bindButtons();
         this.signIn();
     }
 
@@ -109,8 +105,6 @@ public class MainActivity extends AppCompatActivity
         this.loadingMessage = findViewById(R.id.loading_message);
         this.noteScreen = findViewById(R.id.note_screen);
         this.noteRecyclerView = findViewById(R.id.note_recycler);
-        // Button.
-        this.reorderButton = findViewById(R.id.reorder_button);
 
         // Setup toolbar.
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -129,19 +123,6 @@ public class MainActivity extends AppCompatActivity
                 null, this.noteRecyclerView);
         // Don't attach a callback because we don't need any gestures here.
         this.noteRecyclerView.setAdapter(this.noteAdapter);
-    }
-
-    /**
-     * Bind the action buttons.
-     */
-    private void bindButtons() {
-        this.reorderButton.hide();
-        this.reorderButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                MainActivity.this.startReorderActivity();
-            }
-        });
     }
 
     /**
@@ -182,7 +163,6 @@ public class MainActivity extends AppCompatActivity
     private void startNoteScreen() {
         this.loadingScreen.setVisibility(View.GONE);
         this.noteScreen.setVisibility(View.VISIBLE);
-        this.reorderButton.show();
 
         /*
         this.textarea.requestFocus();
@@ -263,7 +243,6 @@ public class MainActivity extends AppCompatActivity
                 break;
 
             case REQUEST_CODE_SETTINGS:
-                this.reorderButton.show();
                 if (resultCode == Activity.RESULT_OK) {
                     Settings settings = (Settings) data.getExtras().getSerializable("settings");
                     String fontSize = settings.getTextSize();
@@ -283,7 +262,6 @@ public class MainActivity extends AppCompatActivity
                     // message.show();
                     SaveData saveData = (SaveData) data.getExtras().getSerializable("saveData");
                     this.noteAdapter.setDisplayData(saveData);
-                    this.reorderButton.startShowAndFocusAnimation();
                 } else {
                     Uri photoUri = data.getParcelableExtra("photo");
                     // Image chosen, but result cancelled, implying Permissions were not obtained.
@@ -293,12 +271,10 @@ public class MainActivity extends AppCompatActivity
                                 Snackbar.LENGTH_LONG);
                          message.show();
                     }
-                    this.reorderButton.show();
                 }
                 break;
 
             case REQUEST_CODE_REARRANGED:
-                this.reorderButton.show();
                 if (resultCode == RESULT_OK) {
                     SaveData saveData = (SaveData) data.getExtras().getSerializable("saveData");
                     if (saveData == null)
@@ -507,6 +483,10 @@ public class MainActivity extends AppCompatActivity
 
             case R.id.action_photo:
                 this.startPhotoActivity();
+                break;
+
+            case R.id.action_reorder:
+                this.startReorderActivity();
                 break;
         }
         return super.onOptionsItemSelected(item);
