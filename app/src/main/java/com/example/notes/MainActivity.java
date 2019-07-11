@@ -64,6 +64,9 @@ public class MainActivity extends AppCompatActivity
     // Request code to capture photo.
     final private static int REQUEST_CODE_PHOTO = 4;
 
+    // Request code to capture voice.
+    final private static int REQUEST_CODE_VOICE = 5;
+
     // The layout that contains the loading screen.
     private LinearLayout loadingScreen;
 
@@ -195,6 +198,19 @@ public class MainActivity extends AppCompatActivity
      */
     private void startPhotoActivity() {
         Intent intent = new Intent(this, PhotoActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("saveData", this.noteAdapter.getSaveData());
+        intent.putExtras(bundle);
+        // Allow activity to read URI photos.
+        intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        startActivityForResult(intent, REQUEST_CODE_PHOTO);
+    }
+
+    /**
+     * Starts the Voice activity to get voice notes.
+     */
+    private void startVoiceActivity() {
+        Intent intent = new Intent(this, VoiceActivity.class);
         Bundle bundle = new Bundle();
         bundle.putSerializable("saveData", this.noteAdapter.getSaveData());
         intent.putExtras(bundle);
@@ -487,6 +503,10 @@ public class MainActivity extends AppCompatActivity
 
             case R.id.action_reorder:
                 this.startReorderActivity();
+                break;
+
+            case R.id.action_voice:
+                this.startVoiceActivity();
                 break;
         }
         return super.onOptionsItemSelected(item);

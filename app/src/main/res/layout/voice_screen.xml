@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/voice_screen"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorPrimaryLight">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/voice_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?attr/colorPrimary"
+            android:minHeight="?attr/actionBarSize"
+            android:theme="@style/AppTheme.CustomTheme.Toolbar" />
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <!-- The scrolling view behaviour ensures that the toolbar is above this layout. /-->
+    <FrameLayout
+        android:id="@+id/fragment_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="visible"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+
+    <!-- DodgeInsetsEdges to bottom ensures that buttons move with Snackbar. -->
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|center"
+        android:orientation="horizontal"
+        app:layout_anchorGravity="bottom"
+        app:layout_dodgeInsetEdges="bottom">
+
+        <com.example.notes.AnimatedActionButton
+            android:id="@+id/replay_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center"
+            android:layout_marginLeft="@dimen/fab_margin"
+            android:layout_marginRight="@dimen/fab_margin"
+            android:layout_marginBottom="36dp"
+            android:layout_marginTop="36dp"
+            android:clickable="true"
+            android:visibility="gone"
+            app:backgroundTint="@color/colorAccent"
+            app:elevation="0dp"
+            app:layout_anchorGravity="bottom|center"
+            app:srcCompat="@drawable/photo_icon" />
+
+        <com.example.notes.AnimatedActionButton
+            android:id="@+id/accept_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginLeft="@dimen/fab_margin"
+            android:layout_marginRight="@dimen/fab_margin"
+            android:layout_marginBottom="36dp"
+            android:layout_marginTop="36dp"
+            android:clickable="true"
+            android:visibility="gone"
+            app:backgroundTint="@color/colorAccent"
+            app:elevation="0dp"
+            app:layout_anchorGravity="bottom|center"
+            app:srcCompat="@drawable/check_icon" />
+
+    </LinearLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

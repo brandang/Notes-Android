@@ -389,7 +389,7 @@ public class PhotoActivity extends AppCompatActivity implements SnackbarDisplaye
             setResult(Activity.RESULT_CANCELED, results);
             Log.d("Main", "cancelled");
         } else*/
-            setResult(Activity.RESULT_OK, results);
+        setResult(Activity.RESULT_OK, results);
         finish();
     }
 
