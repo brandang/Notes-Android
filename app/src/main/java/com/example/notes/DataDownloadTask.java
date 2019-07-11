@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * Task that is responsible for downloading the app data from Google Drive.
  */
-public class DataDownloadTask extends AsyncTask<Void, Void, SaveData> {
+public class DataDownloadTask extends AsyncTask<Void, Void, DownloadedData> {
 
     private DriveService service;
     private List<DownloadDoneListener> listeners;
@@ -24,20 +24,15 @@ public class DataDownloadTask extends AsyncTask<Void, Void, SaveData> {
     }
 
     @Override
-    protected SaveData doInBackground(Void... voids) {
+    protected DownloadedData doInBackground(Void... voids) {
         return this.service.downloadData();
     }
 
     @Override
-    protected void onPostExecute(SaveData data) {
+    protected void onPostExecute(DownloadedData data) {
         super.onPostExecute(data);
         for (DownloadDoneListener listener : this.listeners) {
-            if (data == null) {
-                Log.d("Main", "data null");
-                listener.onDownloadComplete(null);
-            } else {
-                listener.onDownloadComplete(data);
-            }
+            listener.onDownloadComplete(data);
         }
     }
 }

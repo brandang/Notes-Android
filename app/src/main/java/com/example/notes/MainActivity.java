@@ -369,12 +369,14 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void onDownloadComplete(SaveData saveData) {
+    public void onDownloadComplete(DownloadedData downloadedData) {
         this.startNoteScreen();
-        if (saveData != null) {
-            this.onDownloadSuccess(saveData);
-        } else {
+        if (downloadedData.getResultCode() == DownloadedData.RESULTS_OK) {
+            this.onDownloadSuccess(downloadedData.getSaveData());
+        } else if (downloadedData.getResultCode() == DownloadedData.RESULTS_ERROR) {
             this.onDownloadFailed();
+        } else {
+            this.createNewNotes();
         }
     }
 
@@ -396,6 +398,12 @@ public class MainActivity extends AppCompatActivity
         Snackbar message = Snackbar.make(this.background, getString(R.string.download_success_msg),
                 Snackbar.LENGTH_LONG);
         message.show();
+    }
+
+    /**
+     * Create a new empty Notepad.
+     */
+    private void createNewNotes() {
 
     }
 

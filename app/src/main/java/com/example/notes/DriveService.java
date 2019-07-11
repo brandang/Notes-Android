@@ -7,6 +7,7 @@ import com.google.api.services.drive.Drive;
 import com.google.api.services.drive.model.File;
 import com.google.api.services.drive.model.FileList;
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -95,9 +96,9 @@ public class DriveService {
 
     /**
      * Downloads and returns the app data.
-     * @return The app data. Returns empty String if it does not exist.
+     * @return The app data.
      */
-    public SaveData downloadData() {
+    public DownloadedData downloadData() {
 
         this.setBusy(true);
 
@@ -110,30 +111,38 @@ public class DriveService {
             return null;
         }
 
+        // Download and read the data.
+        InputStream inputStream;
+        StringBuilder stringBuilder = new StringBuilder();
+        String line = null;
+
         try {
+            inputStream = this.service.files().get(downloadUrl).executeMediaAsInputStream();
 
             // Stream the file contents to a String.
-            InputStream input = this.service.files().get(downloadUrl).executeMediaAsInputStream();
-
-            StringBuilder stringBuilder = new StringBuilder();
-            String line = null;
-
-            try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(input))) {
+            try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream))) {
                 while ((line = bufferedReader.readLine()) != null) {
                     stringBuilder.append(line);
                 }
             }
-
-            Gson gson = new Gson();
-            SaveData data = gson.fromJson(stringBuilder.toString(), SaveData.class);
-
-            input.close();
+            inputStream.close();
+        } catch (IOException e) {
             setBusy(false);
-            return data;
-        } catch (Exception e) {
+            Log.d("Main", "Internet error.");
+            return new DownloadedData(null, DownloadedData.RESULTS_ERROR);
+        }
+
+        // Attempt to extract the data.
+        SaveData saveData;
+        try {
+            Gson gson = new Gson();
+            saveData = gson.fromJson(stringBuilder.toString(), SaveData.class);
+            setBusy(false);
+            return new DownloadedData(saveData, DownloadedData.RESULTS_OK);
+        } catch (JsonSyntaxException e) {
             setBusy(false);
             Log.d("Main", "Error converting data to SaveData object.");
-            return null;
+            return new DownloadedData(null, DownloadedData.RESULTS_EMPTY);
         }
     }
 

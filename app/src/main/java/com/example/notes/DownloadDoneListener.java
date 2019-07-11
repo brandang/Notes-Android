@@ -8,7 +8,7 @@ public interface DownloadDoneListener {
 
     /**
      * Handle the data that was downloaded.
-     * @param saveData The data. If unable to load data, it is null.
+     * @param downloadedData The data. Stores the result code for status.
      */
-    void onDownloadComplete(SaveData saveData);
+    void onDownloadComplete(DownloadedData downloadedData);
 }
