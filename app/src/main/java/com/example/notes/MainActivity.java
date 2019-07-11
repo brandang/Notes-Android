@@ -216,7 +216,7 @@ public class MainActivity extends AppCompatActivity
         intent.putExtras(bundle);
         // Allow activity to read URI photos.
         intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-        startActivityForResult(intent, REQUEST_CODE_PHOTO);
+        startActivityForResult(intent, REQUEST_CODE_VOICE);
     }
 
     /**
@@ -575,6 +575,17 @@ public class MainActivity extends AppCompatActivity
     private void resetData() {
         ArrayList<ItemData> data = new ArrayList<>();
         data.add(new ItemData("Testing 123", ItemData.TYPE_TEXT));
+        data.add(new ItemData("", ItemData.TYPE_TEXT));
+        data.add(new ItemData("", ItemData.TYPE_TEXT));
+        data.add(new ItemData("", ItemData.TYPE_TEXT));
+        data.add(new ItemData("", ItemData.TYPE_TEXT));
+        data.add(new ItemData("", ItemData.TYPE_TEXT));
+        data.add(new ItemData("", ItemData.TYPE_TEXT));
+        data.add(new ItemData("", ItemData.TYPE_TEXT));
+        data.add(new ItemData("", ItemData.TYPE_TEXT));
+        data.add(new ItemData("", ItemData.TYPE_TEXT));
+        data.add(new ItemData("", ItemData.TYPE_TEXT));
+        data.add(new ItemData("", ItemData.TYPE_TEXT));
         data.add(new ItemData("", ItemData.TYPE_TEXT));
         data.add(new ItemData("Testing 123", ItemData.TYPE_TEXT));
         DataUploadTask task = new DataUploadTask(this.service, new SaveData(
