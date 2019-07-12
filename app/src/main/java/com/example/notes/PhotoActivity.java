@@ -60,7 +60,7 @@ public class PhotoActivity extends AppCompatActivity implements SnackbarDisplaye
     private Toolbar toolbar;
 
     // Custom action buttons at the bottom.
-    private AnimatedActionButton capture, search, accept, decline;
+    private AnimatedFloatingButton capture, search, accept, decline;
 
     private LinearLayout acceptContainer;
 

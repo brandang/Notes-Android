@@ -271,7 +271,6 @@ public class MainActivity extends AppCompatActivity
                     Uri photoUri = data.getParcelableExtra("photo");
                     if (photoUri == null)
                         break;
-//                    this.noteAdapter.addData(new ItemData(photoUri.toString(), ItemData.TYPE_PHOTO));
                     Snackbar message = Snackbar.make(MainActivity.this.background,
                             getString(R.string.opened_photo_msg),
                             Snackbar.LENGTH_LONG);

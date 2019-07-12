@@ -38,38 +38,37 @@
             <FrameLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:paddingTop="@dimen/activity_vertical_margin"
+                android:paddingBottom="@dimen/activity_vertical_margin"
+                android:paddingLeft="@dimen/activity_horizontal_margin"
+                android:paddingRight="@dimen/activity_horizontal_margin"
                 android:layout_centerInParent="true"
-                android:background="@drawable/record_start_button"
+                android:background="@drawable/mic_button_outline"
                 android:visibility="visible">
 
-                <Button
-                    android:layout_width="120dp"
-                    android:layout_height="120dp"
-                    android:layout_marginTop="@dimen/activity_vertical_margin"
-                    android:layout_marginBottom="@dimen/activity_vertical_margin"
-                    android:layout_marginLeft="@dimen/activity_horizontal_margin"
-                    android:layout_marginRight="@dimen/activity_horizontal_margin"
+                <com.example.notes.AnimatedButton
+                    android:id="@+id/mic_on_button"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:paddingTop="@dimen/activity_vertical_margin"
+                    android:paddingBottom="@dimen/activity_vertical_margin"
+                    android:paddingLeft="@dimen/activity_horizontal_margin"
+                    android:paddingRight="@dimen/activity_horizontal_margin"
                     android:layout_gravity="center"
-                    android:background="@drawable/voice_icon" />
+                    android:background="@drawable/mic_on_icon"
+                    android:visibility="visible"/>
 
-            </FrameLayout>
-
-            <FrameLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:background="@drawable/record_stop_button"
-                android:visibility="gone">
-
-                <Button
-                    android:layout_width="120dp"
-                    android:layout_height="120dp"
-                    android:layout_marginTop="@dimen/activity_vertical_margin"
-                    android:layout_marginBottom="@dimen/activity_vertical_margin"
-                    android:layout_marginLeft="@dimen/activity_horizontal_margin"
-                    android:layout_marginRight="@dimen/activity_horizontal_margin"
+                <com.example.notes.AnimatedButton
+                    android:id="@+id/mic_off_button"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:paddingTop="@dimen/activity_vertical_margin"
+                    android:paddingBottom="@dimen/activity_vertical_margin"
+                    android:paddingLeft="@dimen/activity_horizontal_margin"
+                    android:paddingRight="@dimen/activity_horizontal_margin"
                     android:layout_gravity="center"
-                    android:background="@drawable/voice_icon" />
+                    android:background="@drawable/mic_off_icon"
+                    android:visibility="invisible"/>
 
             </FrameLayout>
 

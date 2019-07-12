@@ -18,6 +18,10 @@ public class VoiceFragment extends Fragment {
 
     private boolean attached = false;
 
+    private AnimatedButton micStartButton;
+
+    private AnimatedButton micStopButton;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -29,7 +33,47 @@ public class VoiceFragment extends Fragment {
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
+        // Load up child views.
         this.nameInput = view.findViewById(R.id.name);
+        this.micStartButton = view.findViewById(R.id.mic_on_button);
+        this.micStopButton = view.findViewById(R.id.mic_off_button);
+        this.setupButtons();
+    }
+
+    /**
+     * Sets up and Binds the buttons.
+     */
+    private void setupButtons() {
+        // Initially show this button.
+        this.micStartButton.show();
+
+        // Set up listeners.
+        this.micStartButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                micStartButton.hide();
+                micStopButton.show();
+            }
+        });
+
+        this.micStopButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                micStopButton.hide();
+                micStartButton.show();
+            }
+        });
+    }
+
+    /**
+     * 
+     */
+    private void onStartClicked() {
+
+    }
+
+    private void onStopClicked() {
+
     }
 
     @Override
@@ -43,5 +87,4 @@ public class VoiceFragment extends Fragment {
         super.onDetach();
         this.attached = false;
     }
-
 }

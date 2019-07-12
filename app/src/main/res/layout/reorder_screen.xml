@@ -38,7 +38,7 @@
         app:layout_anchorGravity="bottom"
         app:layout_dodgeInsetEdges="bottom">
 
-        <com.example.notes.AnimatedActionButton
+        <com.example.notes.AnimatedFloatingButton
             android:id="@+id/decline_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -53,7 +53,7 @@
             app:layout_anchorGravity="bottom|center"
             app:srcCompat="@drawable/cancel_icon" />
 
-        <com.example.notes.AnimatedActionButton
+        <com.example.notes.AnimatedFloatingButton
             android:id="@+id/accept_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

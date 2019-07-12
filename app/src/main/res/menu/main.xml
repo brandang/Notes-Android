@@ -13,7 +13,7 @@
         android:id="@+id/action_voice"
         android:orderInCategory="150"
         android:title="@string/toolbar_reorder"
-        android:icon="@drawable/voice_icon"
+        android:icon="@drawable/mic_on_icon"
         app:showAsAction="always" />
 
     <item

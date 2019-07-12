@@ -16,7 +16,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
  * optionally activate a click animation for when it is clicked. Overrides hide() method so that
  * it is guaranteed to work in all cases.
  */
-public class AnimatedActionButton extends FloatingActionButton {
+public class AnimatedFloatingButton extends FloatingActionButton {
 
     // Whether or not to play an animation when clicked.
     private boolean enableAnimation = true;
@@ -25,7 +25,7 @@ public class AnimatedActionButton extends FloatingActionButton {
      * Creates a new Action Button with the the given Context.
      * @param context The context.
      */
-    public AnimatedActionButton(Context context) {
+    public AnimatedFloatingButton(Context context) {
         super(context);
     }
 
@@ -34,7 +34,7 @@ public class AnimatedActionButton extends FloatingActionButton {
      * @param context The context.
      * @param attrs The attribute set.
      */
-    public AnimatedActionButton(Context context, AttributeSet attrs) {
+    public AnimatedFloatingButton(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
@@ -44,7 +44,7 @@ public class AnimatedActionButton extends FloatingActionButton {
      * @param attrs The attribute set.
      * @param defStyleAttr The style.
      */
-    public AnimatedActionButton(Context context, AttributeSet attrs, int defStyleAttr) {
+    public AnimatedFloatingButton(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 
@@ -53,7 +53,7 @@ public class AnimatedActionButton extends FloatingActionButton {
         super.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                AnimatedActionButton.this.startClickAnimation();
+                AnimatedFloatingButton.this.startClickAnimation();
                 l.onClick(view);
             }
         });
@@ -129,7 +129,7 @@ public class AnimatedActionButton extends FloatingActionButton {
 
             @Override
             public void onAnimationEnd(Animation animation) {
-                AnimatedActionButton.this.startAnimation(scaleUp);
+                AnimatedFloatingButton.this.startAnimation(scaleUp);
             }
 
             @Override
@@ -146,7 +146,7 @@ public class AnimatedActionButton extends FloatingActionButton {
 
             @Override
             public void onAnimationEnd(Animation animation) {
-                AnimatedActionButton.this.startAnimation(scaleDown);
+                AnimatedFloatingButton.this.startAnimation(scaleDown);
             }
 
             @Override
@@ -176,7 +176,7 @@ public class AnimatedActionButton extends FloatingActionButton {
 
             @Override
             public void onAnimationEnd(Animation animation) {
-                AnimatedActionButton.this.startAnimation(jumpDown);
+                AnimatedFloatingButton.this.startAnimation(jumpDown);
             }
 
             @Override
@@ -202,7 +202,7 @@ public class AnimatedActionButton extends FloatingActionButton {
             @SuppressLint("RestrictedApi")
             @Override
             public void onAnimationEnd(Animation animation) {
-                AnimatedActionButton.this.setVisibility(INVISIBLE);
+                AnimatedFloatingButton.this.setVisibility(INVISIBLE);
             }
 
             @Override

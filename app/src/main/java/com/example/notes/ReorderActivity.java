@@ -21,7 +21,7 @@ public class ReorderActivity extends AppCompatActivity implements SnackbarDispla
     private Toolbar toolbar;
 
     // Custom action buttons at the bottom.
-    private AnimatedActionButton accept, decline;
+    private AnimatedFloatingButton accept, decline;
 
     // RecyclerView and adapter.
     private RecyclerView recyclerView;

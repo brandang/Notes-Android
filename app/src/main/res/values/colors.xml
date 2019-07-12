@@ -7,7 +7,5 @@
     <color name="textColor">#d6d6d6</color>
     <color name="textHighlightColor">#3486a2</color>
     <color name="nav_view_tint">#d6d6d6</color>
-    <color name="affirmativeColour">#0D6600</color>
-    <color name="negativeColour">#660000</color>
 
 </resources>
