@@ -39,7 +39,10 @@ import java.util.Calendar;
 public class PhotoActivity extends AppCompatActivity implements SnackbarDisplayer {
 
     // Folder to save photos in.
-    final private static String DATA_SAVE_FOLDER = "data/notes";
+    final private static String DATA_SAVE_FOLDER = "data/notes/photos";
+
+    // nomedia file. Give it a name because for some reason it does not get created without a name.
+    final private static String DATA_NOMEDIA_FILE = "data/notes/data.nomedia";
 
     // Request code used to obtain photo from camera.
     final private static int REQUEST_CODE_CAPTURE = 0;
@@ -187,7 +190,7 @@ public class PhotoActivity extends AppCompatActivity implements SnackbarDisplaye
         this.uriFilePath = null;
         PackageManager packageManager = getPackageManager();
         if (packageManager.hasSystemFeature(PackageManager.FEATURE_CAMERA)) {
-            File mainDirectory = new File(Environment.getExternalStorageDirectory(), "data/notes");
+            File mainDirectory = new File(Environment.getExternalStorageDirectory(), DATA_SAVE_FOLDER);
             if (!mainDirectory.exists())
                 mainDirectory.mkdirs();
 
@@ -250,7 +253,7 @@ public class PhotoActivity extends AppCompatActivity implements SnackbarDisplaye
 
         // Create folder.
         File mainDirectory = new File(Environment.getExternalStorageDirectory(), DATA_SAVE_FOLDER);
-        File noMedia = new File(Environment.getExternalStorageDirectory(), DATA_SAVE_FOLDER + "/data.nomedia");
+        File noMedia = new File(Environment.getExternalStorageDirectory(), DATA_NOMEDIA_FILE);
         if (!mainDirectory.exists()) {
             mainDirectory.mkdirs();
         }
