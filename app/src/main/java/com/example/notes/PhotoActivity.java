@@ -39,7 +39,7 @@ import java.util.Calendar;
 public class PhotoActivity extends AppCompatActivity implements SnackbarDisplayer {
 
     // Folder to save photos in.
-    final private static String DATA_SAVE_FOLDER = "data/notes/photos";
+    final private static String DATA_SAVE_FOLDER = "data/notes/photos/";
 
     // nomedia file. Give it a name because for some reason it does not get created without a name.
     final private static String DATA_NOMEDIA_FILE = "data/notes/data.nomedia";

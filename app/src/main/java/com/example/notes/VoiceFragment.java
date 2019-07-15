@@ -21,10 +21,16 @@ import java.util.Calendar;
 public class VoiceFragment extends Fragment {
 
     // Folder to save Voice Notes in.
-    final private static String DATA_SAVE_FOLDER = "data/notes/voice";
+    final private static String DATA_SAVE_FOLDER = "data/notes/voice/";
 
     // nomedia file. Give it a name because for some reason it does not get created without a name.
     final private static String DATA_NOMEDIA_FILE = "data/notes/data.nomedia";
+
+    // File type format.
+    final private static String FILE_TYPE = ".m4a";
+
+    // File name prefix.
+    final private static String FILE_PREFIX = "voice_";
 
     private EditText nameInput;
 
@@ -88,16 +94,18 @@ public class VoiceFragment extends Fragment {
      * Start recording button has been clicked.
      */
     private void onStartClicked() {
+        // Stop playing file, otherwise we won't be able to delete it.
+        this.stopReplay();
         // Delete previously recorded file, so that we only keep files that user accepts.
-//        this.clearOldFile();
-//        this.startRecording();
+        this.clearOldFile();
+        this.startRecording();
     }
 
     /**
      * Stop recording button has been clicked.
      */
     private void onStopClicked() {
-//        this.stopRecording();
+        this.stopRecording();
     }
 
     /**
@@ -107,8 +115,12 @@ public class VoiceFragment extends Fragment {
         if (this.outputFile == null)
             return;
         if (this.outputFile.exists()) {
-
+            this.outputFile.delete();
         }
+    }
+
+    private void stopReplay() {
+
     }
 
     private void startRecording() {
@@ -129,24 +141,29 @@ public class VoiceFragment extends Fragment {
         }
 
         Calendar calendar = Calendar.getInstance();
-        this.outputFile = new File(Environment.getExternalStorageDirectory(), DATA_SAVE_FOLDER + calendar.getTimeInMillis());
+        this.outputFile = new File(Environment.getExternalStorageDirectory(), DATA_SAVE_FOLDER
+                + FILE_PREFIX + calendar.getTimeInMillis() + FILE_TYPE);
 
-        recorder = new MediaRecorder();
-        recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-        recorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
-//        recorder.setOutputFile(this.outputFile);
-        recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+        this.recorder = new MediaRecorder();
+        this.recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+        this.recorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
+        // Must be called after setOutputFormat.
+        this.recorder.setOutputFile(this.outputFile.getAbsolutePath());
+        this.recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC_ELD);
 
         try {
-            recorder.prepare();
+            this.recorder.prepare();
         } catch (IOException e) {
+            e.printStackTrace();
         }
 
-        recorder.start();
+        this.recorder.start();
     }
 
     private void stopRecording() {
-
+        this.recorder.stop();
+        this.recorder.release();
+        this.recorder = null;
     }
 
     @Override
