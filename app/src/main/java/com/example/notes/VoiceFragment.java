@@ -11,6 +11,8 @@ import android.widget.EditText;
 
 import androidx.fragment.app.Fragment;
 
+import com.google.android.material.snackbar.Snackbar;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.Calendar;
@@ -74,8 +76,6 @@ public class VoiceFragment extends Fragment {
         this.micStartButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                micStartButton.hide();
-                micStopButton.show();
                 onStartClicked();
             }
         });
@@ -83,8 +83,6 @@ public class VoiceFragment extends Fragment {
         this.micStopButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                micStopButton.hide();
-                micStartButton.show();
                 onStopClicked();
             }
         });
@@ -94,6 +92,11 @@ public class VoiceFragment extends Fragment {
      * Start recording button has been clicked.
      */
     private void onStartClicked() {
+        this.micStartButton.setClickable(false);
+        this.micStopButton.setClickable(true);
+        this.micStartButton.hide();
+        this.micStopButton.show();
+
         // Stop playing file, otherwise we won't be able to delete it.
         this.stopReplay();
         // Delete previously recorded file, so that we only keep files that user accepts.
@@ -105,7 +108,16 @@ public class VoiceFragment extends Fragment {
      * Stop recording button has been clicked.
      */
     private void onStopClicked() {
-        this.stopRecording();
+        // Show message when stop was unsuccessful.
+        if (!this.stopRecording()) {
+            Snackbar.make(this.getActivity().findViewById(R.id.voice_screen),
+                    this.getResources().getString(R.string.recording_failed_msg),
+                    Snackbar.LENGTH_LONG).show();
+        }
+        this.micStartButton.setClickable(true);
+        this.micStopButton.setClickable(false);
+        this.micStopButton.hide();
+        this.micStartButton.show();
     }
 
     /**
@@ -160,10 +172,21 @@ public class VoiceFragment extends Fragment {
         this.recorder.start();
     }
 
-    private void stopRecording() {
-        this.recorder.stop();
+    /**
+     * Attempt to stop recording.
+     * @return Returns true if successful, false if not.
+     */
+    private boolean stopRecording() {
+        // When stop is immediately called right after start, exception will be thrown.
+        try {
+            this.recorder.stop();
+        } catch (RuntimeException e) {
+            this.outputFile.delete();
+            return false;
+        }
         this.recorder.release();
         this.recorder = null;
+        return true;
     }
 
     @Override

@@ -53,5 +53,6 @@
 
     <string name="voice_title">Add Voice Note</string>
     <string name="voice_name_hint">Name of the Voice Note</string>
+    <string name="recording_failed_msg">Recording was too short! Please make the Voice Note longer.</string>
 
 </resources>
